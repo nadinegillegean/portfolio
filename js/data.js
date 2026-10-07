@@ -27,20 +27,22 @@ window.SITE = {
     intro:
       "A people-oriented creative who brings people together and turns ideas into action — across modelling, brand design, events, and the research that makes them work.",
     bio: [
-      "Hi! I'm Sofia. I love travelling, collecting polaroids, singing harmonies with my choir, and rewatching Friends. Cats are a big yes.",
+      "Hi! I'm Sofia. I love travelling, singing in my choir, and cats.",
       "By day I'm an Industrial Engineering student at De La Salle University. Somehow I keep ending up in charge of the projects that need someone to bring people together — a thrifted-denim brand, student government, theatre, and events.",
     ],
   },
 
-  // Things you love — shown as polaroids. Add "src: 'assets/img/xyz.jpg'" to use a real photo.
-  // `episode` is the cheeky "The One Where…" line.
-  loves: [
-    { id: "travel", title: "Travelling", episode: "The one where I pack too much", note: "Singapore, Hong Kong, and a long list of next stops.", tone: 4, icon: "plane" },
-    { id: "cats", title: "Cats", episode: "The one with all the cats", note: "If there's a cat nearby, I've already found it.", tone: 2, icon: "cat" },
-    { id: "friends", title: "Friends", episode: "The one where I rewatch it again", note: "I'll be there for you. (Yes, I know all the words.)", tone: 6, icon: "coffee" },
-    { id: "music", title: "Music", episode: "The one where I sing", note: "Soprano 2 in the DLSU Chorale.", tone: 1, icon: "note" },
-    { id: "photos", title: "Polaroids & digicams", episode: "The one with the flash on", note: "Everything looks better with a little flash and a date stamp.", tone: 5, icon: "camera" },
+  // Short stories for the About page (not a CV): stat, title, tag, one sentence.
+  stories: [
+    { stat: "1,000+", title: "Old Jeans", tag: "General Manager & Co-Owner", text: "A thrifted-denim brand and denim-pouch line. We grew to 1,000+ followers in two months and sold ₱44,000 at our first bazaar." },
+    { stat: "25k+", title: "DLSU Chorale", tag: "Marketing Communications Lead", text: "I make the videos and content for our choir: 13 videos so far, 25k+ views and 1.8k likes." },
+    { stat: "32k+", title: "Teatro Lasalyano", tag: "Stage Manager", text: "I ran the technical booth and the cue sheets for Animulat: Ang Huling Takipsilim, and the promo video passed 32k views." },
+    { stat: "1 site", title: "Engineering Student Government", tag: "Student Services Executive", text: "I built a central deadlines website with Google Calendar built in, so every org can see what's due." },
+    { stat: "On-site", title: "IMES AI Expo 2025", tag: "Assistant Team Head, Productions", text: "Booth layouts, interactive photobooth props and a lot of on-site coordination." },
+    { stat: "4 campuses", title: "Gateway Summer Camp", tag: "DLSU Student Delegate", text: "Campus visits at NUS, SMU, LASALLE and SUTD, and the Award of Excellence for Best Teamwork." },
   ],
+
+  toolkit: ["Photoshop", "Lightroom", "After Effects", "DaVinci Resolve", "CapCut", "Canva", "Google Workspace", "Python", "C++"],
 
   highlights: [
     { short: "₱44,000", detail: "Combined sales at the DLSU SHS ABM bazaar — Old Jeans", size: 3 },

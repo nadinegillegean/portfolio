@@ -1,20 +1,16 @@
 /*
-  Renders about.html from window.SITE.profile and window.SITE.cv.
+  Renders about.html from window.SITE.profile and window.SITE.stories.
   Called by main.js (via window.renderPage) before animations are set up.
 */
 window.renderPage = function (h) {
   "use strict";
   var esc = h.esc;
   var profile = window.SITE.profile;
-  var cv = window.SITE.cv;
+  var stories = window.SITE.stories;
 
   function fill(sel, html) {
     var el = document.querySelector(sel);
     if (el) el.innerHTML = html;
-  }
-
-  function list(items) {
-    return items && items.length ? "<ul>" + items.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ul>" : "";
   }
 
   fill("[data-bio]", profile.bio.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join(""));
@@ -23,51 +19,24 @@ window.renderPage = function (h) {
   fill("[data-portrait]", h.media(profile.portrait, 3, "Your portrait here", "modelling", profile.name));
 
   fill(
-    "[data-experience]",
-    cv.experience
-      .map(function (x) {
+    "[data-stories]",
+    stories
+      .map(function (s, i) {
         return (
-          '<li><span class="years">' + esc(x.years) + "</span><div>" +
-          "<h3>" + esc(x.org) + "</h3>" +
-          '<p class="role">' + esc(x.role) + " · " + esc(x.place) + "</p>" +
-          list(x.points) + "</div></li>"
+          '<article class="story" data-story>' +
+          '<span class="story__stat">' + esc(s.stat) + "</span>" +
+          '<h3 class="story__title">' + esc(s.title) + "</h3>" +
+          '<p class="story__tag">' + esc(s.tag) + "</p>" +
+          "<p>" + esc(s.text) + "</p></article>"
         );
       })
       .join("")
   );
 
   fill(
-    "[data-education]",
-    cv.education
-      .map(function (e) {
-        return (
-          '<li><span class="years">' + esc(e.years) + "</span><div>" +
-          "<h3>" + esc(e.school) + "</h3>" +
-          '<p class="role">' + esc(e.program) + " · " + esc(e.place) + "</p>" +
-          list(e.notes) + "</div></li>"
-        );
-      })
+    "[data-toolkit]",
+    window.SITE.toolkit
+      .map(function (t) { return "<span>" + esc(t) + "</span>"; })
       .join("")
-  );
-
-  fill(
-    "[data-skills]",
-    Object.keys(cv.skills)
-      .map(function (group) {
-        return (
-          '<div data-reveal><h3>' + esc(group) + '</h3><ul class="pills">' +
-          cv.skills[group].map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") +
-          "</ul></div>"
-        );
-      })
-      .join("") +
-      '<div data-reveal><h3>Organizations</h3><ul class="pills">' +
-      cv.organizations.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") +
-      "</ul></div>"
-  );
-
-  fill(
-    "[data-achievements]",
-    cv.achievements.map(function (a) { return '<li><span class="years">★</span><div><h3>' + esc(a) + "</h3></div></li>"; }).join("")
   );
 };

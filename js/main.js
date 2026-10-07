@@ -317,27 +317,7 @@
     setFilter(valid ? wanted : SITE.categories[0].id);
   }
 
-  /* ---------- Things I love: polaroids ---------- */
-  Array.prototype.forEach.call(document.querySelectorAll("[data-loves]"), function (box) {
-    box.innerHTML = SITE.loves
-      .map(function (l, i) {
-        var stamp = "’25 " + String(((i * 3) % 12) + 1).padStart(2, "0") + " " + String(((i * 7) % 27) + 1).padStart(2, "0");
-        return (
-          '<figure class="pol">' +
-          '<div class="pol__photo" data-stamp="' + stamp + '">' + media(l.src, l.tone, l.title, l.icon, l.title) + "</div>" +
-          '<figcaption><p class="pol__title">' + esc(l.title) + '</p><p class="pol__ep">' + esc(l.episode) + '</p><p class="pol__note">' + esc(l.note) + "</p></figcaption></figure>"
-        );
-      })
-      .join("");
-  });
-
-  /* ---------- Hero viewfinder date ---------- */
-  Array.prototype.forEach.call(document.querySelectorAll("[data-date]"), function (el) {
-    var d = new Date();
-    el.textContent = d.toLocaleString("en", { month: "short" }).toUpperCase() + " " + String(d.getDate()).padStart(2, "0") + " " + d.getFullYear();
-  });
-
-  /* ---------- Highlights: swipe-away card deck ---------- */
+   /* ---------- Highlights: swipe-away card deck ---------- */
   var deck = document.querySelector("[data-deck]");
   if (deck) {
     var DC = ["#fbdde7", "#fff1b8", "#dcecd5"];
@@ -497,7 +477,7 @@
   window.__motionReady = true;
 
   if (window.Lenis) {
-    lenis = new window.Lenis({ duration: 1.2, smoothWheel: true });
+    lenis = new window.Lenis({ duration: 1.7, smoothWheel: true });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
@@ -507,9 +487,9 @@
   gsap.from(".nav", { y: -16, opacity: 0, duration: 0.9, ease: "power3.out" });
   var heroLines = document.querySelectorAll(".hero__title .line > span, .page-title .line > span");
   if (heroLines.length) {
-    gsap.from(heroLines, { yPercent: 105, duration: 1.1, ease: "power4.out", stagger: 0.1, delay: 0.15 });
+    gsap.from(heroLines, { yPercent: 105, duration: 1.6, ease: "power4.out", stagger: 0.16, delay: 0.25 });
   }
-  gsap.from(".hero .eyebrow, .hero__sub, .hero__cta, .lede, .proj-meta", { y: 16, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.08, delay: 0.45 });
+  gsap.from(".hero .eyebrow, .hero__sub, .hero__cta, .lede, .proj-meta", { y: 16, opacity: 0, duration: 1.3, ease: "power3.out", stagger: 0.12, delay: 0.7 });
   gsap.from(".hero__portrait", { scale: 0.92, opacity: 0, duration: 1.3, ease: "power3.out", delay: 0.1 });
 
   // Passport stamps: thud in one by one
@@ -520,23 +500,9 @@
       opacity: 0,
       duration: 0.7,
       ease: "power4.in",
-      stagger: 0.22,
+      stagger: 0.35,
       clearProps: "transform,opacity",
-      scrollTrigger: { trigger: ".stamps", start: "top 80%", once: true },
-    });
-  }
-
-  // Polaroids: drop in gently, one after another
-  var pols = document.querySelectorAll(".pol");
-  if (pols.length) {
-    gsap.from(pols, {
-      y: 40,
-      opacity: 0,
-      duration: 1,
-      ease: "power3.out",
-      stagger: 0.1,
-      clearProps: "transform,opacity",
-      scrollTrigger: { trigger: pols[0].parentNode, start: "top 85%", once: true },
+      scrollTrigger: { trigger: ".stamps", start: "top 75%", once: true },
     });
   }
 
@@ -548,9 +514,9 @@
       { opacity: 0.15 },
       {
         opacity: 1,
-        stagger: 0.05,
+        stagger: 0.06,
         ease: "none",
-        scrollTrigger: { trigger: ".intro", start: "top 78%", end: "bottom 62%", scrub: true },
+        scrollTrigger: { trigger: ".intro", start: "top 80%", end: "bottom 55%", scrub: true },
       }
     );
   }
@@ -560,7 +526,7 @@
     gsap.to(el, {
       opacity: 1,
       y: 0,
-      duration: 1,
+      duration: 1.5,
       ease: "power3.out",
       scrollTrigger: { trigger: el, start: "top 90%", once: true },
     });
@@ -571,11 +537,11 @@
     Array.prototype.forEach.call(grid.querySelectorAll(".card"), function (card, i) {
       card._reveal = gsap.fromTo(
         card,
-        { y: 36, opacity: 0 },
+        { y: 44, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 1,
+          duration: 1.4,
           delay: (i % 3) * 0.08,
           ease: "power3.out",
           clearProps: "transform,opacity",
