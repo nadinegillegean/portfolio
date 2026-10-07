@@ -27,10 +27,20 @@ window.SITE = {
     intro:
       "A people-oriented creative who brings people together and turns ideas into action — across modelling, brand design, events, and the research that makes them work.",
     bio: [
-      "I'm an Industrial Engineering with Service Management student at De La Salle University with a habit of turning ideas into things people can see, touch, and share.",
-      "I've led teams and run projects across business, student government, theatre and events — from co-owning a thrifted-denim brand to directing a large-scale school event. I care about strong communication, initiative, and a hands-on approach that takes a project from concept to completion.",
+      "Hi! I'm Sofia. I love travelling, collecting polaroids, singing harmonies with my choir, and rewatching Friends. Cats are a big yes.",
+      "By day I'm an Industrial Engineering student at De La Salle University. Somehow I keep ending up in charge of the projects that need someone to bring people together — a thrifted-denim brand, student government, theatre, and events.",
     ],
   },
+
+  // Things you love — shown as polaroids. Add "src: 'assets/img/xyz.jpg'" to use a real photo.
+  // `episode` is the cheeky "The One Where…" line.
+  loves: [
+    { id: "travel", title: "Travelling", episode: "The one where I pack too much", note: "Singapore, Hong Kong, and a long list of next stops.", tone: 4, icon: "plane" },
+    { id: "cats", title: "Cats", episode: "The one with all the cats", note: "If there's a cat nearby, I've already found it.", tone: 2, icon: "cat" },
+    { id: "friends", title: "Friends", episode: "The one where I rewatch it again", note: "I'll be there for you. (Yes, I know all the words.)", tone: 6, icon: "coffee" },
+    { id: "music", title: "Music", episode: "The one where I sing", note: "Soprano 2 in the DLSU Chorale.", tone: 1, icon: "note" },
+    { id: "photos", title: "Polaroids & digicams", episode: "The one with the flash on", note: "Everything looks better with a little flash and a date stamp.", tone: 5, icon: "camera" },
+  ],
 
   highlights: [
     { short: "₱44,000", detail: "Combined sales at the DLSU SHS ABM bazaar — Old Jeans", size: 3 },

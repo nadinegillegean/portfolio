@@ -20,6 +20,16 @@
   }
 
   var ICONS = {
+    plane:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 28l36-14-8 22-10-8-8 6 2-10z"/></svg>',
+    cat:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20L10 6l9 7h10l9-7 2 14c0 12-8 20-16 20S8 32 8 20z"/><circle cx="18" cy="24" r="1.6"/><circle cx="30" cy="24" r="1.6"/><path d="M22 30q2 2 4 0"/></svg>',
+    coffee:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 16h26v12a10 10 0 01-10 10h-6A10 10 0 018 28z"/><path d="M34 20h4a4 4 0 010 10h-4M16 8v3M24 8v3"/></svg>',
+    note:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 36V10l20-4v26"/><circle cx="13" cy="36" r="5"/><circle cx="33" cy="32" r="5"/></svg>',
+    camera:
+      '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="14" width="36" height="26" rx="6"/><path d="M17 14l3-5h8l3 5"/><circle cx="24" cy="27" r="7"/></svg>',
     modelling:
       '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="14" width="36" height="26" rx="6"/><path d="M17 14l3-5h8l3 5"/><circle cx="24" cy="27" r="7"/></svg>',
     brand:
@@ -307,137 +317,116 @@
     setFilter(valid ? wanted : SITE.categories[0].id);
   }
 
-  /* ---------- Highlights: draggable floating bubbles ---------- */
-  var bubbleBox = document.querySelector("[data-bubbles]");
-  if (bubbleBox) {
-    var BC = ["#f8c8d8", "#fbeaa0", "#cfe5c8"];
-    var bubs = SITE.highlights.map(function (h, i) {
-      var el = document.createElement("button");
-      el.type = "button";
-      el.className = "bubble";
-      el.style.setProperty("--bc", BC[i % BC.length]);
-      el.innerHTML = '<span class="bubble__short">' + esc(h.short) + '</span><span class="bubble__detail">' + esc(h.detail) + "</span>";
-      bubbleBox.appendChild(el);
-      return { el: el, h: h, x: 0, y: 0, vx: 0, vy: 0, r: 0, tr: 0, base: 0, open: false, drag: false };
+  /* ---------- Things I love: polaroids ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-loves]"), function (box) {
+    box.innerHTML = SITE.loves
+      .map(function (l, i) {
+        var stamp = "’25 " + String(((i * 3) % 12) + 1).padStart(2, "0") + " " + String(((i * 7) % 27) + 1).padStart(2, "0");
+        return (
+          '<figure class="pol">' +
+          '<div class="pol__photo" data-stamp="' + stamp + '">' + media(l.src, l.tone, l.title, l.icon, l.title) + "</div>" +
+          '<figcaption><p class="pol__title">' + esc(l.title) + '</p><p class="pol__ep">' + esc(l.episode) + '</p><p class="pol__note">' + esc(l.note) + "</p></figcaption></figure>"
+        );
+      })
+      .join("");
+  });
+
+  /* ---------- Hero viewfinder date ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-date]"), function (el) {
+    var d = new Date();
+    el.textContent = d.toLocaleString("en", { month: "short" }).toUpperCase() + " " + String(d.getDate()).padStart(2, "0") + " " + d.getFullYear();
+  });
+
+  /* ---------- Highlights: swipe-away card deck ---------- */
+  var deck = document.querySelector("[data-deck]");
+  if (deck) {
+    var DC = ["#fbdde7", "#fff1b8", "#dcecd5"];
+    var cards = SITE.highlights.map(function (h, i) {
+      var el = document.createElement("div");
+      el.className = "dcard";
+      el.style.setProperty("--bc", DC[i % DC.length]);
+      el.innerHTML = '<span class="dcard__no"></span><span class="dcard__big">' + esc(h.short) + '</span><p class="dcard__detail">' + esc(h.detail) + "</p>";
+      deck.appendChild(el);
+      return el;
     });
-    var hint = document.createElement("p");
-    hint.className = "bubbles-hint";
-    hint.textContent = "Drag, flick, or tap a bubble.";
-    bubbleBox.parentNode.appendChild(hint);
+    var total = cards.length;
+    var order = cards.slice(); // order[0] is the top card
+    var ctrl = document.createElement("div");
+    ctrl.className = "deck__ctrl";
+    ctrl.innerHTML = '<button class="deck__btn" type="button" aria-label="Previous">←</button><span data-deck-count></span><button class="deck__btn" type="button" aria-label="Next">→</button>';
+    deck.parentNode.appendChild(ctrl);
+    var countLabel = ctrl.querySelector("[data-deck-count]");
+    var busy = false;
 
-    var bw = 0, bh = 0, openB = null;
-    function layoutB(first) {
-      bw = bubbleBox.clientWidth; bh = bubbleBox.clientHeight;
-      var k = bw < 560 ? 0.72 : 1;
-      bubs.forEach(function (b) {
-        b.base = (40 + (b.h.size || 2) * 13) * k;
-        b.el.style.setProperty("--fs", (13 + (b.h.size || 2) * 1.6) * (bw < 560 ? 0.9 : 1) + "px");
-        if (!b.open) b.tr = b.base;
-        if (first) {
-          b.r = b.tr;
-          b.x = b.r + Math.random() * Math.max(1, bw - 2 * b.r);
-          b.y = b.r + Math.random() * Math.max(1, bh - 2 * b.r);
-          b.vx = (Math.random() - 0.5) * 1.2; b.vy = (Math.random() - 0.5) * 1.2;
-        }
+    function paint() {
+      order.forEach(function (c, i) {
+        c.setAttribute("data-pos", i < 3 ? String(i) : "3");
+        c.setAttribute("aria-hidden", i === 0 ? "false" : "true");
+        c.style.transform = "";
+        c.querySelector(".dcard__no").textContent = "." + String(cards.indexOf(c) + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
       });
+      countLabel.textContent = "." + String(cards.indexOf(order[0]) + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
     }
-    layoutB(true);
-    window.addEventListener("resize", function () { layoutB(false); });
+    paint();
 
-    function setOpen(b, on) {
-      b.open = on;
-      b.el.classList.toggle("is-open", on);
-      b.tr = on ? Math.min(118 * (bw < 560 ? 0.8 : 1), bh / 2 - 8) : b.base;
-      if (on) openB = b; else if (openB === b) openB = null;
+    // Fling the top card away, then tuck it under the stack
+    function fling(dir) {
+      if (busy) return;
+      busy = true;
+      var top = order[0];
+      top.classList.remove("is-drag");
+      top.style.transition = "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.6s";
+      top.style.transform = "translate3d(" + dir * (deck.offsetWidth * 1.3) + "px,-30px,0) rotate(" + dir * 24 + "deg)";
+      top.style.opacity = "0";
+      setTimeout(function () {
+        order.push(order.shift());
+        top.style.transition = "none";
+        top.style.opacity = "";
+        paint();
+        void top.offsetWidth;
+        top.style.transition = "";
+        busy = false;
+      }, 520);
     }
-
-    var visible = true;
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }, { threshold: 0 }).observe(bubbleBox);
-    }
-
-    function stepB() {
-      bubs.forEach(function (b) {
-        b.r += (b.tr - b.r) * 0.14;
-        if (!b.drag) {
-          b.x += b.vx; b.y += b.vy;
-          b.vx += (Math.random() - 0.5) * 0.04; b.vy += (Math.random() - 0.5) * 0.04;
-          var sp = Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-          if (sp > 1.3) { b.vx *= 0.97; b.vy *= 0.97; }
-          if (sp < 0.25) { b.vx *= 1.05; b.vy *= 1.05; }
-        }
-        if (b.x < b.r) { b.x = b.r; b.vx = Math.abs(b.vx); }
-        if (b.x > bw - b.r) { b.x = bw - b.r; b.vx = -Math.abs(b.vx); }
-        if (b.y < b.r) { b.y = b.r; b.vy = Math.abs(b.vy); }
-        if (b.y > bh - b.r) { b.y = bh - b.r; b.vy = -Math.abs(b.vy); }
-      });
-      for (var i = 0; i < bubs.length; i++) {
-        for (var j = i + 1; j < bubs.length; j++) {
-          var a = bubs[i], c = bubs[j];
-          var dx = c.x - a.x, dy = c.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 0.01, min = a.r + c.r;
-          if (d < min) {
-            var nx = dx / d, ny = dy / d, ov = (min - d) / 2;
-            if (!a.drag) { a.x -= nx * ov; a.y -= ny * ov; }
-            if (!c.drag) { c.x += nx * ov; c.y += ny * ov; }
-            var rv = (c.vx - a.vx) * nx + (c.vy - a.vy) * ny;
-            if (rv < 0) {
-              a.vx += nx * rv; a.vy += ny * rv;
-              c.vx -= nx * rv; c.vy -= ny * rv;
-            }
-          }
-        }
-      }
-      bubs.forEach(function (b) {
-        b.el.style.width = b.el.style.height = b.r * 2 + "px";
-        b.el.style.transform = "translate3d(" + (b.x - b.r) + "px," + (b.y - b.r) + "px,0)";
-      });
+    function back() {
+      if (busy) return;
+      order.unshift(order.pop());
+      paint();
     }
 
-    if (reduceMotion) {
-      // Calm fallback: tidy wrapped grid, tap to read
-      bubbleBox.style.cssText = "height:auto;display:flex;flex-wrap:wrap;gap:14px;justify-content:center;padding:28px";
-      bubs.forEach(function (b) {
-        b.el.style.cssText = "position:relative;width:" + b.base * 2 + "px;height:" + b.base * 2 + "px";
-        b.el.addEventListener("click", function () { b.el.classList.toggle("is-open"); });
-      });
-    } else {
-      stepB();
-      (function bloop() { if (visible) stepB(); requestAnimationFrame(bloop); })();
-
-      bubs.forEach(function (b) {
-        var moved, lx, ly, lt;
-        b.el.addEventListener("pointerdown", function (e) {
-          b.drag = true; moved = 0; lx = e.clientX; ly = e.clientY; lt = e.timeStamp;
-          b.el.setPointerCapture(e.pointerId);
-          e.preventDefault();
-        });
-        b.el.addEventListener("pointermove", function (e) {
-          if (!b.drag) return;
-          var rect = bubbleBox.getBoundingClientRect();
-          b.x = e.clientX - rect.left; b.y = e.clientY - rect.top;
-          var dt = Math.max(1, e.timeStamp - lt);
-          b.vx = ((e.clientX - lx) / dt) * 16; b.vy = ((e.clientY - ly) / dt) * 16;
-          moved += Math.abs(e.clientX - lx) + Math.abs(e.clientY - ly);
-          lx = e.clientX; ly = e.clientY; lt = e.timeStamp;
-        });
-        function end() {
-          if (!b.drag) return;
-          b.drag = false;
-          if (moved < 6) {
-            if (openB && openB !== b) setOpen(openB, false);
-            setOpen(b, !b.open);
-            b.vx = b.vy = 0.3;
-          } else {
-            b.vx = Math.max(-9, Math.min(9, b.vx)); b.vy = Math.max(-9, Math.min(9, b.vy));
-          }
-        }
-        b.el.addEventListener("pointerup", end);
-        b.el.addEventListener("pointercancel", end);
-      });
-      document.addEventListener("pointerdown", function (e) {
-        if (openB && !(e.target.closest && e.target.closest(".bubble"))) setOpen(openB, false);
-      });
+    var sx = 0, dx = 0, dragging = false, lastT = 0, vx = 0;
+    deck.addEventListener("pointerdown", function (e) {
+      if (busy || !e.target.closest(".dcard[data-pos='0']")) return;
+      dragging = true; sx = e.clientX; dx = 0; vx = 0; lastT = e.timeStamp;
+      order[0].classList.add("is-drag");
+      deck.setPointerCapture(e.pointerId);
+    });
+    deck.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      var ndx = e.clientX - sx;
+      vx = (ndx - dx) / Math.max(1, e.timeStamp - lastT);
+      dx = ndx; lastT = e.timeStamp;
+      order[0].style.transform = "translate3d(" + dx + "px," + Math.abs(dx) * -0.06 + "px,0) rotate(" + dx / 14 + "deg)";
+    });
+    function release() {
+      if (!dragging) return;
+      dragging = false;
+      var top = order[0];
+      top.classList.remove("is-drag");
+      if (Math.abs(dx) > 90 || Math.abs(vx) > 0.6) fling(dx < 0 ? -1 : 1);
+      else if (Math.abs(dx) < 5) fling(1); // a tap also sends it away
+      else top.style.transform = "";
     }
+    deck.addEventListener("pointerup", release);
+    deck.addEventListener("pointercancel", release);
+
+    ctrl.children[0].addEventListener("click", back);
+    ctrl.children[2].addEventListener("click", function () { fling(1); });
+    deck.setAttribute("tabindex", "0");
+    deck.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") fling(1);
+      if (e.key === "ArrowLeft") back();
+    });
   }
 
   /* ---------- Contact links ---------- */
@@ -534,6 +523,20 @@
       stagger: 0.22,
       clearProps: "transform,opacity",
       scrollTrigger: { trigger: ".stamps", start: "top 80%", once: true },
+    });
+  }
+
+  // Polaroids: drop in gently, one after another
+  var pols = document.querySelectorAll(".pol");
+  if (pols.length) {
+    gsap.from(pols, {
+      y: 40,
+      opacity: 0,
+      duration: 1,
+      ease: "power3.out",
+      stagger: 0.1,
+      clearProps: "transform,opacity",
+      scrollTrigger: { trigger: pols[0].parentNode, start: "top 85%", once: true },
     });
   }
 

@@ -9,7 +9,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z' fill='%23f3b0c7' stroke='%23f3b0c7' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='20' cy='23' rx='15' ry='13' fill='%23f3b0c7'/%3E%3Ccircle cx='14.5' cy='22' r='2' fill='%232b1e24'/%3E%3Ccircle cx='25.5' cy='22' r='2' fill='%232b1e24'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Share+Tech+Mono&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
     (function (h) {
@@ -45,11 +45,11 @@
     <section class="page-head">
       <div class="wrap">
         <p class="eyebrow">About me</p>
-        <h1 class="display page-title">
+        <h1 class="hero__title">
           <span class="line"><span>Hi, I'm</span></span>
-          <span class="line"><span><em>Sofia.</em></span></span>
+          <span class="line"><span>Sofia!</span></span>
         </h1>
-        <p class="lede">Model, creative and future industrial engineer — bringing people together and turning ideas into action.</p>
+        <p class="lede">Nice to meet you. Here's the fun stuff first.</p>
       </div>
     </section>
 
@@ -58,48 +58,67 @@
         <div class="portrait" data-portrait></div>
         <div>
           <div class="bio" data-bio data-reveal></div>
-          <p data-reveal style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
-            <a class="btn" href="index.html#work">See my work →</a>
+          <p data-reveal style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+            <a class="btn" href="index.html?cat=modelling#work">See my work →</a>
             <a class="btn btn--ghost" data-email href="#">Email me</a>
           </p>
         </div>
       </div>
     </section>
 
-    <section class="block" data-section style="margin-top:clamp(56px,8vw,110px)">
+    <section class="loves" data-section>
       <div class="wrap">
-        <h2 class="display block__title" data-reveal>Experience &amp; leadership</h2>
-        <ol class="timeline" data-experience></ol>
+        <p class="eyebrow">A few of my favourite things</p>
+        <h2 class="display section-title" data-reveal>Things I love</h2>
+        <div class="polaroids polaroids--about" data-loves></div>
       </div>
     </section>
 
     <section class="block" data-section>
       <div class="wrap">
-        <h2 class="display block__title" data-reveal>Education</h2>
-        <ol class="timeline" data-education></ol>
-      </div>
-    </section>
-
-    <section class="block" data-section>
-      <div class="wrap">
-        <h2 class="display block__title" data-reveal>Skills &amp; communities</h2>
-        <div class="skills" data-skills></div>
-      </div>
-    </section>
-
-    <section class="block" data-section>
-      <div class="wrap">
-        <h2 class="display block__title" data-reveal>Other achievements</h2>
-        <ul class="timeline" data-achievements></ul>
+        <p class="eyebrow">The grown-up stuff</p>
+        <h2 class="display block__title" data-reveal>If you want the details</h2>
+        <div class="details" data-reveal>
+          <details>
+            <summary>Experience &amp; leadership</summary>
+            <ol class="timeline" data-experience></ol>
+          </details>
+          <details>
+            <summary>Education</summary>
+            <ol class="timeline" data-education></ol>
+          </details>
+          <details>
+            <summary>Skills &amp; communities</summary>
+            <div class="skills" data-skills></div>
+          </details>
+          <details>
+            <summary>Other achievements</summary>
+            <ul class="timeline" data-achievements></ul>
+          </details>
+        </div>
       </div>
     </section>
 
     <section class="contact" id="contact" data-section>
       <div class="wrap">
-        <p class="eyebrow">Contact</p>
-        <h2 class="display contact__title" data-reveal>Let's make something lovely.</h2>
-        <a class="contact__mail" data-email data-reveal href="#"></a>
-        <ul class="socials" data-socials data-reveal></ul>
+        <p class="eyebrow">Say hi</p>
+        <h2 class="display contact__title" data-reveal>Let's work together.</h2>
+        <div class="boarding" data-reveal>
+          <div class="boarding__main">
+            <span class="boarding__label">Boarding pass</span>
+            <div class="boarding__route"><b>MNL</b><span class="boarding__plane" aria-hidden="true">✈</span><b>YOU</b></div>
+            <div class="boarding__row">
+              <div><small>Passenger</small>Sofia Nadine G.</div>
+              <div><small>From</small>Metro Manila</div>
+              <div><small>Seat</small>Always open to collabs</div>
+            </div>
+          </div>
+          <div class="boarding__stub">
+            <small>Send a message</small>
+            <a class="contact__mail" data-email href="#"></a>
+            <ul class="socials" data-socials></ul>
+          </div>
+        </div>
         <footer class="footer">
           <span>© <span data-year></span> Sofia Nadine Gillegean</span>
           <a href="index.html">Home</a>

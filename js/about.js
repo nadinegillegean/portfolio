@@ -27,7 +27,7 @@ window.renderPage = function (h) {
     cv.experience
       .map(function (x) {
         return (
-          '<li data-reveal><span class="years">' + esc(x.years) + "</span><div>" +
+          '<li><span class="years">' + esc(x.years) + "</span><div>" +
           "<h3>" + esc(x.org) + "</h3>" +
           '<p class="role">' + esc(x.role) + " · " + esc(x.place) + "</p>" +
           list(x.points) + "</div></li>"
@@ -41,7 +41,7 @@ window.renderPage = function (h) {
     cv.education
       .map(function (e) {
         return (
-          '<li data-reveal><span class="years">' + esc(e.years) + "</span><div>" +
+          '<li><span class="years">' + esc(e.years) + "</span><div>" +
           "<h3>" + esc(e.school) + "</h3>" +
           '<p class="role">' + esc(e.program) + " · " + esc(e.place) + "</p>" +
           list(e.notes) + "</div></li>"
@@ -68,6 +68,6 @@ window.renderPage = function (h) {
 
   fill(
     "[data-achievements]",
-    cv.achievements.map(function (a) { return '<li data-reveal><span class="years">★</span><div><h3>' + esc(a) + "</h3></div></li>"; }).join("")
+    cv.achievements.map(function (a) { return '<li><span class="years">★</span><div><h3>' + esc(a) + "</h3></div></li>"; }).join("")
   );
 };
