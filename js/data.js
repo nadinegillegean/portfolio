@@ -33,13 +33,14 @@ window.SITE = {
   },
 
   highlights: [
-    "₱44,000 bazaar sales",
-    "1,000+ followers in 2 months",
-    "32k+ views — Teatro Lasalyano promo",
-    "Award of Excellence · Best Teamwork",
-    "30k+ views — Hopefest 2022",
-    "Gold Term Excellence Award",
-    "25k+ views — DLSU Chorale content",
+    { short: "₱44,000", detail: "Combined sales at the DLSU SHS ABM bazaar — Old Jeans", size: 3 },
+    { short: "1,000+", detail: "Social followers gained in 2 months — Old Jeans", size: 2 },
+    { short: "32k+ views", detail: "Teatro Lasalyano promo video", size: 3 },
+    { short: "Best Teamwork", detail: "Award of Excellence — Gateway Summer Camp, Singapore", size: 2 },
+    { short: "30k+ views", detail: "4 promo videos in a month — Hopefest 2022", size: 2 },
+    { short: "Gold Term", detail: "Excellence Award, AY 2022–2024", size: 1 },
+    { short: "25k+ views", detail: "13 videos for DLSU Chorale, 1.8k likes", size: 2 },
+    { short: "2k+ followers", detail: "Hopefest 2022 event account growth", size: 1 },
   ],
 
   categories: [
