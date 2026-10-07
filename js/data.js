@@ -53,6 +53,14 @@ window.SITE = {
     { group: "Languages", items: ["English", "Filipino"] },
   ],
 
+  // Digital-camera scroll section. Add `src: "assets/img/xyz.jpg"` to use your own photos.
+  camera: [
+    { title: "On the road", text: "I love travelling: Singapore and Hong Kong so far, with a long list of next stops.", tone: 4, icon: "plane", label: "Travel photo" },
+    { title: "In the choir", text: "Soprano 2 in the DLSU Chorale, and the one making the videos for it.", tone: 1, icon: "note", label: "Choir photo" },
+    { title: "Behind the lens", text: "Polaroids, digicams and a camera roll full of friends.", tone: 6, icon: "camera", label: "Friends photo" },
+    { title: "Cat person", text: "If there's a cat nearby, I've already found it.", tone: 2, icon: "cat", label: "Cat photo" },
+  ],
+
   highlights: [
     { short: "₱44,000", detail: "Combined sales at the DLSU SHS ABM bazaar — Old Jeans", size: 3 },
     { short: "1,000+", detail: "Social followers gained in 2 months — Old Jeans", size: 2 },

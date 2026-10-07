@@ -40,7 +40,7 @@
 
   // A curled-up sleeping cat — one of the few cat hints on the site.
   var SLEEPY_CAT =
-    '<svg class="card__zzz" viewBox="0 0 64 44" aria-hidden="true"><path d="M8 36c0-12 9-20 22-20s22 8 22 18c0 4-3 6-7 6H14c-4 0-6-1-6-4z" fill="#fff"/><path d="M12 22l2-9 7 5zM34 17l5-7 3 8z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M15 31q3 2 6 0" stroke="#2b1e24" stroke-width="1.6" fill="none" stroke-linecap="round"/><text x="46" y="12" font-size="10" fill="#2b1e24" font-family="serif" font-style="italic">z</text><text x="53" y="7" font-size="7" fill="#2b1e24" font-family="serif" font-style="italic">z</text></svg>';
+    '<svg class="card__zzz" viewBox="0 0 64 44" aria-hidden="true"><path d="M8 36c0-12 9-20 22-20s22 8 22 18c0 4-3 6-7 6H14c-4 0-6-1-6-4z" fill="#fff"/><path d="M12 22l2-9 7 5zM34 17l5-7 3 8z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M15 31q3 2 6 0" stroke="#33101f" stroke-width="1.6" fill="none" stroke-linecap="round"/><text x="46" y="12" font-size="10" fill="#33101f" font-family="serif" font-style="italic">z</text><text x="53" y="7" font-size="7" fill="#33101f" font-family="serif" font-style="italic">z</text></svg>';
 
   var CATEGORY_LABEL = { modelling: "Modelling", brand: "Past Works", research: "Future Research" };
 
@@ -57,13 +57,13 @@
   var dotsEl = document.querySelector("[data-dots]");
   var bg = null;
   var PAW =
-    '<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#c85a85"><ellipse cx="32" cy="42" rx="14" ry="12"/><circle cx="14" cy="26" r="7"/><circle cx="26" cy="14" r="7"/><circle cx="40" cy="14" r="7"/><circle cx="51" cy="26" r="7"/></g></svg>';
+    '<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="#8C0037"><ellipse cx="32" cy="42" rx="14" ry="12"/><circle cx="14" cy="26" r="7"/><circle cx="26" cy="14" r="7"/><circle cx="40" cy="14" r="7"/><circle cx="51" cy="26" r="7"/></g></svg>';
 
   if (dotsEl) {
     var canvas = document.createElement("canvas");
     dotsEl.appendChild(canvas);
     var ctx = canvas.getContext("2d");
-    var COLORS = ["#f8c8d8", "#fbeaa0", "#cfe5c8", "#f3b0c7", "#fbeaa0", "#cfe5c8"];
+    var COLORS = ["#f7c0d4", "#FFCD7C", "#f9d08a", "#f08db3", "#FFCD7C", "#f9d08a"];
     var W = 0, H = 0;
     var mouse = { x: -999, y: -999 };
     var dots = [];
@@ -124,7 +124,7 @@
       ripples = ripples.filter(function (rp) {
         rp.r += 3; rp.a *= 0.965;
         ctx.globalAlpha = rp.a * 0.5;
-        ctx.strokeStyle = "#ee9ab8";
+        ctx.strokeStyle = "#E94584";
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(rp.x, rp.y, rp.r, 0, 6.2832);
@@ -179,7 +179,7 @@
     });
 
     // Scroll gradient: cream, pale pink, butter yellow, mint, pink
-    var STOPS = [[255, 251, 252], [254, 244, 248], [255, 251, 238], [246, 251, 244], [254, 246, 249]];
+    var STOPS = [[255, 250, 218], [255, 244, 214], [255, 247, 226], [255, 238, 224], [255, 250, 218]];
     var paintBg = function () {
       var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       var p = Math.min(1, Math.max(0, window.scrollY / max)) * (STOPS.length - 1);
@@ -320,12 +320,10 @@
     setFilter(valid ? wanted : SITE.categories[0].id);
   }
 
-   /* ---------- Messages: swipe the chat bubbles away to reveal the text ---------- */
+   /* ---------- Messages: brush the cursor across them and they swish away, then drift back ---------- */
   var wall = document.querySelector("[data-wall]");
   if (wall) {
     var POS = [[3, 4, -5], [34, 1, 3], [62, 6, -4], [10, 34, 4], [46, 30, -3], [68, 40, 5], [4, 64, -4], [36, 62, 3], [62, 72, -3]];
-    var resetBtn = wall.querySelector("[data-wall-reset]");
-    var topZ = 20;
     var msgs = SITE.highlights.map(function (h, i) {
       var p = POS[i % POS.length];
       var el = document.createElement("div");
@@ -335,85 +333,73 @@
       el.style.zIndex = String(i + 1);
       el.innerHTML = "<b>" + esc(h.short) + "</b><span>" + esc(h.detail) + "</span>";
       wall.appendChild(el);
-      var m = { el: el, x: 0, y: 0, rot: p[2], vx: 0, vy: 0, gone: false, flying: false, drag: false };
-      paintMsg(m);
-      return m;
+      return { el: el, x: 0, y: 0, vx: 0, vy: 0, rot: p[2], rv: 0, base: p[2] };
     });
 
-    function paintMsg(m) {
-      m.el.style.transform = "translate3d(" + m.x + "px," + m.y + "px,0) rotate(" + m.rot + "deg)";
+    var ptr = { x: -999, y: -999, vx: 0, vy: 0, t: 0, on: false };
+    function wallPoint(e) {
+      var r = wall.getBoundingClientRect();
+      var nx = e.clientX - r.left, ny = e.clientY - r.top;
+      var dt = Math.max(1, e.timeStamp - ptr.t);
+      ptr.vx = ptr.on ? (nx - ptr.x) / dt : 0;
+      ptr.vy = ptr.on ? (ny - ptr.y) / dt : 0;
+      ptr.x = nx; ptr.y = ny; ptr.t = e.timeStamp; ptr.on = true;
     }
-    function updateReset() {
-      var any = msgs.some(function (m) { return m.gone; });
-      if (resetBtn) resetBtn.hidden = !any;
+    wall.addEventListener("pointermove", wallPoint);
+    wall.addEventListener("pointerdown", wallPoint);
+    wall.addEventListener("pointerleave", function () { ptr.on = false; ptr.vx = ptr.vy = 0; });
+
+    var wallVisible = true;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) { wallVisible = en[0].isIntersecting; }, { threshold: 0 }).observe(wall);
     }
 
-    function flingAway(m, vx, vy) {
-      m.flying = true;
-      var start = null, last = null;
-      function tick(t) {
-        if (start === null) { start = t; last = t; }
-        var dt = Math.min(40, t - last); last = t;
-        m.x += vx * dt; m.y += vy * dt;
-        vx *= 0.985; vy *= 0.985;
-        m.rot += vx * 4;
-        var life = (t - start) / 900;
-        m.el.style.opacity = String(Math.max(0, 1 - life));
-        paintMsg(m);
-        if (life < 1) requestAnimationFrame(tick);
-        else { m.flying = false; m.gone = true; m.el.style.visibility = "hidden"; updateReset(); }
-      }
-      requestAnimationFrame(tick);
-    }
-
-    msgs.forEach(function (m) {
-      var lx, ly, lt, moved;
-      m.el.addEventListener("pointerdown", function (e) {
-        if (m.flying || m.gone) return;
-        m.drag = true; moved = 0; lx = e.clientX; ly = e.clientY; lt = e.timeStamp; m.vx = m.vy = 0;
-        m.el.style.zIndex = String(++topZ);
-        m.el.classList.add("is-drag");
-        m.el.setPointerCapture(e.pointerId);
-        e.preventDefault();
-      });
-      m.el.addEventListener("pointermove", function (e) {
-        if (!m.drag) return;
-        var dx = e.clientX - lx, dy = e.clientY - ly, dt = Math.max(1, e.timeStamp - lt);
-        m.x += dx; m.y += dy;
-        m.vx = dx / dt; m.vy = dy / dt;
-        moved += Math.abs(dx) + Math.abs(dy);
-        lx = e.clientX; ly = e.clientY; lt = e.timeStamp;
-        paintMsg(m);
-      });
-      function end() {
-        if (!m.drag) return;
-        m.drag = false;
-        m.el.classList.remove("is-drag");
-        var speed = Math.sqrt(m.vx * m.vx + m.vy * m.vy);
-        if (moved < 6) {
-          flingAway(m, 0.9, -0.35); // a tap sends it off to the side
-        } else if (speed > 0.45) {
-          flingAway(m, m.vx * 1.1, m.vy * 1.1);
+    function wallStep() {
+      var speed = Math.sqrt(ptr.vx * ptr.vx + ptr.vy * ptr.vy);
+      msgs.forEach(function (m) {
+        var w = m.el.offsetWidth, h = m.el.offsetHeight;
+        var cx = m.el.offsetLeft + w / 2 + m.x, cy = m.el.offsetTop + h / 2 + m.y;
+        if (ptr.on && !reduceMotion) {
+          var dx = cx - ptr.x, dy = cy - ptr.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+          var reach = Math.max(w, h) * 0.55;
+          if (d < reach) {
+            var f = (1 - d / reach) * Math.min(1.6, 0.35 + speed * 1.4);
+            m.vx += (dx / d) * f * 2.4 + ptr.vx * 4.5 * f;
+            m.vy += (dy / d) * f * 2.4 + ptr.vy * 4.5 * f;
+            m.rv += ptr.vx * 0.9 * f;
+          }
         }
-      }
-      m.el.addEventListener("pointerup", end);
-      m.el.addEventListener("pointercancel", end);
-    });
-
-    if (resetBtn) {
-      resetBtn.addEventListener("click", function () {
-        msgs.forEach(function (m, i) {
-          m.el.style.transition = "transform 0.9s cubic-bezier(0.22,1,0.36,1), opacity 0.6s";
-          m.x = 0; m.y = 0; m.rot = POS[i % POS.length][2];
-          m.gone = false;
-          m.el.style.visibility = "";
-          m.el.style.opacity = "1";
-          paintMsg(m);
-          setTimeout(function () { m.el.style.transition = ""; }, 1000);
-        });
-        resetBtn.hidden = true;
+        // slow spring back to where it started
+        m.vx += -m.x * 0.006; m.vy += -m.y * 0.006; m.rv += (m.base - m.rot) * 0.01;
+        m.vx *= 0.93; m.vy *= 0.93; m.rv *= 0.9;
+        m.x += m.vx; m.y += m.vy; m.rot += m.rv;
+        m.el.style.transform = "translate3d(" + m.x.toFixed(1) + "px," + m.y.toFixed(1) + "px,0) rotate(" + m.rot.toFixed(2) + "deg)";
       });
     }
+    msgs.forEach(function (m) { m.el.style.transform = "rotate(" + m.rot + "deg)"; });
+    if (!reduceMotion) {
+      (function wloop() { if (wallVisible) wallStep(); requestAnimationFrame(wloop); })();
+    }
+  }
+
+  /* ---------- Digital camera: scroll to roll the photos and captions up ---------- */
+  var camEl = document.querySelector("[data-cam]");
+  if (camEl) {
+    var slides = SITE.camera;
+    var reel = camEl.querySelector("[data-cam-reel]");
+    var texts = camEl.querySelector("[data-cam-texts]");
+    reel.innerHTML = slides
+      .map(function (s, i) {
+        return '<div class="cam__frame">' + media(s.src, s.tone, s.label || s.title, s.icon, s.title) + "</div>";
+      })
+      .join("");
+    texts.innerHTML = slides
+      .map(function (s) {
+        return '<div class="cam__slide"><h3>' + esc(s.title) + "</h3><p>" + esc(s.text) + "</p></div>";
+      })
+      .join("");
+    camEl.style.setProperty("--n", String(slides.length));
+    camEl.__slides = slides.length;
   }
 
   /* ---------- Scrapbook ending: photobooth strip, postcard, ticket ---------- */
@@ -521,13 +507,14 @@
   var stampEls = document.querySelectorAll(".stamp");
   if (stampEls.length) {
     gsap.from(stampEls, {
-      scale: 1.7,
+      y: 24,
+      scale: 0.9,
       opacity: 0,
-      duration: 0.7,
-      ease: "power4.in",
-      stagger: 0.35,
+      duration: 1.1,
+      ease: "power3.out",
+      stagger: 0.18,
       clearProps: "transform,opacity",
-      scrollTrigger: { trigger: ".stamps", start: "top 75%", once: true },
+      scrollTrigger: { trigger: ".stamps", start: "top 80%", once: true },
     });
   }
 
@@ -574,6 +561,34 @@
         }
       );
     });
+  }
+
+  // Digital camera: scroll rolls the photos up through the screen and lifts the captions
+  var camSec = document.querySelector("[data-cam]");
+  if (camSec && camSec.__slides) {
+    var camN = camSec.__slides;
+    var camReel = camSec.querySelector("[data-cam-reel]");
+    var camSlides = camSec.querySelectorAll(".cam__slide");
+    var smooth = function (x) { return x * x * (3 - 2 * x); };
+    ScrollTrigger.create({
+      trigger: camSec,
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: function (self) {
+        var p = self.progress * (camN - 1);
+        var idx = Math.min(camN - 2, Math.floor(p));
+        var f = p - idx;
+        var pe = idx + smooth(Math.min(1, Math.max(0, (f - 0.22) / 0.56)));
+        if (self.progress >= 1) pe = camN - 1;
+        gsap.set(camReel, { yPercent: -(100 / camN) * pe });
+        Array.prototype.forEach.call(camSlides, function (el, i) {
+          var d = Math.abs(pe - i);
+          gsap.set(el, { opacity: Math.max(0, 1 - d * 1.8), y: (i - pe) * 70 });
+        });
+      },
+    });
+    gsap.set(camSlides, { opacity: 0, y: 70 });
+    gsap.set(camSlides[0], { opacity: 1, y: 0 });
   }
 
   // Gentle parallax inside image frames
