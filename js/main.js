@@ -67,10 +67,10 @@
     var W = 0, H = 0;
     var mouse = { x: -999, y: -999 };
     var dots = [];
-    for (var i = 0; i < 34; i++) {
+    for (var i = 0; i < 20; i++) {
       dots.push({
         fx: Math.random(), fy: Math.random(),
-        r: 5 + Math.random() * 13,
+        r: 14 + Math.random() * 26,
         c: COLORS[i % COLORS.length],
         ox: 0, oy: 0, vx: 0, vy: 0,
         ph: Math.random() * 6.28, sp: 0.15 + Math.random() * 0.25,
@@ -89,15 +89,15 @@
     function draw(t) {
       ctx.clearRect(0, 0, W, H);
       dots.forEach(function (d) {
-        var bx = d.fx * W + Math.sin(t * 0.0004 * d.sp * 6 + d.ph) * 18;
-        var by = d.fy * H + Math.cos(t * 0.0003 * d.sp * 6 + d.ph) * 22;
+        var bx = d.fx * W + Math.sin(t * 0.00009 * d.sp * 6 + d.ph) * 26;
+        var by = d.fy * H + Math.cos(t * 0.00007 * d.sp * 6 + d.ph) * 30;
         if (!reduceMotion) {
           var dx = bx + d.ox - mouse.x, dy = by + d.oy - mouse.y;
           var dist = Math.sqrt(dx * dx + dy * dy) || 1;
-          if (dist < 150) {
-            var f = (150 - dist) / 150;
-            d.vx += (dx / dist) * f * 2.2;
-            d.vy += (dy / dist) * f * 2.2;
+          if (dist < 130) {
+            var f = (130 - dist) / 130;
+            d.vx += (dx / dist) * f * 0.7;
+            d.vy += (dy / dist) * f * 0.7;
           }
           ripples.forEach(function (rp) {
             var rx = bx + d.ox - rp.x, ry = by + d.oy - rp.y;
@@ -107,18 +107,22 @@
               d.vy += (ry / rd) * 0.9 * rp.a;
             }
           });
-          d.vx += -d.ox * 0.02; d.vy += -d.oy * 0.02;
-          d.vx *= 0.88; d.vy *= 0.88;
+          d.vx += -d.ox * 0.008; d.vy += -d.oy * 0.008;
+          d.vx *= 0.92; d.vy *= 0.92;
           d.ox += d.vx; d.oy += d.vy;
         }
-        ctx.globalAlpha = 0.7;
-        ctx.fillStyle = d.c;
+        var px = bx + d.ox, py = by + d.oy;
+        var gr = ctx.createRadialGradient(px, py, d.r * 0.15, px, py, d.r);
+        gr.addColorStop(0, d.c);
+        gr.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = gr;
         ctx.beginPath();
-        ctx.arc(bx + d.ox, by + d.oy, d.r, 0, 6.2832);
+        ctx.arc(px, py, d.r, 0, 6.2832);
         ctx.fill();
       });
       ripples = ripples.filter(function (rp) {
-        rp.r += 7; rp.a *= 0.95;
+        rp.r += 3; rp.a *= 0.965;
         ctx.globalAlpha = rp.a * 0.5;
         ctx.strokeStyle = "#ee9ab8";
         ctx.lineWidth = 2;
@@ -154,7 +158,7 @@
         if (bg) { bg.mouse.x = -999; bg.mouse.y = -999; }
       });
       (function glowLoop() {
-        gx += (gtx - gx) * 0.12; gy += (gty - gy) * 0.12;
+        gx += (gtx - gx) * 0.22; gy += (gty - gy) * 0.22;
         glow.style.transform = "translate3d(" + gx + "px," + gy + "px,0)";
         requestAnimationFrame(glowLoop);
       })();
@@ -175,7 +179,7 @@
     });
 
     // Scroll gradient: cream, pale pink, butter yellow, mint, pink
-    var STOPS = [[255, 250, 251], [253, 235, 242], [255, 247, 214], [234, 245, 229], [253, 238, 244]];
+    var STOPS = [[255, 251, 252], [254, 244, 248], [255, 251, 238], [246, 251, 244], [254, 246, 249]];
     var paintBg = function () {
       var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       var p = Math.min(1, Math.max(0, window.scrollY / max)) * (STOPS.length - 1);
@@ -293,8 +297,7 @@
       if (hasGSAP) window.gsap.set(c, { clearProps: "opacity,transform" });
       if (show && !first && !reduceMotion) c.classList.add("is-entering");
     });
-    if (countEl) countEl.textContent = String(shown).padStart(2, "0");
-    void grid.offsetWidth; // flush so the entering state is painted before it transitions out
+        void grid.offsetWidth; // flush so the entering state is painted before it transitions out
     Array.prototype.forEach.call(grid.querySelectorAll(".card.is-entering"), function (c, i) {
       setTimeout(function () { c.classList.remove("is-entering"); }, 20 + i * 80);
     });
@@ -317,97 +320,119 @@
     setFilter(valid ? wanted : SITE.categories[0].id);
   }
 
-   /* ---------- Highlights: swipe-away card deck ---------- */
-  var deck = document.querySelector("[data-deck]");
-  if (deck) {
-    var DC = ["#fbdde7", "#fff1b8", "#dcecd5"];
-    var cards = SITE.highlights.map(function (h, i) {
+   /* ---------- Messages: swipe the chat bubbles away to reveal the text ---------- */
+  var wall = document.querySelector("[data-wall]");
+  if (wall) {
+    var POS = [[3, 4, -5], [34, 1, 3], [62, 6, -4], [10, 34, 4], [46, 30, -3], [68, 40, 5], [4, 64, -4], [36, 62, 3], [62, 72, -3]];
+    var resetBtn = wall.querySelector("[data-wall-reset]");
+    var topZ = 20;
+    var msgs = SITE.highlights.map(function (h, i) {
+      var p = POS[i % POS.length];
       var el = document.createElement("div");
-      el.className = "dcard";
-      el.style.setProperty("--bc", DC[i % DC.length]);
-      el.innerHTML = '<span class="dcard__no"></span><span class="dcard__big">' + esc(h.short) + '</span><p class="dcard__detail">' + esc(h.detail) + "</p>";
-      deck.appendChild(el);
-      return el;
+      el.className = "msg" + (i % 3 === 1 ? " msg--alt" : "");
+      el.style.left = p[0] + "%";
+      el.style.top = p[1] + "%";
+      el.style.zIndex = String(i + 1);
+      el.innerHTML = "<b>" + esc(h.short) + "</b><span>" + esc(h.detail) + "</span>";
+      wall.appendChild(el);
+      var m = { el: el, x: 0, y: 0, rot: p[2], vx: 0, vy: 0, gone: false, flying: false, drag: false };
+      paintMsg(m);
+      return m;
     });
-    var total = cards.length;
-    var order = cards.slice(); // order[0] is the top card
-    var ctrl = document.createElement("div");
-    ctrl.className = "deck__ctrl";
-    ctrl.innerHTML = '<button class="deck__btn" type="button" aria-label="Previous">←</button><span data-deck-count></span><button class="deck__btn" type="button" aria-label="Next">→</button>';
-    deck.parentNode.appendChild(ctrl);
-    var countLabel = ctrl.querySelector("[data-deck-count]");
-    var busy = false;
 
-    function paint() {
-      order.forEach(function (c, i) {
-        c.setAttribute("data-pos", i < 3 ? String(i) : "3");
-        c.setAttribute("aria-hidden", i === 0 ? "false" : "true");
-        c.style.transform = "";
-        c.querySelector(".dcard__no").textContent = "." + String(cards.indexOf(c) + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
+    function paintMsg(m) {
+      m.el.style.transform = "translate3d(" + m.x + "px," + m.y + "px,0) rotate(" + m.rot + "deg)";
+    }
+    function updateReset() {
+      var any = msgs.some(function (m) { return m.gone; });
+      if (resetBtn) resetBtn.hidden = !any;
+    }
+
+    function flingAway(m, vx, vy) {
+      m.flying = true;
+      var start = null, last = null;
+      function tick(t) {
+        if (start === null) { start = t; last = t; }
+        var dt = Math.min(40, t - last); last = t;
+        m.x += vx * dt; m.y += vy * dt;
+        vx *= 0.985; vy *= 0.985;
+        m.rot += vx * 4;
+        var life = (t - start) / 900;
+        m.el.style.opacity = String(Math.max(0, 1 - life));
+        paintMsg(m);
+        if (life < 1) requestAnimationFrame(tick);
+        else { m.flying = false; m.gone = true; m.el.style.visibility = "hidden"; updateReset(); }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    msgs.forEach(function (m) {
+      var lx, ly, lt, moved;
+      m.el.addEventListener("pointerdown", function (e) {
+        if (m.flying || m.gone) return;
+        m.drag = true; moved = 0; lx = e.clientX; ly = e.clientY; lt = e.timeStamp; m.vx = m.vy = 0;
+        m.el.style.zIndex = String(++topZ);
+        m.el.classList.add("is-drag");
+        m.el.setPointerCapture(e.pointerId);
+        e.preventDefault();
       });
-      countLabel.textContent = "." + String(cards.indexOf(order[0]) + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0");
-    }
-    paint();
-
-    // Fling the top card away, then tuck it under the stack
-    function fling(dir) {
-      if (busy) return;
-      busy = true;
-      var top = order[0];
-      top.classList.remove("is-drag");
-      top.style.transition = "transform 0.6s cubic-bezier(0.22,1,0.36,1), opacity 0.6s";
-      top.style.transform = "translate3d(" + dir * (deck.offsetWidth * 1.3) + "px,-30px,0) rotate(" + dir * 24 + "deg)";
-      top.style.opacity = "0";
-      setTimeout(function () {
-        order.push(order.shift());
-        top.style.transition = "none";
-        top.style.opacity = "";
-        paint();
-        void top.offsetWidth;
-        top.style.transition = "";
-        busy = false;
-      }, 520);
-    }
-    function back() {
-      if (busy) return;
-      order.unshift(order.pop());
-      paint();
-    }
-
-    var sx = 0, dx = 0, dragging = false, lastT = 0, vx = 0;
-    deck.addEventListener("pointerdown", function (e) {
-      if (busy || !e.target.closest(".dcard[data-pos='0']")) return;
-      dragging = true; sx = e.clientX; dx = 0; vx = 0; lastT = e.timeStamp;
-      order[0].classList.add("is-drag");
-      deck.setPointerCapture(e.pointerId);
+      m.el.addEventListener("pointermove", function (e) {
+        if (!m.drag) return;
+        var dx = e.clientX - lx, dy = e.clientY - ly, dt = Math.max(1, e.timeStamp - lt);
+        m.x += dx; m.y += dy;
+        m.vx = dx / dt; m.vy = dy / dt;
+        moved += Math.abs(dx) + Math.abs(dy);
+        lx = e.clientX; ly = e.clientY; lt = e.timeStamp;
+        paintMsg(m);
+      });
+      function end() {
+        if (!m.drag) return;
+        m.drag = false;
+        m.el.classList.remove("is-drag");
+        var speed = Math.sqrt(m.vx * m.vx + m.vy * m.vy);
+        if (moved < 6) {
+          flingAway(m, 0.9, -0.35); // a tap sends it off to the side
+        } else if (speed > 0.45) {
+          flingAway(m, m.vx * 1.1, m.vy * 1.1);
+        }
+      }
+      m.el.addEventListener("pointerup", end);
+      m.el.addEventListener("pointercancel", end);
     });
-    deck.addEventListener("pointermove", function (e) {
-      if (!dragging) return;
-      var ndx = e.clientX - sx;
-      vx = (ndx - dx) / Math.max(1, e.timeStamp - lastT);
-      dx = ndx; lastT = e.timeStamp;
-      order[0].style.transform = "translate3d(" + dx + "px," + Math.abs(dx) * -0.06 + "px,0) rotate(" + dx / 14 + "deg)";
-    });
-    function release() {
-      if (!dragging) return;
-      dragging = false;
-      var top = order[0];
-      top.classList.remove("is-drag");
-      if (Math.abs(dx) > 90 || Math.abs(vx) > 0.6) fling(dx < 0 ? -1 : 1);
-      else if (Math.abs(dx) < 5) fling(1); // a tap also sends it away
-      else top.style.transform = "";
-    }
-    deck.addEventListener("pointerup", release);
-    deck.addEventListener("pointercancel", release);
 
-    ctrl.children[0].addEventListener("click", back);
-    ctrl.children[2].addEventListener("click", function () { fling(1); });
-    deck.setAttribute("tabindex", "0");
-    deck.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowRight") fling(1);
-      if (e.key === "ArrowLeft") back();
-    });
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        msgs.forEach(function (m, i) {
+          m.el.style.transition = "transform 0.9s cubic-bezier(0.22,1,0.36,1), opacity 0.6s";
+          m.x = 0; m.y = 0; m.rot = POS[i % POS.length][2];
+          m.gone = false;
+          m.el.style.visibility = "";
+          m.el.style.opacity = "1";
+          paintMsg(m);
+          setTimeout(function () { m.el.style.transition = ""; }, 1000);
+        });
+        resetBtn.hidden = true;
+      });
+    }
   }
+
+  /* ---------- Scrapbook ending: photobooth strip, postcard, ticket ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-scrap]"), function (box) {
+    var pr = SITE.profile;
+    var booth = pr.photobooth || [];
+    var frames = [0, 1, 2, 3].map(function (i) {
+      return '<div class="booth__frame">' + media(booth[i], [1, 2, 4, 6][i], "Photobooth", "modelling", "Photobooth photo " + (i + 1)) + "</div>";
+    }).join("");
+    box.innerHTML =
+      '<div class="scrap__booth" data-scrap-item>' + frames + '<span class="tape tape--a"></span></div>' +
+      '<div class="scrap__postcard" data-scrap-item><div class="postcard__img">' + media(pr.postcard, 6, "Your postcard here", "brand", "Postcard") + '</div><span class="tape tape--b"></span><span class="tape tape--c"></span></div>' +
+      '<div class="ticket" data-scrap-item>' +
+      '<div class="ticket__main"><span class="ticket__kicker">Admit one · Collaboration</span>' +
+      '<p class="ticket__name">' + esc(pr.name) + "</p>" +
+      '<p class="ticket__role">Model · Creative · Brand &amp; Research</p>' +
+      '<p class="ticket__place">' + esc(pr.location) + "</p></div>" +
+      '<div class="ticket__stub"><span class="ticket__kicker">Say hello</span><a class="contact__mail" data-email href="#"></a><ul class="socials" data-socials></ul></div></div>';
+  });
 
   /* ---------- Contact links ---------- */
   Array.prototype.forEach.call(document.querySelectorAll("[data-email]"), function (a) {

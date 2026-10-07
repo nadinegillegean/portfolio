@@ -57,6 +57,21 @@
         <div class="portrait" data-portrait></div>
         <div>
           <div class="bio" data-bio data-reveal></div>
+          <div class="bag" aria-hidden="true">
+            <svg viewBox="0 0 220 230" fill="none" stroke="#2b1e24" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <path class="bag__handle" d="M72 104C70 38 150 38 148 104"/>
+              <g class="bag__item bag__item--1" transform="rotate(-12 80 70)"><rect x="58" y="34" width="44" height="62" rx="5" fill="#cfe5c8"/><circle cx="80" cy="62" r="10"/><path d="M70 62h20M80 52v20"/></g>
+              <g class="bag__item bag__item--2" transform="rotate(9 128 60)"><rect x="104" y="22" width="48" height="58" rx="3" fill="#fff"/><rect x="110" y="28" width="36" height="34" fill="#f8c8d8"/></g>
+              <g class="bag__item bag__item--3" transform="rotate(-4 134 92)"><rect x="112" y="68" width="48" height="30" rx="7" fill="#fbeaa0"/><circle cx="136" cy="83" r="8" fill="#fff"/><circle cx="136" cy="83" r="3"/></g>
+              <path d="M36 104h148l-8 96q-1 8-9 8H53q-8 0-9-8z" fill="#f8c8d8"/>
+              <path d="M36 104h148" stroke-width="5"/>
+              <path d="M70 150q40 18 80 0" stroke-width="2.5"/>
+              <g class="bag__key"><circle cx="64" cy="122" r="4" fill="#fff"/><path d="M64 126v18"/><path d="M52 148l2-10 7 5h6l7-5 2 10q0 12-12 12t-12-12z" fill="#fff"/><circle cx="60" cy="150" r="1.4" fill="#2b1e24"/><circle cx="72" cy="150" r="1.4" fill="#2b1e24"/></g>
+              <g class="bag__note"><path d="M178 54V30l14-4v24"/><circle cx="173" cy="55" r="5" fill="#2b1e24"/><circle cx="187" cy="51" r="5" fill="#2b1e24"/></g>
+            </svg>
+            <span class="bag__label">in my bag</span>
+          </div>
+
           <p data-reveal style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
             <a class="btn" href="index.html?cat=modelling#work">See my work →</a>
             <a class="btn btn--ghost" data-email href="#">Email me</a>
@@ -74,9 +89,13 @@
     </section>
 
     <section class="toolkit" data-section>
-      <div class="wrap">
-        <p class="eyebrow">In my toolkit</p>
-        <div class="toolkit__row" data-toolkit data-reveal></div>
+      <div class="wrap toolkit__grid">
+        <div>
+          <p class="eyebrow">In my toolkit</p>
+          <h2 class="display section-title" data-reveal>The receipt</h2>
+          <p class="toolkit__lede" data-reveal>Everything I can bring to the table, itemised.</p>
+        </div>
+        <div data-receipt></div>
       </div>
     </section>
 
@@ -84,19 +103,7 @@
       <div class="wrap">
         <p class="eyebrow">Say hi</p>
         <h2 class="display contact__title" data-reveal>Let's work together.</h2>
-        <div class="ticket" data-reveal>
-          <div class="ticket__main">
-            <span class="ticket__kicker">Admit one · Collaboration</span>
-            <p class="ticket__name">Sofia Nadine Gillegean</p>
-            <p class="ticket__role">Model · Creative · Brand &amp; Research</p>
-            <p class="ticket__place">Metro Manila, Philippines</p>
-          </div>
-          <div class="ticket__stub">
-            <span class="ticket__kicker">Say hello</span>
-            <a class="contact__mail" data-email href="#"></a>
-            <ul class="socials" data-socials></ul>
-          </div>
-        </div>
+        <div class="scrap" data-scrap></div>
         <footer class="footer">
           <span>© <span data-year></span> Sofia Nadine Gillegean</span>
           <a href="index.html">Home</a>

@@ -17,6 +17,9 @@ window.SITE = {
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
     portrait: "", // e.g. "assets/img/portrait.jpg" — empty shows a pink placeholder circle
+    // Scrapbook ending: add your own images in assets/img/ and set the paths.
+    postcard: "", // e.g. "assets/img/postcard.jpg"
+    photobooth: ["", "", "", ""], // up to 4 photobooth frames, e.g. ["assets/img/booth1.jpg", ...]
     // Social links shown in the footer/contact. Remove a line to hide it.
     socials: [
       { label: "LinkedIn", url: "https://www.linkedin.com/in/sofia-nadine-gillegean-484507383/" },
@@ -42,7 +45,13 @@ window.SITE = {
     { stat: "4 campuses", title: "Gateway Summer Camp", tag: "DLSU Student Delegate", text: "Campus visits at NUS, SMU, LASALLE and SUTD, and the Award of Excellence for Best Teamwork." },
   ],
 
-  toolkit: ["Photoshop", "Lightroom", "After Effects", "DaVinci Resolve", "CapCut", "Canva", "Google Workspace", "Python", "C++"],
+  // Skills shown as a receipt on the About page.
+  toolkit: [
+    { group: "Creative", items: ["Photoshop", "Lightroom", "After Effects", "DaVinci Resolve", "CapCut", "Canva"] },
+    { group: "Work", items: ["MS Office", "Google Workspace"] },
+    { group: "Code", items: ["Python", "C++"] },
+    { group: "Languages", items: ["English", "Filipino"] },
+  ],
 
   highlights: [
     { short: "₱44,000", detail: "Combined sales at the DLSU SHS ABM bazaar — Old Jeans", size: 3 },
