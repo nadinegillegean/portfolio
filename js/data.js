@@ -16,8 +16,14 @@ window.SITE = {
     tagline: ["Model", "Creative", "Brand & Research"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
-    linkedin: "#", // TODO: replace with your LinkedIn profile URL (e.g. https://www.linkedin.com/in/your-name)
-    instagram: "", // optional, e.g. "https://instagram.com/yourhandle"
+    portrait: "", // e.g. "assets/img/portrait.jpg" — empty shows a pink placeholder circle
+    // Social links shown in the footer/contact. Remove a line to hide it.
+    socials: [
+      { label: "LinkedIn", url: "https://www.linkedin.com/in/sofia-nadine-gillegean-484507383/" },
+      { label: "Instagram", url: "https://instagram.com/sofiagillegean" },
+      { label: "TikTok", url: "https://www.tiktok.com/@dimbokki" },
+      { label: "Facebook", url: "https://www.facebook.com/dimxcxy/" },
+    ],
     intro:
       "A people-oriented creative who brings people together and turns ideas into action — across modelling, brand design, events, and the research that makes them work.",
     bio: [
@@ -37,10 +43,9 @@ window.SITE = {
   ],
 
   categories: [
-    { id: "all", label: "All work" },
     { id: "modelling", label: "Modelling" },
-    { id: "brand", label: "Brand Design" },
-    { id: "research", label: "Research & Case Studies" },
+    { id: "brand", label: "Past Works" },
+    { id: "research", label: "Future Research" },
   ],
 
   projects: [

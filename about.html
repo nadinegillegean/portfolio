@@ -9,7 +9,7 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z' fill='%23f3b0c7' stroke='%23f3b0c7' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='20' cy='23' rx='15' ry='13' fill='%23f3b0c7'/%3E%3Ccircle cx='14.5' cy='22' r='2' fill='%232b1e24'/%3E%3Ccircle cx='25.5' cy='22' r='2' fill='%232b1e24'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
     (function (h) {
@@ -20,21 +20,24 @@
     })(document.documentElement);
   </script>
 </head>
-<body data-cat="corner">
+<body data-page="about">
+
+    <div class="dots" data-dots aria-hidden="true"></div>
 
   <header class="nav">
     <div class="wrap">
+      <ul class="nav__side">
+        <li><a href="about.html" aria-current="page">about me</a></li>
+        <li><a href="index.html?cat=modelling#work" data-go="modelling">modelling</a></li>
+      </ul>
       <a class="logo" href="index.html" aria-label="Sofia — home">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z" fill="#f8c8d8" stroke="#f8c8d8" stroke-width="3" stroke-linejoin="round"/><ellipse cx="20" cy="23" rx="15" ry="13" fill="#f8c8d8"/><circle cx="14.5" cy="22" r="2" fill="#2b1e24"/><circle cx="25.5" cy="22" r="2" fill="#2b1e24"/><path d="M18 27 q1 1.5 2 0 q1 1.5 2 0" stroke="#2b1e24" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
-        <span>sofia<span class="dot">.</span></span>
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z" fill="#f3b0c7" stroke="#f3b0c7" stroke-width="3" stroke-linejoin="round"/><ellipse cx="20" cy="23" rx="15" ry="13" fill="#f3b0c7"/></svg>
+        <span>sofia nadine</span>
       </a>
-      <nav aria-label="Main">
-        <ul class="nav__links">
-          <li><a href="index.html#work">Work</a></li>
-          <li><a href="about.html" aria-current="page">About</a></li>
-          <li><a href="#contact" class="cta">Say hi</a></li>
-        </ul>
-      </nav>
+      <ul class="nav__side">
+        <li><a href="index.html?cat=brand#work" data-go="brand">past works</a></li>
+        <li><a href="index.html?cat=research#work" data-go="research">research</a></li>
+      </ul>
     </div>
   </header>
 
@@ -91,30 +94,24 @@
       </div>
     </section>
 
-    <section class="contact" id="contact" data-section data-wave>
+    <section class="contact" id="contact" data-section>
       <div class="wrap">
         <p class="eyebrow">Contact</p>
-        <h2 class="display contact__title" data-reveal>Let's make<br><em>something</em> lovely.</h2>
+        <h2 class="display contact__title" data-reveal>Let's make something lovely.</h2>
         <a class="contact__mail" data-email data-reveal href="#"></a>
+        <ul class="socials" data-socials data-reveal></ul>
         <footer class="footer">
           <span>© <span data-year></span> Sofia Nadine Gillegean</span>
-          <ul>
-            <li><a data-linkedin href="#" target="_blank" rel="noopener">LinkedIn</a></li>
-            <li><a data-instagram href="#" target="_blank" rel="noopener">Instagram</a></li>
-            <li><a href="index.html">Home</a></li>
-          </ul>
+          <a href="index.html">Home</a>
         </footer>
       </div>
     </section>
   </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="js/data.js"></script>
   <script src="js/about.js"></script>
-  <script src="js/cat.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
