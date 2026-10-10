@@ -36,8 +36,59 @@ window.SITE = {
     ],
   },
 
-  // "Worked with" strip. Plain wordmarks for now; only list names you are cleared to show.
-  trusted: ["DLSU Chorale", "Teatro Lasalyano", "Old Jeans", "IMES AI Expo", "Hopefest", "Gateway Summer Camp"],
+  // Experience list + detail pages (org.html?id=...). Facts come from your resume; edit freely.
+  // Add `cover: "assets/img/xyz.jpg"` and `gallery: [{ src, caption }]` to show real photos.
+  orgs: [
+    {
+      id: "chorale", name: "DLSU Chorale", role: "Marketing Communications Lead · Soprano 2", years: "2025 – present", place: "De La Salle University",
+      summary: "I handle marketing and content for the university choir, and sing as a Soprano 2 trainee.",
+      did: ["Plan and produce the choir's videos and social content", "Lead marketing communications for performances and events", "Sing as a Soprano 2 trainee", "Represented the university at the 1st Asia Pacific Catholic University Choral Symposium in Hong Kong"],
+      results: [{ value: "13", label: "videos produced" }, { value: "25k+", label: "total views" }, { value: "1.8k", label: "likes" }],
+      tone: 1, icon: "note", cover: "", gallery: [],
+    },
+    {
+      id: "teatro", name: "Teatro Lasalyano", role: "Stage Manager", years: "2024", place: "De La Salle University",
+      summary: "Stage manager for the production \"Animulat: Ang Huling Takipsilim\".",
+      did: ["Built and maintained the production cue sheets in Excel", "Ran the technical booth during the show", "Supported the production's promo video"],
+      results: [{ value: "32k+", label: "views on the promo video" }],
+      tone: 2, icon: "camera", cover: "", gallery: [],
+    },
+    {
+      id: "old-jeans", name: "Old Jeans", role: "General Manager & Co-Owner", years: "2023 – present", place: "Metro Manila",
+      summary: "A thrifted-denim brand with a denim-pouch line, built from first bazaar to a growing online following.",
+      did: ["Led product development with external manufacturers", "Ran day-to-day operations and sales", "Grew the brand's social presence", "Sold at the DLSU SHS ABM bazaar"],
+      results: [{ value: "1,000+", label: "followers in 2 months" }, { value: "₱44,000", label: "combined bazaar sales" }],
+      tone: 4, icon: "brand", cover: "", gallery: [],
+    },
+    {
+      id: "gcoe", name: "Engineering Student Government", role: "Student Services Executive", years: "2025 – present", place: "79th Engineering Batch, GCOE",
+      summary: "I run student services for the batch, including a central deadlines website.",
+      did: ["Built a centralized deadlines website", "Integrated Google Calendar so every org can see what is due", "Coordinated with org representatives"],
+      results: [{ value: "1", label: "central deadlines site" }],
+      tone: 6, icon: "research", cover: "", gallery: [],
+    },
+    {
+      id: "imes", name: "IMES AI Expo 2025", role: "Assistant Team Head, Productions", years: "2025", place: "Industrial Engineering Management Society",
+      summary: "I helped lead the productions team for the society's AI Expo.",
+      did: ["Designed booth layouts", "Built interactive photobooth props", "Coordinated on-site on the event day"],
+      results: [],
+      tone: 3, icon: "brand", cover: "", gallery: [],
+    },
+    {
+      id: "gateway", name: "Gateway Summer Camp", role: "DLSU Student Delegate", years: "2025", place: "Singapore",
+      summary: "A delegate for De La Salle University on a summer programme in Singapore.",
+      did: ["Campus visits and academic sessions at NUS, SMU, LASALLE College of the Arts and SUTD", "Worked in a delegate team across the programme"],
+      results: [{ value: "Award", label: "of Excellence for Best Teamwork" }],
+      tone: 5, icon: "plane", cover: "", gallery: [],
+    },
+    {
+      id: "hopefest", name: "Hopefest 2022: BAYLE", role: "Event Director", years: "2022", place: "Immaculate Heart of Mary College",
+      summary: "I directed a school event and ran its promotion.",
+      did: ["Directed the event end to end", "Produced promo videos and grew the event account"],
+      results: [{ value: "4", label: "promo videos, 30k+ views in a month" }, { value: "2k+", label: "followers on the event account" }],
+      tone: 2, icon: "camera", cover: "", gallery: [],
+    },
+  ],
 
   // Reel: vertical (9:16) MP4 files in assets/video/. Leave `src` empty for a placeholder.
   videos: [
@@ -52,12 +103,12 @@ window.SITE = {
 
   // Short stories for the About page (not a CV): stat, title, tag, one sentence.
   stories: [
-    { stat: "1,000+", title: "Old Jeans", tag: "General Manager & Co-Owner", text: "A thrifted-denim brand and denim-pouch line. We grew to 1,000+ followers in two months and sold ₱44,000 at our first bazaar." },
-    { stat: "25k+", title: "DLSU Chorale", tag: "Marketing Communications Lead", text: "I make the videos and content for our choir: 13 videos so far, 25k+ views and 1.8k likes." },
-    { stat: "32k+", title: "Teatro Lasalyano", tag: "Stage Manager", text: "I ran the technical booth and the cue sheets for Animulat: Ang Huling Takipsilim, and the promo video passed 32k views." },
-    { stat: "1 site", title: "Engineering Student Government", tag: "Student Services Executive", text: "I built a central deadlines website with Google Calendar built in, so every org can see what's due." },
-    { stat: "On-site", title: "IMES AI Expo 2025", tag: "Assistant Team Head, Productions", text: "Booth layouts, interactive photobooth props and a lot of on-site coordination." },
-    { stat: "4 campuses", title: "Gateway Summer Camp", tag: "DLSU Student Delegate", text: "Campus visits at NUS, SMU, LASALLE and SUTD, and the Award of Excellence for Best Teamwork." },
+    { stat: "1,000+", title: "Old Jeans", org: "old-jeans", tag: "General Manager & Co-Owner", text: "A thrifted-denim brand and denim-pouch line. We grew to 1,000+ followers in two months and sold ₱44,000 at our first bazaar." },
+    { stat: "25k+", title: "DLSU Chorale", org: "chorale", tag: "Marketing Communications Lead", text: "I make the videos and content for our choir: 13 videos so far, 25k+ views and 1.8k likes." },
+    { stat: "32k+", title: "Teatro Lasalyano", org: "teatro", tag: "Stage Manager", text: "I ran the technical booth and the cue sheets for Animulat: Ang Huling Takipsilim, and the promo video passed 32k views." },
+    { stat: "1 site", title: "Engineering Student Government", org: "gcoe", tag: "Student Services Executive", text: "I built a central deadlines website with Google Calendar built in, so every org can see what's due." },
+    { stat: "On-site", title: "IMES AI Expo 2025", org: "imes", tag: "Assistant Team Head, Productions", text: "Booth layouts, interactive photobooth props and a lot of on-site coordination." },
+    { stat: "4 campuses", title: "Gateway Summer Camp", org: "gateway", tag: "DLSU Student Delegate", text: "Campus visits at NUS, SMU, LASALLE and SUTD, and the Award of Excellence for Best Teamwork." },
   ],
 
   // Skills shown as a receipt on the About page.

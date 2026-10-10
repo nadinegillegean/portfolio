@@ -23,11 +23,11 @@ window.renderPage = function (h) {
     stories
       .map(function (s) {
         return (
-          '<article class="story">' +
+          '<a class="story" href="org.html?id=' + encodeURIComponent(s.org || "") + '">' +
           '<span class="story__stat">' + esc(s.stat) + "</span>" +
           '<h3 class="story__title">' + esc(s.title) + "</h3>" +
           '<p class="story__tag">' + esc(s.tag) + "</p>" +
-          "<p>" + esc(s.text) + "</p></article>"
+          "<p>" + esc(s.text) + "</p></a>"
         );
       })
       .join("")
