@@ -45,7 +45,7 @@ window.renderPage = function (h) {
     '<dl class="proj-meta"><div><dt>Role</dt><dd>' + esc(o.role) + "</dd></div><div><dt>Years</dt><dd>" + esc(o.years) + "</dd></div><div><dt>Where</dt><dd>" + esc(o.place) + "</dd></div></dl>" +
     "</div></section>";
 
-  out += '<div class="wrap"><div class="proj-hero" data-parallax data-reveal>' + h.media(o.cover, o.tone, o.name + " photo", o.icon, o.name) + "</div></div>";
+  if (o.cover) out += '<div class="wrap"><div class="proj-hero" data-parallax data-reveal>' + h.media(o.cover, o.tone, o.name + " photo", o.icon, o.name) + "</div></div>";
 
   if (o.did && o.did.length) {
     out += section("What I did", '<ul class="did-list">' + o.did.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>");

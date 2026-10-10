@@ -53,6 +53,68 @@
   var cred = document.querySelector("[data-credential]");
   if (cred && SITE.profile.credential) cred.textContent = SITE.profile.credential;
 
+  /* ---------- Hero: soft drifting dots and an aura that follows the cursor ---------- */
+  var heroSec = document.querySelector(".hero");
+  if (heroSec && !reduceMotion) {
+    var hcv = document.createElement("canvas");
+    hcv.className = "hero__bg";
+    heroSec.insertBefore(hcv, heroSec.firstChild);
+    var hctx = hcv.getContext("2d");
+    var aura = null;
+    if (finePointer) {
+      aura = document.createElement("div");
+      aura.className = "hero__aura";
+      heroSec.insertBefore(aura, heroSec.firstChild);
+    }
+    var HC = ["#718bbc", "#eac4d5", "#a3bccf", "#eac4d5", "#c8d7e3", "#718bbc"];
+    var hd = [];
+    for (var hi = 0; hi < 18; hi++) {
+      hd.push({ fx: Math.random(), fy: Math.random(), r: 16 + Math.random() * 30, c: HC[hi % HC.length], ox: 0, oy: 0, vx: 0, vy: 0, ph: Math.random() * 6.28, sp: 0.2 + Math.random() * 0.3 });
+    }
+    var hW = 0, hH = 0, hm = { x: -999, y: -999, on: false };
+    var hsize = function () {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      hW = heroSec.clientWidth; hH = heroSec.clientHeight;
+      hcv.width = hW * dpr; hcv.height = hH * dpr;
+      hctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    hsize();
+    window.addEventListener("resize", hsize);
+    heroSec.addEventListener("pointermove", function (e) {
+      var r = heroSec.getBoundingClientRect();
+      hm.x = e.clientX - r.left; hm.y = e.clientY - r.top; hm.on = true;
+      if (aura) aura.classList.add("is-on");
+    }, { passive: true });
+    heroSec.addEventListener("pointerleave", function () { hm.on = false; hm.x = hm.y = -999; if (aura) aura.classList.remove("is-on"); });
+    var ax = 0, ay = 0, heroVisible = true;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (en) { heroVisible = en[0].isIntersecting; }, { threshold: 0 }).observe(heroSec);
+    }
+    (function hloop(t) {
+      if (heroVisible) {
+        hctx.clearRect(0, 0, hW, hH);
+        hd.forEach(function (d) {
+          var bx = d.fx * hW + Math.sin(t * 0.00009 * d.sp * 6 + d.ph) * 26;
+          var by = d.fy * hH + Math.cos(t * 0.00007 * d.sp * 6 + d.ph) * 30;
+          if (hm.on) {
+            var dx = bx + d.ox - hm.x, dy = by + d.oy - hm.y, dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            if (dist < 150) { var f = (150 - dist) / 150; d.vx += (dx / dist) * f * 0.7; d.vy += (dy / dist) * f * 0.7; }
+          }
+          d.vx += -d.ox * 0.008; d.vy += -d.oy * 0.008; d.vx *= 0.92; d.vy *= 0.92; d.ox += d.vx; d.oy += d.vy;
+          var px = bx + d.ox, py = by + d.oy;
+          var gr = hctx.createRadialGradient(px, py, d.r * 0.15, px, py, d.r);
+          gr.addColorStop(0, d.c); gr.addColorStop(1, "rgba(255,255,255,0)");
+          hctx.globalAlpha = 0.5; hctx.fillStyle = gr; hctx.beginPath(); hctx.arc(px, py, d.r, 0, 6.2832); hctx.fill();
+        });
+        if (aura) {
+          ax += (hm.x - ax) * 0.18; ay += (hm.y - ay) * 0.18;
+          aura.style.transform = "translate3d(" + ax + "px," + ay + "px,0)";
+        }
+      }
+      requestAnimationFrame(hloop);
+    })(0);
+  }
+
   var introEl = document.querySelector("[data-intro]");
   if (introEl) {
     var phrase = "turns ideas into action";
@@ -97,6 +159,8 @@
         ptx = e.clientX; pty = e.clientY;
         var row = e.target.closest(".exp__row");
         if (row) {
+          var rowOrg = SITE.orgs[Number(row.getAttribute("data-i"))];
+          if (!rowOrg.cover) { prev.classList.remove("is-on"); prev.removeAttribute("data-i"); pOn = false; return; }
           if (!pOn) { px = ptx; py = pty; }
           if (prev.getAttribute("data-i") !== row.getAttribute("data-i")) {
             prev.setAttribute("data-i", row.getAttribute("data-i"));
@@ -115,12 +179,15 @@
   var folderDesc = document.querySelector("[data-folder-desc]");
 
   function cardHTML(p) {
+    if (p.empty) {
+      return '<article class="card card--empty" data-category="' + esc(p.category) + '"><div class="card__media"><span>' + esc(p.title) + "</span></div></article>";
+    }
     var soon = p.status === "coming-soon";
     return (
       '<article class="card" data-category="' + esc(p.category) + '">' +
       '<a href="project.html?id=' + encodeURIComponent(p.id) + '">' +
       '<div class="card__media">' +
-      '<span class="card__badge' + (soon ? " soon" : "") + '">' + (soon ? "In progress" : esc(CATEGORY_LABEL[p.category])) + "</span>" +
+      '<span class="card__badge' + (soon ? " soon" : "") + '">' + (soon ? (p.category === "research" ? "In progress" : "Coming soon") : esc(CATEGORY_LABEL[p.category])) + "</span>" +
       media(p.cover, p.tone, p.title, p.category) +
       (soon ? SLEEPY_CAT : '<span class="card__arrow" aria-hidden="true">→</span>') +
       "</div>" +
@@ -393,20 +460,52 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  /* ---------- Loader: colour wipe + name reveal (once per session) ---------- */
+  /* ---------- Loader (cat peeking out of a box) + page-transition panels ---------- */
   var heroBase = 0;
   var loaderEl = null;
+  var ptEl = null;
+  var ptIn = false;
   (function () {
     var seen = false;
-    try { seen = !!sessionStorage.getItem("sn_loaded"); sessionStorage.setItem("sn_loaded", "1"); } catch (err) {}
-    if (reduceMotion || !hasGSAP || seen) return;
+    try {
+      seen = !!sessionStorage.getItem("sn_loaded");
+      sessionStorage.setItem("sn_loaded", "1");
+      ptIn = !!sessionStorage.getItem("sn_pt");
+      sessionStorage.removeItem("sn_pt");
+    } catch (err) {}
+    if (reduceMotion || !hasGSAP) { html.classList.remove("pt-cover"); return; }
+
+    // Page-transition panels live on every page
+    ptEl = document.createElement("div");
+    ptEl.className = "pt";
+    ptEl.innerHTML = '<div class="pt__pink"></div><div class="pt__blue"><span class="pt__mono">SNG</span></div>';
+    document.body.appendChild(ptEl);
+    if (ptIn) heroBase = 1.0;
+
+    if (seen) return;
     loaderEl = document.createElement("div");
     loaderEl.className = "loader";
     loaderEl.innerHTML =
-      '<div class="loader__pink"></div><div class="loader__blue"><div class="loader__name"><span>Sofia <em>Nadine</em></span><span class="loader__bar"><i></i></span></div></div>';
+      '<div class="loader__pink"></div><div class="loader__blue"><div class="loader__stage">' +
+      '<svg class="loader__cat" viewBox="0 0 160 150" aria-hidden="true" fill="none" stroke="#1c2540" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+      '<ellipse cx="80" cy="140" rx="46" ry="5" fill="rgba(28,37,64,0.14)" stroke="none"/>' +
+      '<g class="lc-cat">' +
+      '<path d="M54 54L56 28L76 44Z" fill="#fff"/><path d="M106 54L104 28L84 44Z" fill="#fff"/>' +
+      '<path d="M60 47L61 36L69 44Z" fill="#eac4d5" stroke="none"/><path d="M100 47L99 36L91 44Z" fill="#eac4d5" stroke="none"/>' +
+      '<ellipse cx="80" cy="72" rx="32" ry="28" fill="#fff"/>' +
+      '<g class="lc-eyes"><ellipse cx="68" cy="70" rx="3.2" ry="4.2" fill="#1c2540" stroke="none"/><ellipse cx="92" cy="70" rx="3.2" ry="4.2" fill="#1c2540" stroke="none"/></g>' +
+      '<path d="M76 79h8l-4 4z" fill="#eac4d5" stroke-width="2"/><path d="M80 83q-4 5-8 2M80 83q4 5 8 2" stroke-width="2"/>' +
+      '<path d="M50 78l-14-3M50 83l-14 3M110 78l14-3M110 83l14 3" stroke-width="2"/>' +
+      "</g>" +
+      '<path d="M26 98l-14-18h34l8 18z" fill="#8ba3d0"/><path d="M134 98l14-18h-34l-8 18z" fill="#8ba3d0"/>' +
+      '<rect x="24" y="96" width="112" height="42" rx="9" fill="#718bbc"/>' +
+      '<rect x="62" y="110" width="36" height="9" rx="4.5" fill="#fff" fill-opacity="0.75" stroke="none"/>' +
+      '<g class="lc-paws"><ellipse cx="60" cy="97" rx="9" ry="6" fill="#fff"/><ellipse cx="100" cy="97" rx="9" ry="6" fill="#fff"/></g>' +
+      "</svg>" +
+      '<div class="loader__name"><span>Sofia <em>Nadine</em></span><span class="loader__bar"><i></i></span></div></div></div>';
     document.body.appendChild(loaderEl);
     html.classList.add("is-loading");
-    heroBase = 2.3;
+    heroBase = 3.5;
   })();
 
   /* ---------- Motion: Lenis + GSAP ---------- */
@@ -442,20 +541,73 @@
     gsap.ticker.lagSmoothing(0);
   }
 
-  // Loader timeline: progress line, name, then blue and pink panels sweep up
+  // Loader timeline: the cat peeks out of the box, looks around, blinks, hops out; then the panels sweep up
   if (loaderEl) {
     var lbar = loaderEl.querySelector(".loader__bar i");
     var lname = loaderEl.querySelector(".loader__name");
+    var lcat = loaderEl.querySelector(".lc-cat");
+    var lcatSvg = loaderEl.querySelector(".loader__cat");
+    var leyes = loaderEl.querySelector(".lc-eyes");
+    var lpaws = loaderEl.querySelector(".lc-paws");
     var lblue = loaderEl.querySelector(".loader__blue");
     var lpink = loaderEl.querySelector(".loader__pink");
     var finish = function () { if (loaderEl) { loaderEl.remove(); loaderEl = null; } html.classList.remove("is-loading"); };
+    gsap.set(lcat, { y: 64, transformOrigin: "80px 96px" });
+    gsap.set(lpaws, { opacity: 0, y: 6 });
+    gsap.set(leyes, { transformOrigin: "80px 70px" });
     var ltl = gsap.timeline({ onComplete: finish });
-    ltl.from(lname, { y: 18, opacity: 0, duration: 0.9, ease: "power3.out" }, 0.1)
-      .to(lbar, { scaleX: 1, duration: 1.2, ease: "power2.inOut" }, 0.3)
-      .to(lname, { y: -16, opacity: 0, duration: 0.5, ease: "power2.in" }, 1.55)
-      .to(lblue, { yPercent: -100, duration: 1, ease: "power4.inOut" }, 1.85)
-      .to(lpink, { yPercent: -100, duration: 1, ease: "power4.inOut" }, 2.0);
-    setTimeout(finish, 6000);
+    ltl.from(lcatSvg, { y: 14, opacity: 0, duration: 0.6, ease: "power3.out" }, 0)
+      .from(lname, { y: 12, opacity: 0, duration: 0.7, ease: "power3.out" }, 0.1)
+      .to(lbar, { scaleX: 1, duration: 2.1, ease: "power1.inOut" }, 0.2)
+      .to(lcat, { y: 0, duration: 0.7, ease: "back.out(1.5)" }, 0.35)
+      .to(lpaws, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0.95)
+      .to(leyes, { x: 5, duration: 0.25, ease: "power2.inOut" }, 1.15)
+      .to(leyes, { x: -5, duration: 0.4, ease: "power2.inOut" }, 1.45)
+      .to(leyes, { x: 0, duration: 0.25, ease: "power2.inOut" }, 1.9)
+      .to(leyes, { scaleY: 0.1, duration: 0.07, yoyo: true, repeat: 1 }, 2.0)
+      .to(lcat, { rotation: -7, duration: 0.25, ease: "power2.out" }, 2.1)
+      .to(lcat, { rotation: 0, duration: 0.2, ease: "power2.inOut" }, 2.35)
+      .to(lcat, { y: -34, scaleY: 1.06, duration: 0.3, ease: "power2.out" }, 2.4)
+      .to(lcat, { y: -120, opacity: 0, scaleY: 1, duration: 0.5, ease: "power2.in" }, 2.7)
+      .to(lname, { y: -14, opacity: 0, duration: 0.45, ease: "power2.in" }, 2.85)
+      .to(lblue, { yPercent: -100, duration: 1, ease: "power4.inOut" }, 3.0)
+      .to(lpink, { yPercent: -100, duration: 1, ease: "power4.inOut" }, 3.14);
+    setTimeout(finish, 8000);
+  }
+
+  // Page transitions: colour wipe covers the page before leaving, and lifts away on the next page
+  if (ptEl) {
+    var ptPink = ptEl.querySelector(".pt__pink");
+    var ptBlue = ptEl.querySelector(".pt__blue");
+    gsap.set([ptPink, ptBlue], { yPercent: 100 });
+    var ptReset = function () { gsap.set([ptPink, ptBlue], { yPercent: 100 }); ptEl.style.visibility = "hidden"; html.classList.remove("pt-cover"); };
+    if (ptIn) {
+      gsap.set([ptPink, ptBlue], { yPercent: 0 });
+      html.classList.remove("pt-cover");
+      gsap.to(ptBlue, { yPercent: -100, duration: 0.9, ease: "power4.inOut", delay: 0.1 });
+      gsap.to(ptPink, { yPercent: -100, duration: 0.9, ease: "power4.inOut", delay: 0.22, onComplete: ptReset });
+    } else {
+      ptEl.style.visibility = "hidden";
+    }
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+      if (a.protocol !== window.location.protocol || (a.protocol !== "file:" && a.host !== window.location.host)) return;
+      if (a.pathname === window.location.pathname && (a.hash || a.getAttribute("href").charAt(0) === "#")) return;
+      if (a.pathname === window.location.pathname && a.search === window.location.search) return;
+      e.preventDefault();
+      try { sessionStorage.setItem("sn_pt", "1"); } catch (err) {}
+      var href = a.href;
+      ptEl.style.visibility = "visible";
+      gsap.set([ptPink, ptBlue], { yPercent: 100 });
+      gsap.timeline({ onComplete: function () { window.location.href = href; } })
+        .to(ptPink, { yPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0)
+        .to(ptBlue, { yPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0.12)
+        .from(ptBlue.querySelector(".pt__mono"), { scale: 0.8, opacity: 0, duration: 0.4, ease: "power3.out" }, 0.45)
+        .to({}, { duration: 0.18 });
+    });
+    window.addEventListener("pageshow", function (e) { if (e.persisted) ptReset(); });
   }
 
   // Landing: calm, staggered

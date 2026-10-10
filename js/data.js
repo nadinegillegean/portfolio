@@ -44,14 +44,24 @@ window.SITE = {
       summary: "I handle marketing and content for the university choir, and sing as a Soprano 2 trainee.",
       did: ["Plan and produce the choir's videos and social content", "Lead marketing communications for performances and events", "Sing as a Soprano 2 trainee", "Represented the university at the 1st Asia Pacific Catholic University Choral Symposium in Hong Kong"],
       results: [{ value: "13", label: "videos produced" }, { value: "25k+", label: "total views" }, { value: "1.8k", label: "likes" }],
-      tone: 1, icon: "note", cover: "", gallery: [],
+      tone: 1, icon: "note", cover: "assets/img/hk-digicam.jpg", gallery: [
+        { src: "assets/img/hk-perf-1.jpg", caption: "Performing in Hong Kong" },
+        { src: "assets/img/hk-rehearsal.jpg", caption: "Rehearsal before the symposium" },
+        { src: "assets/img/hk-perf-2.jpg", caption: "On stage" },
+        { src: "assets/img/hk-group.jpg", caption: "With participants at the symposium" },
+        { src: "assets/img/hk-perf-3.jpg", caption: "The final bow" },
+        { src: "assets/img/hk-frame-4.jpg", caption: "Symposium group photo" },
+        { src: "assets/img/hk-delegation.jpg", caption: "The Philippine delegation in Hong Kong" },
+      ],
     },
     {
       id: "teatro", name: "Teatro Lasalyano", role: "Stage Manager", years: "2024", place: "De La Salle University",
       summary: "Stage manager for the production \"Animulat: Ang Huling Takipsilim\".",
       did: ["Built and maintained the production cue sheets in Excel", "Ran the technical booth during the show", "Supported the production's promo video"],
       results: [{ value: "32k+", label: "views on the promo video" }],
-      tone: 2, icon: "camera", cover: "", gallery: [],
+      tone: 2, icon: "camera", cover: "assets/img/teatro-main.jpg", gallery: [
+        { src: "assets/img/teatro-stage.jpg", caption: "The set before the show" },
+      ],
     },
     {
       id: "old-jeans", name: "Old Jeans", role: "General Manager & Co-Owner", years: "2023 – present", place: "Metro Manila",
@@ -79,7 +89,9 @@ window.SITE = {
       summary: "A delegate for De La Salle University on a summer programme in Singapore.",
       did: ["Campus visits and academic sessions at NUS, SMU, LASALLE College of the Arts and SUTD", "Worked in a delegate team across the programme"],
       results: [{ value: "Award", label: "of Excellence for Best Teamwork" }],
-      tone: 5, icon: "plane", cover: "", gallery: [],
+      tone: 5, icon: "plane", cover: "assets/img/gateway-sg.jpg", gallery: [
+        { src: "assets/img/gateway-sg.jpg", caption: "With the Gateway delegates in Singapore" },
+      ],
     },
     {
       id: "hopefest", name: "Hopefest 2022: BAYLE", role: "Event Director", years: "2022", place: "Immaculate Heart of Mary College",
@@ -122,9 +134,9 @@ window.SITE = {
   // Digital-camera scroll section. Add `src: "assets/img/xyz.jpg"` to use your own photos.
   camera: [
     { title: "On location", text: "Shoots and brand work: the moments between the poses.", tone: 1, icon: "camera", label: "Shoot photo" },
-    { title: "On stage", text: "Soprano 2 in the DLSU Chorale, and the one behind its videos.", tone: 2, icon: "note", label: "Choir photo" },
-    { title: "Abroad", text: "Singapore and Hong Kong so far, with a long list of next stops.", tone: 4, icon: "plane", label: "Travel photo" },
-    { title: "Off duty", text: "Friends, film cameras and the occasional cat.", tone: 6, icon: "cat", label: "Candid photo" },
+    { title: "On stage", text: "Soprano 2 in the DLSU Chorale, and the one behind its videos.", src: "assets/img/hk-digicam.jpg", tone: 2, icon: "note", label: "Choir photo" },
+    { title: "Abroad", text: "Singapore and Hong Kong so far, with a long list of next stops.", src: "assets/img/gateway-sg.jpg", tone: 4, icon: "plane", label: "Travel photo" },
+    { title: "Backstage", text: "Stage manager for Animulat: cue sheets, headset and the technical booth.", src: "assets/img/teatro-main.jpg", tone: 6, icon: "cat", label: "Backstage photo" },
   ],
 
   highlights: [
@@ -140,65 +152,30 @@ window.SITE = {
 
   categories: [
     { id: "modelling", label: "Modelling", desc: "Brand shoots, editorials and test shoots." },
-    { id: "brand", label: "Past Works", desc: "Brands, content and events I have led." },
+    { id: "brand", label: "Past Projects", desc: "Brands, content and events I have led." },
     { id: "research", label: "Case Studies", desc: "Research and service-design projects in progress." },
   ],
 
   projects: [
-    /* ---------- MODELLING (placeholder shoots — edit with your real details) ---------- */
+    /* ---------- MODELLING ---------- */
     {
-      id: "denim-story",
+      id: "uniqlo-ph",
       category: "modelling",
-      title: "Denim Story",
-      subtitle: "Editorial shoot",
-      year: "2025",
+      title: "UNIQLO PH",
+      subtitle: "Brand shoot",
+      year: "2026",
       role: "Model",
+      status: "coming-soon",
       tone: 1,
-      summary: "A soft, sunlit editorial built around vintage denim and everyday movement.",
+      cover: "",
+      summary: "Cast for a UNIQLO PH shoot. Behind-the-scenes and final work to follow.",
       overview:
-        "An editorial series styled around thrifted denim — relaxed silhouettes, natural light, and candid in-between moments rather than stiff poses.",
-      process:
-        "Worked with the photographer and stylist on mood references, posing direction, and a shot list that balanced full-length looks with close detail frames.",
-      outcome:
-        "A cohesive set of editorial frames used for lookbook and social content.",
-      credits: ["Photography — TBA", "Styling — TBA"],
-      gallery: [{ caption: "Look 01" }, { caption: "Look 02" }, { caption: "Detail" }, { caption: "Look 03" }],
+        "I was cast for a UNIQLO PH shoot. This page will carry the final work, behind-the-scenes moments and credits once they are released.",
+      plan: ["Behind-the-scenes stills", "Final campaign work", "Credits and team"],
     },
-    {
-      id: "campus-lookbook",
-      category: "modelling",
-      title: "Campus Lookbook",
-      subtitle: "Lifestyle / lookbook",
-      year: "2025",
-      role: "Model",
-      tone: 2,
-      summary: "Everyday campus style, shot on location around Manila.",
-      overview:
-        "A lifestyle lookbook capturing easy, wearable outfits in real campus spaces — hallways, steps, and coffee breaks.",
-      process:
-        "Planned outfit changes and locations around natural light windows, keeping energy playful and unposed.",
-      outcome: "A bright, approachable lookbook set for brand and personal use.",
-      credits: ["Photography — TBA"],
-      gallery: [{ caption: "Outfit 01" }, { caption: "Outfit 02" }, { caption: "Outfit 03" }],
-    },
-    {
-      id: "portrait-series",
-      category: "modelling",
-      title: "Portrait Series",
-      subtitle: "Studio portraits",
-      year: "2024",
-      role: "Model",
-      tone: 3,
-      summary: "Clean studio portraits exploring expression and soft light.",
-      overview:
-        "A studio portrait session focused on expression, posture, and minimal styling against simple backdrops.",
-      process: "Short sets with a single soft light, moving from neutral to expressive frames.",
-      outcome: "A portrait set suited for comp cards and profiles.",
-      credits: ["Photography — TBA"],
-      gallery: [{ caption: "Portrait 01" }, { caption: "Portrait 02" }, { caption: "Portrait 03" }, { caption: "Portrait 04" }],
-    },
+    { id: "empty-modelling", category: "modelling", empty: true, title: "More coming soon" },
 
-    /* ---------- BRAND DESIGN ---------- */
+    /* ---------- PAST PROJECTS ---------- */
     {
       id: "old-jeans",
       category: "brand",
@@ -223,83 +200,53 @@ window.SITE = {
       gallery: [{ caption: "Brand identity" }, { caption: "Product shoot" }, { caption: "Denim pouch line" }, { caption: "Social content" }],
     },
     {
-      id: "mochi-milk",
+      id: "dlsu-chorale",
       category: "brand",
-      title: "Mochi & Milk",
-      subtitle: "Café brand concept (mock)",
-      year: "2025",
-      role: "Brand Designer",
-      tone: 5,
-      summary: "A cosy dessert café identity — soft shapes, milky pinks, and a mascot that winks.",
+      title: "DLSU Chorale",
+      subtitle: "Marketing and content",
+      year: "2025 – Present",
+      role: "Marketing Communications Lead · Soprano 2",
+      tone: 1,
+      cover: "assets/img/hk-digicam.jpg",
+      summary: "Video and marketing content for the university choir, and a choral symposium in Hong Kong.",
       overview:
-        "A self-initiated mock brand for a mochi and milk-tea café aimed at students who want a calm, pretty place to study.",
+        "I lead marketing communications for the DLSU Chorale and sing as a Soprano 2 trainee. I also represented the university at the 1st Asia Pacific Catholic University Choral Symposium in Hong Kong.",
       process:
-        "Explored names and moodboards, then built a logo, palette, type pairing, packaging mockups and a short social launch set.",
-      outcome: "A complete mini brand kit: logo suite, colour system, cup and box packaging, and launch posts.",
-      credits: ["Concept project"],
-      gallery: [{ caption: "Logo suite" }, { caption: "Palette & type" }, { caption: "Packaging" }, { caption: "Launch posts" }],
+        "I plan and produce the choir's videos and social content, from concept and filming to editing, and coordinate the messaging around performances and events.",
+      outcome: "13 videos produced, with 25k+ total views and 1.8k likes.",
+      stats: [
+        { value: "13", label: "videos produced" },
+        { value: "25k+", label: "total views" },
+        { value: "1.8k", label: "likes" },
+      ],
+      credits: ["DLSU Chorale"],
+      gallery: [
+        { src: "assets/img/hk-perf-1.jpg", caption: "Performing in Hong Kong" },
+        { src: "assets/img/hk-rehearsal.jpg", caption: "Rehearsal before the symposium" },
+        { src: "assets/img/hk-perf-2.jpg", caption: "On stage" },
+        { src: "assets/img/hk-group.jpg", caption: "With participants at the symposium" },
+        { src: "assets/img/hk-perf-3.jpg", caption: "The final bow" },
+      ],
     },
-    {
-      id: "petal-lab",
-      category: "brand",
-      title: "Petal Lab",
-      subtitle: "Skincare brand concept (mock)",
-      year: "2025",
-      role: "Brand Designer",
-      tone: 6,
-      summary: "A gentle, science-meets-flowers skincare identity for sensitive skin.",
-      overview:
-        "A mock skincare brand balancing clinical clarity with softness — clean labels, petal motifs and calm whitespace.",
-      process:
-        "Defined the brand voice, designed the wordmark and label system, and mocked up bottles, boxes and an e-commerce hero.",
-      outcome: "Brand guidelines, product label system, and a campaign key visual.",
-      credits: ["Concept project"],
-      gallery: [{ caption: "Wordmark" }, { caption: "Label system" }, { caption: "Product mockups" }],
-    },
+    { id: "empty-brand", category: "brand", empty: true, title: "More coming soon" },
 
-    /* ---------- RESEARCH & CASE STUDIES (coming soon) ---------- */
+    /* ---------- CASE STUDIES ---------- */
     {
-      id: "queue-to-cup",
+      id: "seo",
       category: "research",
+      title: "SEO",
+      subtitle: "Case study",
+      year: "2026",
+      role: "Researcher",
       status: "coming-soon",
-      title: "Queue to Cup",
-      subtitle: "Service-design case study",
-      year: "Coming soon",
-      role: "Researcher · IE / Service Management",
-      tone: 7,
-      summary: "Mapping a campus café's service journey to cut wait times without losing the warmth.",
+      tone: 6,
+      cover: "",
+      summary: "A case study on search engine optimisation. In progress.",
       overview:
-        "A planned case study applying Industrial Engineering and service-management tools to a busy campus café during peak hours.",
-      plan: [
-        "Observe and time the end-to-end customer journey at peak and off-peak hours",
-        "Build a service blueprint (front-stage, back-stage, support processes)",
-        "Identify bottlenecks with simple queueing and process analysis",
-        "Propose and prototype low-cost improvements",
-      ],
-      credits: [],
-      gallery: [],
+        "A case study on search engine optimisation: what drives discoverability, what to measure, and what actually moves the needle. The full write-up will be added here.",
+      plan: ["Define the question and audience", "Audit and benchmark the current state", "Test changes and measure results", "Write up findings and recommendations"],
     },
-    {
-      id: "pre-loved",
-      category: "research",
-      status: "coming-soon",
-      title: "Pre-loved, Re-loved",
-      subtitle: "Market research — Gen Z thrift fashion",
-      year: "Coming soon",
-      role: "Market Researcher",
-      tone: 8,
-      summary: "Why Gen Z in Metro Manila buys thrifted fashion — and what makes them come back.",
-      overview:
-        "A planned market study building on lessons from running Old Jeans: motivations, price sensitivity and channels for thrifted fashion among students.",
-      plan: [
-        "Survey and short interviews with student shoppers",
-        "Competitor scan of local online thrift shops",
-        "Customer personas and purchase-journey map",
-        "Recommendations for small thrift brands",
-      ],
-      credits: [],
-      gallery: [],
-    },
+    { id: "empty-research", category: "research", empty: true, title: "More coming soon" },
   ],
 
   cv: {

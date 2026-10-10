@@ -75,13 +75,12 @@ window.renderPage = function (h) {
   out += section("Overview", "<p>" + esc(p.overview) + "</p>");
 
   if (soon) {
-    out += section(
-      "The plan",
+    out += section(p.category === "research" ? "The plan" : "What's coming",
       '<ol class="plan-list">' + (p.plan || []).map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + "</ol>"
     );
     out += section(
       "Status",
-      "<p>This study is in progress. Want to collaborate or see early findings?</p>" +
+      "<p>" + (p.category === "research" ? "This study is in progress. Want to collaborate or see early findings?" : "Details will be added once the work is released. Want to work together in the meantime?") + "</p>" +
       '<p style="margin-top:24px"><a class="btn" data-email href="#">Get in touch →</a></p>'
     );
   } else {
