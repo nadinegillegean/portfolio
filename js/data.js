@@ -16,7 +16,7 @@ window.SITE = {
     tagline: ["Model", "Creative", "Brand & Research"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
-    portrait: "", // e.g. "assets/img/portrait.jpg" (a vertical 4:5 photo works best)
+    portrait: "assets/img/portrait.jpg", // vertical photo; swap the file to change it
     credential: "", // Short line under the hero, e.g. "Cast: UNIQLO PH". Leave empty until you are cleared to show it.
     // Scrapbook ending: add your own images in assets/img/ and set the paths.
     postcard: "", // e.g. "assets/img/postcard.jpg"

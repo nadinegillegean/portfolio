@@ -33,7 +33,7 @@
 
   // A small sleeping cat: one of the few quiet cat hints on the site.
   var SLEEPY_CAT =
-    '<svg class="card__zzz" viewBox="0 0 64 44" aria-hidden="true"><path d="M8 36c0-12 9-20 22-20s22 8 22 18c0 4-3 6-7 6H14c-4 0-6-1-6-4z" fill="#fff"/><path d="M12 22l2-9 7 5zM34 17l5-7 3 8z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M15 31q3 2 6 0" stroke="#141012" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>';
+    '<svg class="card__zzz" viewBox="0 0 64 44" aria-hidden="true"><path d="M8 36c0-12 9-20 22-20s22 8 22 18c0 4-3 6-7 6H14c-4 0-6-1-6-4z" fill="#fff"/><path d="M12 22l2-9 7 5zM34 17l5-7 3 8z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M15 31q3 2 6 0" stroke="#1c2540" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>';
 
   var CATEGORY_LABEL = { modelling: "Modelling", brand: "Past Works", research: "Case Studies" };
 
@@ -165,7 +165,7 @@
         var v = btn.closest(".phone__screen").querySelector("video");
         v.muted = !v.muted;
         btn.textContent = v.muted ? "♪" : "♫";
-        btn.style.background = v.muted ? "" : "#7a1f2b";
+        btn.style.background = v.muted ? "" : "#4a6397";
         btn.style.color = v.muted ? "" : "#fff";
         if (reduceMotion) v.play();
       });
@@ -211,21 +211,21 @@
     });
   }
 
-  /* ---------- Achievements: brush the cursor across the messages ---------- */
+  /* ---------- Achievements: brush the cursor across a message and it fades away, then fades back in ---------- */
   var wall = document.querySelector("[data-wall]");
   if (wall) {
     var POS = [[3, 4, -5], [34, 1, 3], [62, 6, -4], [10, 34, 4], [46, 30, -3], [68, 40, 5], [4, 64, -4], [36, 62, 3], [62, 72, -3]];
     var msgs = SITE.highlights.map(function (h, i) {
       var p = POS[i % POS.length];
       var el = document.createElement("div");
-      el.className = "msg" + (i % 3 === 1 ? " msg--alt" : "");
+      el.className = "msg" + (i % 3 === 1 ? " msg--alt" : i % 3 === 2 ? " msg--blue" : "");
       el.style.left = p[0] + "%";
       el.style.top = p[1] + "%";
       el.style.zIndex = String(i + 1);
       el.innerHTML = "<b>" + esc(h.short) + "</b><span>" + esc(h.detail) + "</span>";
       wall.appendChild(el);
       el.style.transform = "rotate(" + p[2] + "deg)";
-      return { el: el, x: 0, y: 0, vx: 0, vy: 0, rot: p[2], rv: 0, base: p[2] };
+      return { el: el, x: 0, y: 0, vx: 0, vy: 0, rot: p[2], rv: 0, base: p[2], state: "idle", t: 0 };
     });
 
     var ptr = { x: -999, y: -999, vx: 0, vy: 0, t: 0, on: false };
@@ -245,28 +245,46 @@
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (en) { wallVisible = en[0].isIntersecting; }, { threshold: 0 }).observe(wall);
     }
-    var wallStep = function () {
+    var paintMsg = function (m) {
+      m.el.style.transform = "translate3d(" + m.x.toFixed(1) + "px," + m.y.toFixed(1) + "px,0) rotate(" + m.rot.toFixed(2) + "deg)";
+    };
+    var wallStep = function (now) {
       var speed = Math.sqrt(ptr.vx * ptr.vx + ptr.vy * ptr.vy);
       msgs.forEach(function (m) {
-        var w = m.el.offsetWidth, h = m.el.offsetHeight;
-        var cx = m.el.offsetLeft + w / 2 + m.x, cy = m.el.offsetTop + h / 2 + m.y;
-        if (ptr.on) {
-          var dx = cx - ptr.x, dy = cy - ptr.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
-          var reach = Math.max(w, h) * 0.55;
-          if (d < reach) {
-            var f = (1 - d / reach) * Math.min(1.6, 0.35 + speed * 1.4);
-            m.vx += (dx / d) * f * 2.4 + ptr.vx * 4.5 * f;
-            m.vy += (dy / d) * f * 2.4 + ptr.vy * 4.5 * f;
-            m.rv += ptr.vx * 0.9 * f;
+        if (m.state === "idle") {
+          if (ptr.on) {
+            var w = m.el.offsetWidth, h = m.el.offsetHeight;
+            var cx = m.el.offsetLeft + w / 2 + m.x, cy = m.el.offsetTop + h / 2 + m.y;
+            var dx = cx - ptr.x, dy = cy - ptr.y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+            if (d < Math.max(w, h) * 0.5 && speed > 0.12) {
+              m.state = "out"; m.t = now;
+              m.vx = (dx / d) * 1.2 + ptr.vx * 2.4;
+              m.vy = (dy / d) * 1.2 + ptr.vy * 2.4;
+              m.rv = ptr.vx * 1.4;
+              m.el.classList.add("is-out");
+            }
           }
+        } else if (m.state === "out") {
+          m.x += m.vx; m.y += m.vy; m.rot += m.rv;
+          m.vx *= 0.94; m.vy *= 0.94; m.rv *= 0.94;
+          paintMsg(m);
+          if (now - m.t > 3200) {
+            // back in its spot, invisible, then fade in
+            m.x = 0; m.y = 0; m.vx = m.vy = m.rv = 0; m.rot = m.base;
+            paintMsg(m);
+            m.state = "back"; m.t = now;
+            m.el.classList.remove("is-out");
+          }
+        } else if (m.state === "back" && now - m.t > 1000) {
+          m.state = "idle";
         }
-        m.vx += -m.x * 0.006; m.vy += -m.y * 0.006; m.rv += (m.base - m.rot) * 0.01;
-        m.vx *= 0.93; m.vy *= 0.93; m.rv *= 0.9;
-        m.x += m.vx; m.y += m.vy; m.rot += m.rv;
-        m.el.style.transform = "translate3d(" + m.x.toFixed(1) + "px," + m.y.toFixed(1) + "px,0) rotate(" + m.rot.toFixed(2) + "deg)";
       });
     };
-    if (!reduceMotion) (function wloop() { if (wallVisible) wallStep(); requestAnimationFrame(wloop); })();
+    if (reduceMotion) {
+      msgs.forEach(function (m) { m.el.style.transition = "none"; });
+    } else {
+      (function wloop(t) { if (wallVisible) wallStep(t); requestAnimationFrame(wloop); })(0);
+    }
   }
 
   /* ---------- Digital camera: scroll rolls photos and captions up ---------- */
