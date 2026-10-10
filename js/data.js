@@ -16,7 +16,8 @@ window.SITE = {
     tagline: ["Model", "Creative", "Brand & Research"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
-    portrait: "", // e.g. "assets/img/portrait.jpg" — empty shows a pink placeholder circle
+    portrait: "", // e.g. "assets/img/portrait.jpg" (a vertical 4:5 photo works best)
+    credential: "", // Short line under the hero, e.g. "Cast: UNIQLO PH". Leave empty until you are cleared to show it.
     // Scrapbook ending: add your own images in assets/img/ and set the paths.
     postcard: "", // e.g. "assets/img/postcard.jpg"
     photobooth: ["", "", "", ""], // up to 4 photobooth frames, e.g. ["assets/img/booth1.jpg", ...]
@@ -28,12 +29,26 @@ window.SITE = {
       { label: "Facebook", url: "https://www.facebook.com/dimxcxy/" },
     ],
     intro:
-      "A people-oriented creative who brings people together and turns ideas into action — across modelling, brand design, events, and the research that makes them work.",
+      "A model and creative who brings people together and turns ideas into action, across brand shoots, events, content and the research that makes them work.",
     bio: [
-      "Hi! I'm Sofia. I love travelling, singing in my choir, and cats.",
-      "By day I'm an Industrial Engineering student at De La Salle University. Somehow I keep ending up in charge of the projects that need someone to bring people together — a thrifted-denim brand, student government, theatre, and events.",
+      "I'm Sofia, a model and creative based in Metro Manila, and an Industrial Engineering student at De La Salle University.",
+      "I keep ending up where people and ideas meet: shoots and brand work in front of the camera, and behind it, running a thrifted-denim brand, student government, theatre and events. I like clear plans, warm teams and work that looks good.",
     ],
   },
+
+  // "Worked with" strip. Plain wordmarks for now; only list names you are cleared to show.
+  trusted: ["DLSU Chorale", "Teatro Lasalyano", "Old Jeans", "IMES AI Expo", "Hopefest", "Gateway Summer Camp"],
+
+  // Reel: vertical (9:16) MP4 files in assets/video/. Leave `src` empty for a placeholder.
+  videos: [
+    { title: "UNIQLO PH", note: "Brand shoot", src: "", poster: "" },
+    { title: "Modelling reel", note: "Selected looks", src: "", poster: "" },
+    { title: "Behind the scenes", note: "On set", src: "", poster: "" },
+    { title: "Brand content", note: "Old Jeans", src: "", poster: "" },
+  ],
+
+  // TikTok: paste full video links, e.g. "https://www.tiktok.com/@dimbokki/video/1234567890123456789".
+  tiktok: ["", "", "", ""],
 
   // Short stories for the About page (not a CV): stat, title, tag, one sentence.
   stories: [
@@ -55,10 +70,10 @@ window.SITE = {
 
   // Digital-camera scroll section. Add `src: "assets/img/xyz.jpg"` to use your own photos.
   camera: [
-    { title: "On the road", text: "I love travelling: Singapore and Hong Kong so far, with a long list of next stops.", tone: 4, icon: "plane", label: "Travel photo" },
-    { title: "In the choir", text: "Soprano 2 in the DLSU Chorale, and the one making the videos for it.", tone: 1, icon: "note", label: "Choir photo" },
-    { title: "Behind the lens", text: "Polaroids, digicams and a camera roll full of friends.", tone: 6, icon: "camera", label: "Friends photo" },
-    { title: "Cat person", text: "If there's a cat nearby, I've already found it.", tone: 2, icon: "cat", label: "Cat photo" },
+    { title: "On location", text: "Shoots and brand work: the moments between the poses.", tone: 1, icon: "camera", label: "Shoot photo" },
+    { title: "On stage", text: "Soprano 2 in the DLSU Chorale, and the one behind its videos.", tone: 2, icon: "note", label: "Choir photo" },
+    { title: "Abroad", text: "Singapore and Hong Kong so far, with a long list of next stops.", tone: 4, icon: "plane", label: "Travel photo" },
+    { title: "Off duty", text: "Friends, film cameras and the occasional cat.", tone: 6, icon: "cat", label: "Candid photo" },
   ],
 
   highlights: [
@@ -73,9 +88,9 @@ window.SITE = {
   ],
 
   categories: [
-    { id: "modelling", label: "Modelling" },
-    { id: "brand", label: "Past Works" },
-    { id: "research", label: "Future Research" },
+    { id: "modelling", label: "Modelling", desc: "Brand shoots, editorials and test shoots." },
+    { id: "brand", label: "Past Works", desc: "Brands, content and events I have led." },
+    { id: "research", label: "Case Studies", desc: "Research and service-design projects in progress." },
   ],
 
   projects: [

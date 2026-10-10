@@ -18,9 +18,9 @@ window.renderPage = function (h) {
     document.title = "Not found — Sofia Nadine Gillegean";
     root.innerHTML =
       '<section class="notfound"><div class="wrap">' +
-      '<p class="eyebrow">404 · meow?</p>' +
-      '<h1 class="display page-title">Lost <em>kitty.</em></h1>' +
-      '<p class="lede" style="margin-inline:auto">That project wandered off. Head back to see all the work.</p>' +
+      '<p class="eyebrow">404</p>' +
+      '<h1 class="page-title"><span class="line"><span>Page <em>not found.</em></span></span></h1>' +
+      '<p class="lede" style="margin-inline:auto">That project could not be found. Head back to see all the work.</p>' +
       '<p style="margin-top:32px"><a class="btn" href="index.html#work">See all work →</a></p>' +
       "</div></section>";
     return;
@@ -35,7 +35,7 @@ window.renderPage = function (h) {
   function section(title, inner) {
     return (
       '<section class="proj-body wrap" data-section>' +
-      '<h2 class="display" data-reveal>' + esc(title) + "</h2>" +
+      '<h2 data-reveal>' + esc(title) + "</h2>" +
       '<div data-reveal>' + inner + "</div></section>"
     );
   }
@@ -59,7 +59,7 @@ window.renderPage = function (h) {
   out +=
     '<section class="page-head"><div class="wrap">' +
     '<p class="eyebrow">' + esc(h.CATEGORY_LABEL[p.category]) + (p.subtitle ? " · " + esc(p.subtitle) : "") + "</p>" +
-    '<h1 class="display page-title">' + titleHTML + "</h1>" +
+    '<h1 class="page-title">' + titleHTML + "</h1>" +
     '<p class="lede">' + esc(p.summary) + "</p>" +
     '<dl class="proj-meta">' +
     meta.map(function (m) { return "<div><dt>" + esc(m[0]) + "</dt><dd>" + esc(m[1]) + "</dd></div>"; }).join("") +
@@ -114,7 +114,7 @@ window.renderPage = function (h) {
   out +=
     '<a class="next-proj" href="project.html?id=' + encodeURIComponent(next.id) + '" data-section data-wave data-cursor="big">' +
     '<div class="wrap"><p class="eyebrow">Next project</p>' +
-    '<p class="display">' + esc(next.title) + " →</p></div></a>";
+    '<p class="display" style="font-weight:600">' + esc(next.title) + " →</p></div></a>";
 
   root.innerHTML = out;
 

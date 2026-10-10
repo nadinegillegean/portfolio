@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sofia Nadine Gillegean — Portfolio</title>
-  <meta name="description" content="Portfolio of Sofia Nadine Gillegean — modelling, past works, and future research. Based in Metro Manila.">
+  <title>Sofia Nadine Gillegean — Model, Creative &amp; Researcher</title>
+  <meta name="description" content="Portfolio of Sofia Nadine Gillegean: modelling, brand and event work, and future case studies. Based in Metro Manila.">
   <meta property="og:title" content="Sofia Nadine Gillegean — Portfolio">
-  <meta property="og:description" content="Modelling, past works, and future research.">
-  <meta name="theme-color" content="#f7c0d4">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z' fill='%23f3b0c7' stroke='%23f3b0c7' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='20' cy='23' rx='15' ry='13' fill='%23f3b0c7'/%3E%3C/svg%3E">
+  <meta property="og:description" content="Modelling, past works and case studies.">
+  <meta name="theme-color" content="#FAF7F2">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z' fill='%237A1F2B' stroke='%237A1F2B' stroke-width='3' stroke-linejoin='round'/%3E%3Cellipse cx='20' cy='23' rx='15' ry='13' fill='%237A1F2B'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Share+Tech+Mono&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <script>
     (function (h) {
@@ -24,67 +24,84 @@
 </head>
 <body data-page="home">
 
-  <div class="dots" data-dots aria-hidden="true"></div>
-
   <header class="nav">
-    <div class="wrap">
-      <ul class="nav__side">
-        <li><a href="about.html">about me</a></li>
-        <li><a href="index.html?cat=modelling#work" data-go="modelling">modelling</a></li>
-      </ul>
-      <a class="logo" href="index.html" aria-label="Sofia — home">
-        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z" fill="#f08db3" stroke="#f08db3" stroke-width="3" stroke-linejoin="round"/><ellipse cx="20" cy="23" rx="15" ry="13" fill="#f08db3"/></svg>
-        <span>sofia nadine</span>
+    <div class="wrap nav__inner">
+      <a class="logo" href="index.html" aria-label="Sofia Nadine — home">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M7 16 L8 4 L17 11 Z M33 16 L32 4 L23 11 Z" fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><ellipse cx="20" cy="23" rx="15" ry="13" fill="currentColor"/></svg>
+        <span>Sofia <em>Nadine</em></span>
       </a>
-      <ul class="nav__side">
-        <li><a href="index.html?cat=brand#work" data-go="brand">past works</a></li>
-        <li><a href="index.html?cat=research#work" data-go="research">research</a></li>
-      </ul>
+      <nav aria-label="Main">
+        <ul class="nav__links">
+          <li><a href="#work">Work</a></li>
+          <li><a href="#reel">Reel</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="#contact" class="nav__cta">Let's talk</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="wrap hero__inner">
-        <div class="hero__portrait" data-portrait></div>
+      <div class="wrap hero__grid">
         <div class="hero__text">
+          <p class="eyebrow" data-credential>Model · Creative · Researcher</p>
           <h1 class="hero__title">
-            <span class="line"><span>Hi, I'm</span></span>
-            <span class="line"><span>Sofia Nadine!</span></span>
+            <span class="line"><span>Sofia Nadine</span></span>
+            <span class="line"><span><em>Gillegean</em></span></span>
           </h1>
-          <p class="hero__sub">Model, creative and future industrial engineer based in Metro Manila.</p>
+          <p class="hero__sub">Model, creative and industrial engineering student in Metro Manila. I bring people together and turn ideas into work that gets seen.</p>
           <div class="hero__cta">
-            <a class="btn" href="#intro">Get to know me ↓</a>
-            <a class="btn btn--ghost" data-email href="#">Say hello</a>
+            <a class="btn" href="#work">View work</a>
+            <a class="btn btn--ghost" href="#contact">Get in touch</a>
+          </div>
+        </div>
+        <div class="hero__media" data-portrait></div>
+      </div>
+      <div class="wrap hero__foot">
+        <span>Metro Manila, Philippines</span>
+        <span>Available for shoots &amp; collaborations</span>
+        <span class="hero__scroll">Scroll</span>
+      </div>
+    </section>
+
+    <section class="intro" data-section>
+      <div class="wrap">
+        <p class="intro__text" data-intro></p>
+      </div>
+    </section>
+
+    <section class="trusted" aria-label="Worked with">
+      <div class="wrap">
+        <p class="trusted__label">Worked with &amp; trusted by</p>
+        <ul class="trusted__row" data-trusted></ul>
+      </div>
+    </section>
+
+    <section class="work" id="work" data-section>
+      <div class="wrap">
+        <div class="folder" data-folder>
+          <div class="folder__tabs" data-tabs role="tablist" aria-label="Choose a collection"></div>
+          <div class="folder__panel">
+            <div class="folder__head">
+              <h2 class="bigdot" data-folder-title>Modelling<span>.</span></h2>
+              <p class="folder__desc" data-folder-desc></p>
+            </div>
+            <div class="grid" data-grid></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="intro" id="intro" data-section>
-      <div class="wrap">
-        <p class="eyebrow">Hello there</p>
-        <p class="intro__text" data-intro></p>
-      </div>
-    </section>
-
-    <section class="cards" id="cards" data-section>
-      <div class="wrap">
-        <p class="eyebrow">Get your passport stamped</p>
-        <h2 class="display section-title" data-reveal>Where would you like to go?</h2>
-        <div class="stamps" data-stamps></div>
-      </div>
-    </section>
-
-
-    <section class="work" id="work" data-section>
+    <section class="reel" id="reel" data-section>
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">The work</p>
-          <h2 class="display section-title" data-reveal>Selected work</h2>
+          <h2 class="bigdot" data-reveal>Reel<span>.</span></h2>
+          <p class="section-head__note" data-reveal>Selected modelling and brand work in motion.</p>
         </div>
-        <div class="filters" data-filters role="group" aria-label="Choose a collection"></div>
-        <div class="grid" data-grid></div>
+        <div class="phones" data-videos></div>
+        <div class="subhead" data-reveal><h3>On TikTok</h3><a class="link" data-tiktok-link href="#" target="_blank" rel="noopener">Follow @dimbokki</a></div>
+        <div class="phones phones--tt" data-tiktok></div>
       </div>
     </section>
 
@@ -103,13 +120,11 @@
       </div>
     </section>
 
-
-
-    <section class="wall-sec" aria-label="Highlights">
+    <section class="wins" aria-label="Achievements">
       <div class="wrap">
-        <p class="eyebrow">A little more about me</p>
+        <h2 class="bigdot bigdot--light" data-reveal>Achievements<span>.</span></h2>
         <div class="wall" data-wall>
-          <p class="wall__text"><span>I bring people together and <em>turn ideas into action.</em></span></p>
+          <p class="wall__text">I bring people together and <em>turn ideas into action.</em></p>
           <p class="wall__hint">Brush your cursor across the messages</p>
         </div>
       </div>
@@ -117,8 +132,8 @@
 
     <section class="contact" id="contact" data-section>
       <div class="wrap">
-        <p class="eyebrow">Say hello</p>
-        <h2 class="display contact__title" data-reveal>Let's work together.</h2>
+        <p class="eyebrow">Contact</p>
+        <h2 class="contact__title" data-reveal>Let's work <em>together.</em></h2>
         <div class="scrap" data-scrap></div>
         <footer class="footer">
           <span>© <span data-year></span> Sofia Nadine Gillegean</span>
