@@ -35,7 +35,7 @@
   var SLEEPY_CAT =
     '<svg class="card__zzz" viewBox="0 0 64 44" aria-hidden="true"><path d="M8 36c0-12 9-20 22-20s22 8 22 18c0 4-3 6-7 6H14c-4 0-6-1-6-4z" fill="#fff"/><path d="M12 22l2-9 7 5zM34 17l5-7 3 8z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M15 31q3 2 6 0" stroke="#1c2540" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>';
 
-  var CATEGORY_LABEL = { modelling: "Modelling", brand: "Past Works", research: "Case Studies" };
+  var CATEGORY_LABEL = { modelling: "Modelling", brand: "Past Projects", research: "Case Studies" };
 
   /** An image if `src` is given, otherwise a neutral placeholder frame. */
   function media(src, tone, label, category, alt) {
@@ -440,6 +440,105 @@
   });
   Array.prototype.forEach.call(document.querySelectorAll("[data-year]"), function (el) { el.textContent = new Date().getFullYear(); });
 
+  /* ---------- Contact drawer (slides in from the right) ---------- */
+  (function () {
+    var pr = SITE.profile;
+    var drawer = document.createElement("div");
+    drawer.className = "drawer";
+    drawer.setAttribute("aria-hidden", "true");
+    drawer.innerHTML =
+      '<div class="drawer__backdrop" data-close></div>' +
+      '<aside class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" tabindex="-1">' +
+      '<button class="drawer__close" type="button" aria-label="Close contact panel" data-close>×</button>' +
+      '<p class="eyebrow">Contact</p>' +
+      '<h2 class="drawer__title" id="drawerTitle">Let’s <em>talk.</em></h2>' +
+      '<p class="drawer__lead">Open to shoots, brand work and collaborations. Email is the fastest way to reach me.</p>' +
+      '<div class="drawer__mail"><a class="drawer__email" href="mailto:' + esc(pr.email) + '">' + esc(pr.email) + '</a><button class="drawer__copy" type="button" data-copy>Copy</button></div>' +
+      '<ul class="drawer__links">' +
+      (pr.socials || []).filter(function (s) { return s.url && s.url !== "#"; })
+        .map(function (s) { return '<li><a href="' + esc(s.url) + '" target="_blank" rel="noopener"><span>' + esc(s.label) + '</span><span aria-hidden="true">↗</span></a></li>'; }).join("") +
+      "</ul>" +
+      '<p class="drawer__meta">' + esc(pr.location) + "</p></aside>";
+    document.body.appendChild(drawer);
+
+    var panel = drawer.querySelector(".drawer__panel");
+    var copyBtn = drawer.querySelector("[data-copy]");
+    var lastFocus = null;
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      drawer.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      html.classList.add("drawer-open");
+      if (lenis && lenis.stop) lenis.stop();
+      setTimeout(function () { panel.focus(); }, 60);
+    }
+    function closeDrawer() {
+      drawer.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      html.classList.remove("drawer-open");
+      if (lenis && lenis.start) lenis.start();
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    drawer.addEventListener("click", function (e) { if (e.target.closest("[data-close]")) closeDrawer(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer(); });
+    copyBtn.addEventListener("click", function () {
+      var done = function () { copyBtn.textContent = "Copied"; copyBtn.classList.add("is-done"); setTimeout(function () { copyBtn.textContent = "Copy"; copyBtn.classList.remove("is-done"); }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(pr.email).then(done, done);
+      else { var t = document.createElement("textarea"); t.value = pr.email; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (err) {} t.remove(); done(); }
+    });
+    // Any "Let's talk" / "Get in touch" link opens the drawer instead of navigating
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a");
+      if (!a) return;
+      var href = a.getAttribute("href") || "";
+      if (a.classList.contains("nav__cta") || a.hasAttribute("data-contact") || href === "#contact" || href === "index.html#contact") {
+        e.preventDefault();
+        e.stopPropagation();
+        openDrawer();
+      }
+    }, true);
+  })();
+
+  /* ---------- Crayon doodles, tucked at the edges ---------- */
+  (function () {
+    var wrapSvg = document.createElement("div");
+    wrapSvg.setAttribute("aria-hidden", "true");
+    wrapSvg.style.cssText = "position:absolute;width:0;height:0;overflow:hidden";
+    wrapSvg.innerHTML = '<svg width="0" height="0"><filter id="crayon" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter></svg>';
+    document.body.appendChild(wrapSvg);
+
+    var SHAPES = {
+      heart: ["M20 34C7 25 4 13 12 9c4-2 8 0 8 4 1-4 6-6 10-4 8 4 4 17-10 25z"],
+      star: ["M20 4l4.6 10.6 11.4 1-8.7 7.5 2.7 11.2L20 28.2 9.9 34.3l2.7-11.2L4 15.6l11.4-1z"],
+      squiggle: ["M3 22q5-14 10 0t10 0 10 0 6-6"],
+      sparkle: ["M20 3q2 15 17 17-15 2-17 17-2-15-17-17 15-2 17-17z"],
+      spiral: ["M20 20a3 3 0 1 1 6 0 8 8 0 1 1-14 0 14 14 0 1 1 26-2"],
+      arrow: ["M4 32Q14 6 36 14", "M29 6l8 8-10 5"]
+    };
+    var CFG = [
+      { p: ".hero", k: "star", c: "b", s: 44, st: "left:47%;top:17%;rotate:12deg" },
+      { p: ".hero", k: "squiggle", c: "p", s: 76, st: "left:5%;bottom:8%;rotate:-6deg" },
+      { p: ".hero__art", k: "heart", c: "p", s: 54, st: "right:-30px;top:-14px;rotate:14deg" },
+      { p: ".hero__art", k: "sparkle", c: "b", s: 42, st: "left:-26px;top:16%;rotate:-8deg" },
+      { p: ".exp .section-head", k: "spiral", c: "b", s: 56, st: "left:54%;top:-10px;rotate:-8deg" },
+      { p: ".reel .section-head", k: "star", c: "p", s: 46, st: "left:36%;top:-6px;rotate:10deg" },
+      { p: ".wins .wrap", k: "sparkle", c: "w", s: 50, st: "right:10px;top:-6px" },
+      { p: ".contact .wrap", k: "heart", c: "b", s: 48, st: "right:6%;top:9%;rotate:-12deg" },
+      { p: ".contact .wrap", k: "arrow", c: "p", s: 64, st: "left:34%;top:70px;rotate:8deg" }
+    ];
+    CFG.forEach(function (d) {
+      var host = document.querySelector(d.p);
+      if (!host) return;
+      var paths = SHAPES[d.k].map(function (p) { return '<path d="' + p + '"/>'; }).join("");
+      var el = document.createElement("div");
+      el.className = "doodle d--" + d.c;
+      el.setAttribute("aria-hidden", "true");
+      el.style.cssText = "--s:" + d.s + "px;" + d.st;
+      el.innerHTML = '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" filter="url(#crayon)"><g>' + paths + '</g><g transform="translate(0.9 0.7)" opacity="0.45">' + paths + "</g></svg>";
+      host.appendChild(el);
+    });
+  })();
+
   /* ---------- Page-specific renderer (project.html / about.html) ---------- */
   if (typeof window.renderPage === "function") {
     window.renderPage({ esc: esc, media: media, CATEGORY_LABEL: CATEGORY_LABEL });
@@ -672,6 +771,18 @@
     gsap.set(camSlides, { opacity: 0, y: 70 });
     gsap.set(camSlides[0], { opacity: 1, y: 0 });
   }
+
+  // Doodles: draw themselves in, then drift gently as you scroll
+  gsap.utils.toArray(".doodle").forEach(function (el, i) {
+    var paths = el.querySelectorAll("path");
+    Array.prototype.forEach.call(paths, function (p) {
+      var len = p.getTotalLength ? p.getTotalLength() : 100;
+      p.style.strokeDasharray = len;
+      p.style.strokeDashoffset = len;
+    });
+    gsap.to(paths, { strokeDashoffset: 0, duration: 1.6, ease: "power2.out", delay: i < 4 ? heroBase + 1.2 : 0, scrollTrigger: { trigger: el, start: "top 92%", once: true } });
+    gsap.fromTo(el, { y: -16 }, { y: 16, ease: "none", scrollTrigger: { trigger: el.parentNode, start: "top bottom", end: "bottom top", scrub: true } });
+  });
 
   // Project page hero parallax
   gsap.utils.toArray(".proj-hero").forEach(function (frame) {

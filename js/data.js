@@ -13,7 +13,7 @@ window.SITE = {
   profile: {
     name: "Sofia Nadine Gillegean",
     short: "Sofia",
-    tagline: ["Model", "Creative", "Brand & Research"],
+    tagline: ["Creative", "Researcher", "Student"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
     portrait: "assets/img/portrait.jpg", // vertical photo; swap the file to change it
@@ -29,9 +29,9 @@ window.SITE = {
       { label: "Facebook", url: "https://www.facebook.com/dimxcxy/" },
     ],
     intro:
-      "A model and creative who brings people together and turns ideas into action, across brand shoots, events, content and the research that makes them work.",
+      "A creative who brings people together and turns ideas into action, across brand shoots, events, content and the research that makes them work.",
     bio: [
-      "I'm Sofia, a model and creative based in Metro Manila, and an Industrial Engineering student at De La Salle University.",
+      "I'm Sofia, a creative based in Metro Manila and an Industrial Engineering student at De La Salle University.",
       "I keep ending up where people and ideas meet: shoots and brand work in front of the camera, and behind it, running a thrifted-denim brand, student government, theatre and events. I like clear plans, warm teams and work that looks good.",
     ],
   },
@@ -151,8 +151,8 @@ window.SITE = {
   ],
 
   categories: [
-    { id: "modelling", label: "Modelling", desc: "Brand shoots, editorials and test shoots." },
     { id: "brand", label: "Past Projects", desc: "Brands, content and events I have led." },
+    { id: "modelling", label: "Modelling", desc: "Brand shoots, editorials and test shoots." },
     { id: "research", label: "Case Studies", desc: "Research and service-design projects in progress." },
   ],
 
