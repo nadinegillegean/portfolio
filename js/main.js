@@ -49,62 +49,12 @@
   var cred = document.querySelector("[data-credential]");
   if (cred && SITE.profile.credential) cred.textContent = SITE.profile.credential;
 
-  /* ---------- Cursor aura (whole site) ---------- */
+  /* ---------- Hero story elements ---------- */
   var storyEl = document.querySelector("[data-story]");
   var deckEl = document.querySelector("[data-deck]");
   var typeOn = true;
   var STAR = '<svg viewBox="0 0 100 100"><path d="M50 2Q55 45 98 50Q55 55 50 98Q45 55 2 50Q45 45 50 2Z" fill="currentColor"/></svg>';
-  // Minimal sparkle trail: a small pink or red star every so often, no click burst
-  var GLITTER = ["#fe9bb8", "#ae2831", "#fe9bb8", "#f6e4be"];
-  function glitter(x, y) {
-    if (document.querySelectorAll(".spark").length > 24) return;
-    var sp = document.createElement("span");
-    sp.className = "spark";
-    sp.setAttribute("aria-hidden", "true");
-    sp.style.color = GLITTER[Math.floor(Math.random() * GLITTER.length)];
-    sp.style.left = x + "px"; sp.style.top = y + "px";
-    sp.style.setProperty("--sz", (7 + Math.random() * 6).toFixed(0) + "px");
-    sp.style.setProperty("--rot", (Math.random() * 60 - 30).toFixed(0) + "deg");
-    sp.style.setProperty("--dx", ((Math.random() - 0.5) * 18).toFixed(0) + "px");
-    sp.style.setProperty("--dy", (12 + Math.random() * 18).toFixed(0) + "px");
-    sp.innerHTML = STAR;
-    document.body.appendChild(sp);
-    sp.addEventListener("animationend", function () { sp.remove(); });
-  }
-  if (finePointer && !reduceMotion) {
-    var aura = document.createElement("div");
-    aura.className = "aura";
-    aura.setAttribute("aria-hidden", "true");
-    document.body.appendChild(aura);
-    var ax = -300, ay = -300, tx = -300, ty = -300, auraOn = false, lastSpark = { x: -999, y: -999 };
-    window.addEventListener("pointermove", function (e) {
-      tx = e.clientX; ty = e.clientY;
-      if (!auraOn) { auraOn = true; ax = tx; ay = ty; aura.classList.add("is-on"); }
-      var sdx = tx - lastSpark.x, sdy = ty - lastSpark.y;
-      if (sdx * sdx + sdy * sdy > 2800) { lastSpark.x = tx; lastSpark.y = ty; glitter(tx, ty); }
-    }, { passive: true });
-    document.documentElement.addEventListener("pointerleave", function () { auraOn = false; aura.classList.remove("is-on"); });
-    (function aloop() {
-      ax += (tx - ax) * 0.14; ay += (ty - ay) * 0.14;
-      aura.style.transform = "translate3d(" + ax.toFixed(1) + "px," + ay.toFixed(1) + "px,0)";
-      requestAnimationFrame(aloop);
-    })();
-
-    // Magnetic pills: buttons lean toward the cursor
-    var mags = [];
-    var collectMags = function () { mags = Array.prototype.slice.call(document.querySelectorAll(".btn, .circ, .pillbtn, .nav__links a, .logo, .tab")); };
-    collectMags(); setTimeout(collectMags, 1800);
-    window.addEventListener("pointermove", function (e) {
-      mags.forEach(function (el) {
-        var r = el.getBoundingClientRect();
-        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-        if (Math.sqrt(dx * dx + dy * dy) < Math.max(r.width, r.height) * 0.6) { el.style.translate = (dx * 0.06).toFixed(1) + "px " + (dy * 0.08).toFixed(1) + "px"; el._m = true; }
-        else if (el._m) { el.style.translate = ""; el._m = false; }
-      });
-    }, { passive: true });
-  }
-
-  // Intro type: every letter lifts and leans as the cursor passes
+  // Intro type: split into letters for the colour sweep
   var typeLetters = [];
   Array.prototype.forEach.call(document.querySelectorAll(".type__line > span"), function (line) {
     line.innerHTML = line.textContent.split("").map(function (c) {
@@ -112,26 +62,6 @@
     }).join("");
   });
   typeLetters = Array.prototype.slice.call(document.querySelectorAll(".type .ch:not(.ch--sp)"));
-  if (typeLetters.length && finePointer && !reduceMotion) {
-    var tpx = -999, tpy = -999;
-    window.addEventListener("pointermove", function (e) { tpx = e.clientX; tpy = e.clientY; }, { passive: true });
-    (function tloop() {
-      if (typeOn) {
-        typeLetters.forEach(function (c) {
-          var r = c.getBoundingClientRect();
-          var dx = tpx - (r.left + r.width / 2), dy = tpy - (r.top + r.height / 2);
-          var k = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 170);
-          c._k = (c._k || 0) + (k - (c._k || 0)) * 0.16;
-          if (c._k > 0.003 || c._on) {
-            c._on = c._k > 0.003;
-            c.style.transform = "translateY(" + (-c._k * 0.2).toFixed(3) + "em) rotate(" + (c._k * (dx < 0 ? 9 : -9)).toFixed(2) + "deg) scale(" + (1 + c._k * 0.1).toFixed(3) + ")";
-            c.style.setProperty("--k", c._k.toFixed(3));
-          }
-        });
-      }
-      requestAnimationFrame(tloop);
-    })();
-  }
 
   /* ---------- Hero deck: one card per line, flip through with the arrows ---------- */
   if (deckEl) {
@@ -223,18 +153,6 @@
       if (e.key === "ArrowRight") goDeck(1);
       else if (e.key === "ArrowLeft") goDeck(-1);
     });
-    if (storyEl && finePointer && !reduceMotion) {
-      storyEl.addEventListener("pointermove", function (e) {
-        var r = deckEl.getBoundingClientRect();
-        var x = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
-        var y = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
-        deckEl.style.setProperty("--rx", (x * 26).toFixed(2) + "deg");
-        deckEl.style.setProperty("--ry", (-y * 20).toFixed(2) + "deg");
-        deckEl.style.setProperty("--mx", (((e.clientX - r.left) / r.width) * 100).toFixed(1) + "%");
-        deckEl.style.setProperty("--my", (((e.clientY - r.top) / r.height) * 100).toFixed(1) + "%");
-      }, { passive: true });
-      storyEl.addEventListener("pointerleave", function () { deckEl.style.setProperty("--rx", "0deg"); deckEl.style.setProperty("--ry", "0deg"); });
-    }
   }
 
   var introEl = document.querySelector("[data-intro]");
@@ -746,7 +664,7 @@
       return el;
     }
 
-    var heroHost = document.querySelector("[data-illos]");
+    var heroHost = null; // doodles retired in the minimal redesign
     if (heroHost) {
       [
         { k: "flowerPom", side: "l", min: 150, vw: 24, max: 380, pos: "left:-5%;top:50%", rot: -8 },
@@ -761,41 +679,16 @@
         { k: "heart", side: "r", min: 60, vw: 8, max: 150, pos: "right:27%;top:78%", rot: -12 }
       ].forEach(function (o) { heroHost.appendChild(illo(o)); });
     }
-    [
-      [".work .wrap", { k: "burstPink", min: 70, vw: 8, max: 140, pos: "right:2%;top:-30px", spin: true, bg: true }],
-      [".wins .wrap", { k: "burst", min: 90, vw: 11, max: 190, pos: "right:2%;top:-34px", spin: true, bg: true }],
-      [".wins .wrap", { k: "flowerFlax", min: 80, vw: 9, max: 160, pos: "right:15%;top:-30px", rot: 10, bg: true }],
-      [".contact .wrap", { k: "flowerPom", min: 90, vw: 12, max: 210, pos: "right:2%;top:6%", rot: -10, bg: true }],
-      [".contact .wrap", { k: "heart", min: 60, vw: 7, max: 130, pos: "right:19%;top:34%", rot: 12, bg: true, del: 1 }],
-      [".reel .section-head", { k: "flowerPink", min: 60, vw: 7, max: 120, pos: "left:40%;top:-22px", rot: 8, bg: true }]
-    ].forEach(function (d) {
-      var host = document.querySelector(d[0]);
-      if (host) host.appendChild(illo(d[1]));
-    });
   })();
 
   /* ---------- Marquee content ---------- */
   var mqEl = document.querySelector("[data-marquee]");
   if (mqEl) {
-    var phrase = ["Creative", "Researcher", "Student", "Model"].map(function (w) { return "<span>" + w + "</span><i aria-hidden=\"true\">" + STAR + "</i>"; }).join("");
+    var phrase = ["Creative", "Researcher", "Student", "Model"].map(function (w) { return "<span>" + w + "</span><i aria-hidden=\"true\"></i>"; }).join("");
     var half = phrase + phrase + phrase;
     mqEl.innerHTML = half + half;
   }
 
-  /* ---------- Project cards: 3D tilt toward the cursor ---------- */
-  if (grid && finePointer && !reduceMotion) {
-    grid.addEventListener("pointermove", function (e) {
-      var body = e.target.closest(".pcard__body");
-      if (!body) return;
-      var r = body.getBoundingClientRect();
-      body.style.setProperty("--tx", (((e.clientX - r.left) / r.width - 0.5) * 14).toFixed(2) + "deg");
-      body.style.setProperty("--ty", (-((e.clientY - r.top) / r.height - 0.5) * 12).toFixed(2) + "deg");
-    });
-    grid.addEventListener("pointerout", function (e) {
-      var body = e.target.closest && e.target.closest(".pcard__body");
-      if (body) { body.style.setProperty("--tx", "0deg"); body.style.setProperty("--ty", "0deg"); }
-    });
-  }
 
   /* ---------- Page-specific renderer (project.html / about.html) ---------- */
   if (typeof window.renderPage === "function") {
@@ -976,7 +869,7 @@
     });
     stl.fromTo(floodEl, { "--r": "0%" }, { "--r": "150%", duration: 2.6, ease: "power2.in" }, 1.4)
       .to(typeEl, { opacity: 0, scale: 1.14, duration: 1.4, ease: "power2.in" }, 1.9)
-      .fromTo(deckEl, { yPercent: 135, rotation: -150, scale: 0.35, opacity: 0 }, { yPercent: 0, rotation: 0, scale: 1, opacity: 1, duration: 2.8, ease: "power3.out" }, 3.4);
+      .fromTo(deckEl, { yPercent: 40, scale: 0.92, opacity: 0 }, { yPercent: 0, rotation: 0, scale: 1, opacity: 1, duration: 2.8, ease: "power3.out" }, 3.4);
     Array.prototype.forEach.call(storyIllos, function (el, i) {
       var left = el.classList.contains("illo--l");
       stl.fromTo(el, { x: (left ? -1 : 1) * window.innerWidth * 0.8, rotation: (left ? -40 : 40) }, { x: 0, rotation: 0, duration: 2.3, ease: "power3.out" }, 4 + i * 0.12);
@@ -1015,9 +908,10 @@
   // Intro: words light up as you scroll
   var introWords = document.querySelectorAll(".intro__text .w");
   if (introWords.length) {
-    gsap.fromTo(introWords, { opacity: 0.14 }, {
-      opacity: 1, stagger: 0.06, ease: "none",
-      scrollTrigger: { trigger: ".intro", start: "top 80%", end: "bottom 55%", scrub: true },
+    // Short per-word fades over a long scroll, so the words light up one by one as you read
+    gsap.fromTo(introWords, { opacity: 0.1 }, {
+      opacity: 1, duration: 0.4, stagger: 0.12, ease: "none",
+      scrollTrigger: { trigger: ".intro__text", start: "top 85%", end: "bottom 30%", scrub: 0.6 },
     });
   }
 
@@ -1131,8 +1025,8 @@
   // Work cards
   if (grid) {
     Array.prototype.forEach.call(grid.querySelectorAll(".card"), function (card, i) {
-      card._reveal = gsap.fromTo(card, { y: 150, rotation: (i % 2 ? 8 : -8), opacity: 0 }, {
-        y: 0, rotation: 0, opacity: 1, duration: 1.3, delay: (i % 4) * 0.1, ease: "back.out(1.15)", clearProps: "transform,opacity",
+      card._reveal = gsap.fromTo(card, { y: 40, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 1.1, delay: (i % 4) * 0.08, ease: "power3.out", clearProps: "transform,opacity",
         scrollTrigger: { trigger: card, start: "top 94%", once: true },
       });
     });

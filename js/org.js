@@ -30,22 +30,23 @@ window.renderPage = function (h) {
   document.title = o.name + " — Sofia Nadine Gillegean";
 
   function section(title, inner) {
-    return '<section class="proj-body wrap" data-section><h2 data-reveal>' + esc(title) + '</h2><div data-reveal>' + inner + "</div></section>";
+    return '<section class="proj__block" data-reveal><h2>' + esc(title) + "</h2><div>" + inner + "</div></section>";
   }
 
   var words = o.name.split(" ");
   var last = words.pop();
   var titleHTML = '<span class="line"><span>' + (words.length ? esc(words.join(" ")) + " " : "") + "<em>" + esc(last) + "</em></span></span>";
 
+  // Same layout as project pages: photo on the left, details on the right
   var out =
-    '<section class="page-head"><div class="wrap">' +
+    '<div class="proj wrap">' +
+    '<aside class="proj__media"><div class="proj__photo">' + h.media(o.cover, o.tone, o.name + " photo", o.icon, o.name) + "</div></aside>" +
+    '<div class="proj__info"><header class="proj__head">' +
     '<p class="eyebrow">' + esc(o.years) + " · " + esc(o.place) + "</p>" +
     '<h1 class="page-title">' + titleHTML + "</h1>" +
     '<p class="lede">' + esc(o.summary) + "</p>" +
     '<dl class="proj-meta"><div><dt>Role</dt><dd>' + esc(o.role) + "</dd></div><div><dt>Years</dt><dd>" + esc(o.years) + "</dd></div><div><dt>Where</dt><dd>" + esc(o.place) + "</dd></div></dl>" +
-    "</div></section>";
-
-  if (o.cover) out += '<div class="wrap"><div class="proj-hero" data-parallax data-reveal>' + h.media(o.cover, o.tone, o.name + " photo", o.icon, o.name) + "</div></div>";
+    "</header>";
 
   if (o.did && o.did.length) {
     out += section("What I did", '<ul class="did-list">' + o.did.map(function (d) { return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>");
@@ -54,11 +55,12 @@ window.renderPage = function (h) {
     out += section("Results", '<div class="stats">' + o.results.map(function (s) { return '<div class="stat"><b>' + esc(s.value) + "</b><span>" + esc(s.label) + "</span></div>"; }).join("") + "</div>");
   }
   if (o.gallery && o.gallery.length) {
-    out += '<div class="wrap"><div class="gallery">' +
+    out += section("Gallery", '<div class="gallery">' +
       o.gallery.map(function (g, i) {
-        return '<figure data-reveal><div class="frame">' + h.media(g.src, ((o.tone + i) % 8) + 1, g.caption, o.icon, g.caption) + "</div>" + (g.caption ? "<figcaption>" + esc(g.caption) + "</figcaption>" : "") + "</figure>";
-      }).join("") + "</div></div>";
+        return '<figure><div class="frame">' + h.media(g.src, ((o.tone + i) % 8) + 1, g.caption, o.icon, g.caption) + "</div>" + (g.caption ? "<figcaption>" + esc(g.caption) + "</figcaption>" : "") + "</figure>";
+      }).join("") + "</div>");
   }
+  out += "</div></div>";
 
   out += '<a class="next-proj" href="org.html?id=' + encodeURIComponent(next.id) + '" data-section><div class="wrap"><p class="eyebrow">Next</p><p class="display" style="font-weight:600">' + esc(next.name) + " →</p></div></a>";
   root.innerHTML = out;

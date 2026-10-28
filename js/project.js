@@ -34,9 +34,9 @@ window.renderPage = function (h) {
 
   function section(title, inner) {
     return (
-      '<section class="proj-body wrap" data-section>' +
-      '<h2 data-reveal>' + esc(title) + "</h2>" +
-      '<div data-reveal>' + inner + "</div></section>"
+      '<section class="proj__block" data-reveal>' +
+      "<h2>" + esc(title) + "</h2>" +
+      "<div>" + inner + "</div></section>"
     );
   }
 
@@ -55,21 +55,23 @@ window.renderPage = function (h) {
 
   var out = "";
 
+  // Two columns: the photo stays on the left, the details scroll on the right
+  out +=
+    '<div class="proj wrap">' +
+    '<aside class="proj__media"><div class="proj__photo">' +
+    h.media(p.cover, p.tone, soon ? "Photos coming soon" : p.title + " — cover", p.category, p.title) +
+    "</div></aside>" +
+    '<div class="proj__info">';
+
   // Header
   out +=
-    '<section class="page-head"><div class="wrap">' +
+    '<header class="proj__head">' +
     '<p class="eyebrow">' + esc(h.CATEGORY_LABEL[p.category]) + (p.subtitle ? " · " + esc(p.subtitle) : "") + "</p>" +
     '<h1 class="page-title">' + titleHTML + "</h1>" +
     '<p class="lede">' + esc(p.summary) + "</p>" +
     '<dl class="proj-meta">' +
     meta.map(function (m) { return "<div><dt>" + esc(m[0]) + "</dt><dd>" + esc(m[1]) + "</dd></div>"; }).join("") +
-    "</dl></div></section>";
-
-  // Hero image
-  out +=
-    '<div class="wrap"><div class="proj-hero" data-parallax data-reveal>' +
-    h.media(p.cover, p.tone, soon ? "Case study coming soon" : p.title + " — cover", p.category, p.title) +
-    "</div></div>";
+    "</dl></header>";
 
   // Body
   out += section("Overview", "<p>" + esc(p.overview) + "</p>");
@@ -99,19 +101,21 @@ window.renderPage = function (h) {
 
   // Gallery
   if (p.gallery && p.gallery.length) {
-    out +=
-      '<div class="wrap"><div class="gallery">' +
+    out += section("Gallery",
+      '<div class="gallery">' +
       p.gallery
         .map(function (g, i) {
           return (
-            '<figure data-reveal><div class="frame">' +
+            '<figure><div class="frame">' +
             h.media(g.src, ((p.tone + i) % 8) + 1, g.caption, p.category, g.caption) +
             "</div>" + (g.caption ? "<figcaption>" + esc(g.caption) + "</figcaption>" : "") + "</figure>"
           );
         })
         .join("") +
-      "</div></div>";
+      "</div>");
   }
+
+  out += "</div></div>";
 
   // Next project
   out +=

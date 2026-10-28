@@ -196,9 +196,9 @@ window.SITE = {
       tone: 3,
       cover: "",
       status: "coming-soon",
-      summary: "A social media campaign for McDonald's desserts. Details to follow.",
+      summary: "Cast for McDonald's desserts social media campaign. Photos coming soon.",
       overview:
-        "I recently landed a social media campaign for McDonald's desserts. This page will carry the campaign, my part in it and the content once it is released.",
+        "I was cast in a social media campaign for McDonald's desserts. This page will carry the campaign, my part in it and the photos once they are released.",
       plan: ["The campaign and my role", "Content and highlights", "Results"],
     },
     { id: "empty-modelling", category: "modelling", empty: true, title: "More coming soon" },
