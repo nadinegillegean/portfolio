@@ -32,7 +32,8 @@
   --accent-deep: var(--esp);
   --radius: 10px;
   --font-sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-swash: "Imperial Script", "Instrument Serif", cursive;
   --font-serif: var(--font-display);
   --font-script: var(--font-display);
 }
@@ -400,8 +401,9 @@ html:not(.js-motion) .deck, html:not(.js-motion) .deck__ui { pointer-events: aut
 
 /* =========================================================
    Round 3: Cranberry Kiss, minimal
-   Flat surfaces, thin lines, soft lifts. Heavy serif headings
-   (Fraunces) with a clean sans (Inter Tight) for everything else.
+   Flat surfaces, thin lines, soft lifts. A light editorial serif
+   (Instrument Serif) with script capitals (Imperial Script) for
+   headings, and a clean sans (Inter Tight) for everything else.
    ========================================================= */
 
 /* ---------- Type ---------- */
@@ -410,8 +412,14 @@ h1, h2, h3, .bigdot, .logo, .contact__title, .page-title, .drawer__title, .type,
 .btn, .tab, .nav__links a, .eyebrow, .pillbtn, .pcard__tab, .soon, .type__side, .type__cue, .type__pron,
 .pc__idx, .msg b, .feature--panel .eyebrow { font-family: var(--font-sans); }
 .bigdot, .type, .marquee__track, .feature__big-title, .dc h3 { text-transform: none; }
-.bigdot, .page-title, .contact__title, .type, .feature__big-title { font-weight: 900; letter-spacing: -0.035em; }
-.type { line-height: 0.9; }
+.bigdot, .page-title, .contact__title, .type, .feature__big-title { font-weight: 400; letter-spacing: -0.03em; }
+h1, h2, h3, .logo, .dc h3, .ttcard b, .story__stat, .stat b, .next-proj .display, .proj__block h2 { font-weight: 400; }
+.type { line-height: 0.92; }
+.bigdot { font-size: clamp(3rem, 8vw, 6.6rem); }
+.logo { font-size: 1.15rem; }
+/* Script capital, like a drop initial: <span class="swash">S</span> */
+.swash, .type__line:first-child .ch:first-child { font-family: var(--font-swash); font-weight: 400; font-size: 1.32em; line-height: 0; letter-spacing: 0; margin-right: -0.04em; }
+em { font-style: italic; }
 .intro__text { font-family: var(--font-sans); font-weight: 500; letter-spacing: -0.025em; }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; color: var(--rose); }
 em { color: var(--pom); }
@@ -527,12 +535,12 @@ em { color: var(--pom); }
 .proj__photo { position: relative; width: 100%; max-width: 480px; aspect-ratio: 4 / 5; max-height: calc(100vh - var(--nav-h) - 72px); overflow: hidden; border-radius: 10px; background: var(--flax); }
 .proj__photo img, .proj__photo .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .proj__head { padding-bottom: clamp(28px, 3.4vw, 44px); }
-.proj__head .page-title { font-size: clamp(2.4rem, 4.8vw, 4.4rem); line-height: 0.98; }
+.proj__head .page-title { font-size: clamp(3rem, 6vw, 5.4rem); line-height: 0.95; }
 .proj__head .lede { margin-top: 18px; color: var(--esp); opacity: 0.8; }
 .proj .proj-meta { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 32px; margin-top: 28px; }
 .proj .proj-meta dt { font-size: 11px; font-weight: 600; color: var(--rose); }
 .proj__block { padding: clamp(26px, 3vw, 40px) 0; border-top: 1px solid var(--line); }
-.proj__block h2 { margin: 0 0 14px; font-weight: 700; font-size: clamp(1.25rem, 1.8vw, 1.6rem); letter-spacing: -0.02em; }
+.proj__block h2 { margin: 0 0 14px; font-size: clamp(1.6rem, 2.4vw, 2.1rem); letter-spacing: -0.02em; }
 .proj__block p { margin: 0; max-width: 62ch; font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.65; }
 .proj .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 0; }
 .proj .gallery figure:nth-child(3n + 1) { grid-column: auto; }
@@ -543,3 +551,107 @@ em { color: var(--pom); }
   .proj__media { position: static; }
   .proj__photo { max-width: none; max-height: 70vh; }
 }
+
+/* =========================================================
+   Round 4: editorial serif, folders, boarding pass, about
+   ========================================================= */
+
+/* The serif only comes in one weight, so keep every display face at 400 */
+.pc__idx, .marquee__track, .feature__text h3, .loader__mono, .logo, .feature__big-title { font-weight: 400; }
+.marquee__track { font-size: clamp(2rem, 4.6vw, 3.8rem); }
+.msg b { font-weight: 700; }
+.type { font-size: clamp(3rem, 12vw, 11rem); --fs: clamp(3rem, 12vw, 11rem); letter-spacing: -0.035em; }
+
+/* ---------- Category tabs sit on top of a folder ---------- */
+.folder__tabs { gap: 4px; margin: 0; padding-left: 18px; }
+.tab:nth-child(n) { position: relative; top: 1px; padding: 11px 22px 10px; border: 1px solid var(--line); border-bottom: 0; border-radius: 12px 12px 0 0;
+  background: var(--flax); color: var(--esp); }
+.tab:nth-child(n):hover { transform: translateY(-2px); box-shadow: none; }
+.tab[aria-selected="true"], .tab[aria-selected="true"]:nth-child(n) { z-index: 2; background: var(--paper); color: var(--esp); border-color: var(--line); }
+.tab[aria-selected="true"]:hover { transform: none; }
+.folder__panel { padding: clamp(24px, 3.6vw, 52px); border: 1px solid var(--line); border-radius: 0 18px 18px 18px; background: var(--paper); }
+
+/* ---------- Project cards as clean file folders ---------- */
+.pcard { --fold: var(--flax); }
+.suit-modelling { --fold: var(--pink-soft); }
+.suit-brand { --fold: var(--flax); }
+.suit-research { --fold: #f3ece9; }
+.pcard__tab { display: inline-flex; position: relative; z-index: 4; top: 1px; max-width: 78%; margin: 0; padding: 10px 18px 9px;
+  border: 1px solid var(--line); border-bottom: 0; border-radius: 10px 10px 0 0; background: var(--fold); color: var(--esp);
+  font-size: 11px; letter-spacing: 0.16em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pcard__tab span { overflow: hidden; text-overflow: ellipsis; }
+.pcard__body { padding: 12px 12px 16px; gap: 14px; border: 1px solid var(--line); border-radius: 0 12px 12px 12px; background: var(--fold); }
+.pcard__media { border-radius: 6px; }
+.pcard__sum, .pcard__meta { padding: 0 4px; }
+.card:hover .pcard__body { box-shadow: 0 18px 30px -24px rgba(74, 26, 51, 0.5); }
+.pcard--back { aspect-ratio: auto; height: 100%; min-height: 300px; border: 1px dashed rgba(74, 26, 51, 0.25); border-radius: 12px; background: transparent; box-shadow: none; }
+.hand { align-items: stretch; }
+
+/* ---------- Reels: one compact panel, no full-screen takeover ---------- */
+.reelstage { margin-bottom: clamp(28px, 4vw, 56px); }
+.reel .subhead:first-of-type { margin-top: 0; }
+
+/* ---------- Contact: boarding pass ---------- */
+.scrap { max-width: 860px; }
+.ticket { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); filter: drop-shadow(0 26px 30px rgba(74, 26, 51, 0.16)); }
+.ticket__main, .ticket__stub { position: relative; padding: clamp(22px, 3vw, 36px); background: var(--paper); }
+.ticket__main { border-radius: 18px 0 0 18px;
+  -webkit-mask: radial-gradient(circle 14px at 100% 0, transparent 13.5px, #000 14px) top / 100% 51% no-repeat, radial-gradient(circle 14px at 100% 100%, transparent 13.5px, #000 14px) bottom / 100% 51% no-repeat;
+          mask: radial-gradient(circle 14px at 100% 0, transparent 13.5px, #000 14px) top / 100% 51% no-repeat, radial-gradient(circle 14px at 100% 100%, transparent 13.5px, #000 14px) bottom / 100% 51% no-repeat; }
+.ticket__stub { display: flex; flex-direction: column; gap: 12px; border-radius: 0 18px 18px 0; background: var(--esp); color: var(--ivory);
+  transform-origin: 0 100%; transition: transform 0.6s var(--ease);
+  -webkit-mask: radial-gradient(circle 14px at 0 0, transparent 13.5px, #000 14px) top / 100% 51% no-repeat, radial-gradient(circle 14px at 0 100%, transparent 13.5px, #000 14px) bottom / 100% 51% no-repeat;
+          mask: radial-gradient(circle 14px at 0 0, transparent 13.5px, #000 14px) top / 100% 51% no-repeat, radial-gradient(circle 14px at 0 100%, transparent 13.5px, #000 14px) bottom / 100% 51% no-repeat; }
+.ticket__stub::before { content: ""; position: absolute; left: 0; top: 22px; bottom: 22px; border-left: 2px dashed rgba(253, 251, 250, 0.35); }
+.ticket:hover .ticket__stub, .ticket:focus-within .ticket__stub { transform: rotate(1.5deg) translate(4px, 1px); }
+.ticket__top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.ticket__brand { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--pom); }
+.ticket__kind, .ticket small, .ticket dt { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); }
+.ticket__route { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: clamp(14px, 2.4vw, 28px); margin: 22px 0; }
+.ticket__route b { display: block; margin-top: 4px; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.7rem, 3.4vw, 2.6rem); line-height: 1; letter-spacing: -0.02em; }
+.ticket__route > div:last-child { text-align: right; }
+.ticket__path { position: relative; height: 26px; margin-bottom: 6px; border-bottom: 1px dashed rgba(74, 26, 51, 0.3); }
+.ticket__plane { position: absolute; left: 0; bottom: -12px; width: 24px; height: 24px; color: var(--pom); transition: left 1.4s var(--ease); }
+.ticket__plane svg { display: block; width: 100%; height: 100%; }
+.ticket:hover .ticket__plane, .ticket:focus-within .ticket__plane { left: calc(100% - 24px); }
+.ticket__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 18px; margin: 0; }
+.ticket__grid dd { margin: 4px 0 0; font-weight: 600; font-size: 0.95rem; }
+.ticket__meta { margin: 20px 0 0; font-size: 0.9rem; color: var(--rose); }
+.ticket__stub small { color: rgba(253, 251, 250, 0.6); }
+.ticket__stub .contact__mail { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.25rem, 1.9vw, 1.5rem); line-height: 1.2; letter-spacing: 0; word-break: normal; overflow-wrap: anywhere; }
+.ticket__stub .contact__mail:hover { color: var(--pink); }
+.ticket__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.ticket__actions .btn { padding: 10px 18px; font-size: 14px; background: var(--ivory); color: var(--esp); border-color: var(--ivory); }
+.ticket__copy { padding: 10px 16px; border: 1px solid rgba(253, 251, 250, 0.35); border-radius: 999px; background: transparent; color: var(--ivory); font-size: 14px; transition: background 0.3s, color 0.3s; }
+.ticket__copy:hover { background: var(--ivory); color: var(--esp); }
+.ticket__stub .socials { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.ticket__stub .socials a, .ticket__stub .socials li:nth-child(even) a { padding: 5px 12px; font-size: 12px; background: transparent; border-color: rgba(253, 251, 250, 0.3); color: var(--ivory); }
+.ticket__stub .socials a:hover { background: var(--ivory); color: var(--esp); border-color: var(--ivory); }
+.ticket__bars { height: 34px; opacity: 0.55; background: repeating-linear-gradient(90deg, var(--ivory) 0 2px, transparent 2px 4px, var(--ivory) 4px 5px, transparent 5px 9px, var(--ivory) 9px 12px, transparent 12px 14px); }
+@media (max-width: 760px) {
+  .ticket { grid-template-columns: 1fr; }
+  .ticket__main { border-radius: 18px 18px 0 0; -webkit-mask: none; mask: none; }
+  .ticket__stub { border-radius: 0 0 18px 18px; -webkit-mask: none; mask: none; }
+  .ticket__stub::before { left: 22px; right: 22px; top: 0; bottom: auto; border-left: 0; border-top: 2px dashed rgba(253, 251, 250, 0.35); }
+  .ticket:hover .ticket__stub, .ticket:focus-within .ticket__stub { transform: none; }
+  .ticket__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ticket__route b { font-size: 1.5rem; }
+}
+
+/* ---------- About: a bit more of Sofia ---------- */
+.about-head .page-title { font-size: clamp(3.6rem, 10vw, 8.6rem); }
+.about-roles { margin: 14px 0 0; font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3.2rem); line-height: 1.1; letter-spacing: -0.02em; }
+.about-roles__word { display: inline-block; font-style: italic; color: var(--pom); transition: opacity 0.45s var(--ease), transform 0.45s var(--ease); }
+.about-roles__word.is-out { opacity: 0; transform: translateY(0.35em); }
+.portrait { cursor: pointer; }
+.portrait img + img, .portrait .portrait__alt { position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s var(--ease); }
+.portrait.is-alt .portrait__alt { opacity: 1; }
+@media (hover: hover) { .portrait:hover .portrait__alt { opacity: 1; } }
+.portrait__tag { position: absolute; left: 14px; bottom: 14px; z-index: 2; padding: 6px 14px; border-radius: 999px; background: rgba(253, 251, 250, 0.92);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: var(--esp); }
+.portrait__tag i { font-style: normal; color: var(--pom); }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; margin: 30px 0 0; }
+.facts div { padding: 14px 0; border-top: 1px solid var(--line); }
+.facts dt { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); }
+.facts dd { margin: 4px 0 0; font-family: var(--font-display); font-size: 1.45rem; line-height: 1.15; }
+@media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }

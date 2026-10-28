@@ -17,6 +17,18 @@ window.SITE = {
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
     portrait: "assets/img/portrait.jpg", // vertical photo; swap the file to change it
+    portraitAlt: "assets/img/teatro-main.jpg", // About page: shows on hover (or tap) as the "off camera" side
+    // About page: the word after "I'm a" cycles through these
+    roles: ["model", "stage manager", "soprano", "brand co-owner", "researcher", "engineering student"],
+    // About page: quick facts beside the bio
+    facts: [
+      ["Based in", "Metro Manila"],
+      ["Studying", "Industrial Engineering, DLSU"],
+      ["On camera", "UNIQLO PH, McDonald's"],
+      ["Behind it", "Stage manager, brand co-owner"],
+      ["Off duty", "Soprano 2, DLSU Chorale"],
+      ["Say it", "gil-ye-gan"],
+    ],
     credential: "Cast: UNIQLO PH", // Short line above the hero name. Leave empty to hide it.
     // Scrapbook ending: add your own images in assets/img/ and set the paths.
     postcard: "", // e.g. "assets/img/postcard.jpg"
@@ -70,6 +82,7 @@ window.SITE = {
       results: [{ value: "32k+", label: "views on the promo video" }],
       tone: 2, icon: "camera", cover: "assets/img/teatro-main.jpg", gallery: [
         { src: "assets/img/teatro-stage.jpg", caption: "The set before the show" },
+        { src: "assets/img/teatro-group.jpg", caption: "Cast and crew after the show" },
       ],
     },
     {
@@ -174,7 +187,7 @@ window.SITE = {
       year: "2026",
       role: "Model",
       tone: 1,
-      cover: "",
+      cover: "assets/img/uniqlo-cover.jpg",
       summary: "Cast for a UNIQLO PH shoot. Watch the first reels from it below.",
       overview:
         "I was cast for a UNIQLO PH shoot. The first reels from it are below, with behind-the-scenes moments and the full story to follow.",
@@ -194,9 +207,9 @@ window.SITE = {
       subtitle: "Social media campaign",
       year: "2026",
       tone: 3,
-      cover: "",
+      cover: "assets/img/mcdo-bts.jpg",
       status: "coming-soon",
-      summary: "Cast for McDonald's desserts social media campaign. Photos coming soon.",
+      summary: "Cast for McDonald's desserts social media campaign. Behind the scenes for now, campaign photos soon.",
       overview:
         "I was cast in a social media campaign for McDonald's desserts. This page will carry the campaign, my part in it and the photos once they are released.",
       plan: ["The campaign and my role", "Content and highlights", "Results"],
@@ -255,6 +268,28 @@ window.SITE = {
         { src: "assets/img/hk-perf-2.jpg", caption: "On stage" },
         { src: "assets/img/hk-group.jpg", caption: "With participants at the symposium" },
         { src: "assets/img/hk-perf-3.jpg", caption: "The final bow" },
+      ],
+    },
+    {
+      id: "teatro-lasalyano",
+      category: "brand",
+      title: "Teatro Lasalyano",
+      subtitle: "Stage management",
+      year: "2024",
+      role: "Stage Manager",
+      tone: 2,
+      cover: "assets/img/teatro-group.jpg",
+      summary: "Stage manager for the production \"Animulat: Ang Huling Takipsilim\", from cue sheets to the technical booth.",
+      overview:
+        "I was the stage manager for Teatro Lasalyano's production \"Animulat: Ang Huling Takipsilim\" at De La Salle University, keeping cast, crew and the technical side moving together.",
+      process:
+        "I built and maintained the production's cue sheets in Excel, ran the technical booth during the show and supported the production's promo video.",
+      outcome: "The production's promo video passed 32k views.",
+      stats: [{ value: "32k+", label: "views on the promo video" }],
+      credits: ["Teatro Lasalyano"],
+      gallery: [
+        { src: "assets/img/teatro-stage.jpg", caption: "The set before the show" },
+        { src: "assets/img/teatro-main.jpg", caption: "On headset, backstage" },
       ],
     },
     { id: "empty-brand", category: "brand", empty: true, title: "More coming soon" },

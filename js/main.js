@@ -335,8 +335,16 @@
 
   /* ---------- Reel: phone-frame videos + TikTok ---------- */
   var videosEl = document.querySelector("[data-videos]");
+  var readyVideos = SITE.videos.filter(function (v) { return v.src; });
+  if (videosEl && !readyVideos.length) {
+    // No real clips yet: hide the row instead of showing empty placeholders
+    var railHead = document.querySelector("[data-rail-prev]");
+    if (railHead) railHead.closest(".subhead").remove();
+    videosEl.remove();
+    videosEl = null;
+  }
   if (videosEl) {
-    videosEl.innerHTML = SITE.videos
+    videosEl.innerHTML = readyVideos
       .map(function (v) {
         var inner;
         if (v.src) {
@@ -532,13 +540,37 @@
     camEl.__slides = slides.length;
   }
 
-  /* ---------- Ending: photostrip, postcard and contact card ---------- */
+  /* ---------- Ending: contact as a boarding pass ---------- */
   Array.prototype.forEach.call(document.querySelectorAll("[data-scrap]"), function (box) {
     var pr = SITE.profile;
+    var flight = "SNG " + String(new Date().getFullYear()).slice(2);
     box.innerHTML =
-      '<div class="contact-card"><p class="contact-card__label">Email</p><a class="contact__mail" data-email href="#"></a>' +
+      '<div class="ticket" data-reveal>' +
+      '<div class="ticket__main">' +
+      '<div class="ticket__top"><span class="ticket__brand">Sofia Nadine Air</span><span class="ticket__kind">Boarding pass</span></div>' +
+      '<div class="ticket__route">' +
+      "<div><small>From</small><b>Your idea</b></div>" +
+      '<div class="ticket__path" aria-hidden="true"><span class="ticket__plane">' + ICONS.plane + "</span></div>" +
+      "<div><small>To</small><b>Done, beautifully</b></div></div>" +
+      '<dl class="ticket__grid">' +
+      "<div><dt>Passenger</dt><dd>You</dd></div>" +
+      "<div><dt>Flight</dt><dd>" + flight + "</dd></div>" +
+      "<div><dt>Seat</dt><dd>Front row</dd></div>" +
+      "<div><dt>Gate</dt><dd>Your inbox</dd></div></dl>" +
+      '<p class="ticket__meta">Departing ' + esc(pr.location) + " · Shoots, brand work, events and collaborations.</p></div>" +
+      '<div class="ticket__stub">' +
+      "<small>Check in by email</small>" +
+      '<a class="contact__mail" data-email href="#"></a>' +
+      '<div class="ticket__actions"><a class="btn" data-email href="#">Board now →</a><button class="ticket__copy" type="button" data-copy-email>Copy email</button></div>' +
       '<ul class="socials" data-socials></ul>' +
-      '<p class="contact-card__meta">' + esc(pr.location) + " · Open to shoots, brand work and collaborations.</p></div>";
+      '<div class="ticket__bars" aria-hidden="true"></div></div></div>';
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-copy-email]"), function (btn) {
+    btn.addEventListener("click", function () {
+      var done = function () { btn.textContent = "Copied ✓"; setTimeout(function () { btn.textContent = "Copy email"; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(SITE.profile.email).then(done, function () { btn.textContent = SITE.profile.email; });
+      else btn.textContent = SITE.profile.email;
+    });
   });
 
   /* ---------- Contact links ---------- */
@@ -998,29 +1030,6 @@
     });
   }
 
-  // Reels: the dark panel tilts, grows to fill the screen, then a big headline rises over it
-  var reelStage = document.querySelector("[data-reelstage]");
-  var reelPanel = reelStage && reelStage.querySelector("[data-feature]");
-  if (reelStage && reelPanel && gsap.matchMedia) {
-    gsap.matchMedia().add("(min-width: 900px)", function () {
-      html.classList.add("js-reelpin");
-      var small = reelPanel.querySelector(".feature__text");
-      var big = reelPanel.querySelector(".feature__big");
-      var bigLines = big.querySelectorAll(".ln__in");
-      var bigBtn = big.querySelector(".btn");
-      gsap.set(reelPanel, { scale: 0.8, borderRadius: 44, rotationX: 10, rotationZ: -3, transformPerspective: 1200 });
-      gsap.set(bigLines, { yPercent: 118 });
-      gsap.set(bigBtn, { autoAlpha: 0, y: 20 });
-      gsap.to(reelPanel, { scale: 1, borderRadius: 0, rotationX: 0, rotationZ: 0, ease: "none",
-        scrollTrigger: { trigger: reelStage, start: "top 80%", end: "top top", scrub: 0.6 } });
-      gsap.timeline({ scrollTrigger: { trigger: reelStage, start: "top top", end: "bottom bottom", scrub: 0.6 } })
-        .to(small, { x: 160, rotation: 5, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0.05)
-        .to(bigLines, { yPercent: 0, duration: 0.35, stagger: 0.1, ease: "power3.out" }, 0.3)
-        .to(bigBtn, { autoAlpha: 1, y: 0, duration: 0.2, ease: "power2.out" }, 0.62)
-        .to({}, { duration: 0.25 });
-      return function () { html.classList.remove("js-reelpin"); };
-    });
-  }
 
   // Work cards
   if (grid) {
