@@ -572,6 +572,9 @@
   Array.prototype.forEach.call(document.querySelectorAll("[data-scrap]"), function (box) {
     var pr = SITE.profile;
     var year = new Date().getFullYear();
+    var driveAttrs = pr.driveUrl
+      ? 'href="' + esc(pr.driveUrl) + '" target="_blank" rel="noopener"'
+      : 'href="mailto:' + esc(pr.email) + "?subject=" + encodeURIComponent("Setcard & VTR access request") + '"';
     box.innerHTML =
       '<div class="ticket" data-reveal>' +
       '<div class="ticket__main">' +
@@ -581,7 +584,7 @@
       '<div class="ticket__path" aria-hidden="true"><span class="ticket__plane">' + ICONS.plane + "</span></div>" +
       "<div><small>To</small><b>ANY</b><span>Wherever the work is</span></div></div>" +
       '<dl class="ticket__grid">' +
-      "<div><dt>Name</dt><dd>Sofia N. Gillegean</dd></div>" +
+      "<div><dt>Name</dt><dd>Sofia Nadine C. Gillegean</dd></div>" +
       "<div><dt>Services</dt><dd>Modelling · Content · Events</dd></div>" +
       "<div><dt>Status</dt><dd>Open for bookings " + year + "</dd></div>" +
       "<div><dt>Reply</dt><dd>Within 48 hours</dd></div></dl>" +
@@ -590,6 +593,7 @@
       "<small>Bookings &amp; enquiries</small>" +
       '<a class="contact__mail" data-email href="#"></a>' +
       '<div class="ticket__actions"><a class="btn" data-email href="#">Email me →</a><button class="ticket__copy" type="button" data-copy-email>Copy email</button></div>' +
+      '<a class="ticket__drive" ' + driveAttrs + '><span>Request setcard &amp; VTR</span><small>Google Drive · access on request</small></a>' +
       '<ul class="socials" data-socials></ul>' +
       '<div class="ticket__bars" aria-hidden="true"></div></div></div>';
   });

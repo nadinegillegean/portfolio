@@ -16,6 +16,9 @@ window.SITE = {
     tagline: ["Creative", "Researcher", "Student"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
+    // Google Drive folder with the setcard and VTR. Keep it restricted: visitors get Google's "Request access" screen.
+    // Left empty, the button emails a request instead.
+    driveUrl: "",
     portrait: "assets/img/portrait.jpg", // vertical photo; swap the file to change it
     portraitAlt: "assets/img/teatro-main.jpg", // About page: shows on hover (or tap) as the "off camera" side
     // About page: the word after "I'm a" cycles through these

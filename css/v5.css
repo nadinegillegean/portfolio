@@ -627,6 +627,10 @@ em { color: var(--pom); }
 .ticket__actions .btn { padding: 10px 18px; font-size: 14px; background: var(--ivory); color: var(--esp); border-color: var(--ivory); }
 .ticket__copy { padding: 10px 16px; border: 1px solid rgba(253, 251, 250, 0.35); border-radius: 999px; background: transparent; color: var(--ivory); font-size: 14px; transition: background 0.3s, color 0.3s; }
 .ticket__copy:hover { background: var(--ivory); color: var(--esp); }
+.ticket__drive { display: flex; flex-direction: column; gap: 3px; padding: 12px 16px; border: 1px dashed rgba(253, 251, 250, 0.4); border-radius: var(--radius); color: var(--ivory); font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+.ticket__drive span::after { content: " →"; }
+.ticket__stub .ticket__drive small { font-size: 12px; font-weight: 400; letter-spacing: 0; text-transform: none; opacity: 0.7; color: inherit; margin: 0; }
+.ticket__drive:hover { background: var(--ivory); color: var(--esp); border-color: var(--ivory); }
 .ticket__stub .socials { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
 .ticket__stub .socials a, .ticket__stub .socials li:nth-child(even) a { padding: 5px 12px; font-size: 12px; background: transparent; border-color: rgba(253, 251, 250, 0.3); color: var(--ivory); }
 .ticket__stub .socials a:hover { background: var(--ivory); color: var(--esp); border-color: var(--ivory); }
