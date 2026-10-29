@@ -84,7 +84,7 @@ em { font-family: inherit; font-style: normal; color: var(--pom); }
 .aura.is-on { opacity: 1; }
 
 /* ---------- Story: type intro -> flood -> deck + drawings ---------- */
-.scene { position: relative; height: 520vh; background: var(--ivory); }
+.scene { position: relative; height: 610vh; background: var(--ivory); }
 .scene__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .scene__flood { position: absolute; inset: 0; background: var(--pink); --r: 0%; clip-path: circle(var(--r) at 50% 62%); }
 .scene__type { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; will-change: transform, opacity; }
@@ -285,7 +285,7 @@ html:not(.js-motion) .deck, html:not(.js-motion) .deck__ui { pointer-events: aut
   .type__side { display: none; }
 }
 @media (max-width: 760px) {
-  .scene { height: 440vh; }
+  .scene { height: 520vh; }
   .deck { height: min(48vh, 400px); }
   .scene__stage { padding-bottom: 16vh; }
   .nav__links li:not(:last-child) { display: none; }
@@ -610,15 +610,18 @@ em { color: var(--pom); }
 .ticket__route { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: clamp(14px, 2.4vw, 28px); margin: 22px 0; }
 .ticket__route b { display: block; margin-top: 4px; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.7rem, 3.4vw, 2.6rem); line-height: 1; letter-spacing: -0.02em; }
 .ticket__route > div:last-child { text-align: right; }
-.ticket__path { position: relative; height: 26px; margin-bottom: 6px; border-bottom: 1px dashed rgba(74, 26, 51, 0.3); }
+.ticket__route b { font-size: clamp(2.4rem, 5vw, 3.8rem); letter-spacing: 0.01em; }
+.ticket__route span { display: block; margin-top: 4px; font-size: 0.85rem; color: var(--rose); }
+.ticket__brand { font-size: 1.35rem; }
+.ticket__path { position: relative; height: 26px; margin-bottom: 34px; border-bottom: 1px dashed rgba(74, 26, 51, 0.3); }
 .ticket__plane { position: absolute; left: 0; bottom: -12px; width: 24px; height: 24px; color: var(--pom); transition: left 1.4s var(--ease); }
 .ticket__plane svg { display: block; width: 100%; height: 100%; }
 .ticket:hover .ticket__plane, .ticket:focus-within .ticket__plane { left: calc(100% - 24px); }
-.ticket__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 18px; margin: 0; }
+.ticket__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; margin: 0; }
 .ticket__grid dd { margin: 4px 0 0; font-weight: 600; font-size: 0.95rem; }
 .ticket__meta { margin: 20px 0 0; font-size: 0.9rem; color: var(--rose); }
 .ticket__stub small { color: rgba(253, 251, 250, 0.6); }
-.ticket__stub .contact__mail { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.25rem, 1.9vw, 1.5rem); line-height: 1.2; letter-spacing: 0; word-break: normal; overflow-wrap: anywhere; }
+.ticket__stub .contact__mail { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.05rem, 1.45vw, 1.25rem); line-height: 1.2; letter-spacing: 0; word-break: normal; overflow-wrap: anywhere; }
 .ticket__stub .contact__mail:hover { color: var(--pink); }
 .ticket__actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .ticket__actions .btn { padding: 10px 18px; font-size: 14px; background: var(--ivory); color: var(--esp); border-color: var(--ivory); }
@@ -655,3 +658,38 @@ em { color: var(--pom); }
 .facts dt { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); }
 .facts dd { margin: 4px 0 0; font-family: var(--font-display); font-size: 1.45rem; line-height: 1.15; }
 @media (max-width: 560px) { .facts { grid-template-columns: 1fr; } }
+
+/* =========================================================
+   Round 5: page transitions, custom cursor
+   ========================================================= */
+
+/* ---------- Page changes: a soft crossfade ---------- */
+@view-transition { navigation: auto; }
+.nav { view-transition-name: site-nav; }
+::view-transition-old(root) { animation: vt-out 0.35s cubic-bezier(0.4, 0, 0.2, 1) both; }
+::view-transition-new(root) { animation: vt-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes vt-out { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+.pt__veil { position: absolute; inset: 0; background: var(--ivory); opacity: 0; }
+.pt-cover .pt__veil { opacity: 1; }
+
+/* ---------- Cursor: dot + easing ring (fine pointers only) ---------- */
+.has-cursor, .has-cursor * { cursor: none !important; }
+.has-cursor input, .has-cursor textarea, .has-cursor iframe { cursor: auto !important; }
+.cursor { position: fixed; left: 0; top: 0; z-index: 300; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
+.cursor.is-on { opacity: 1; }
+.cursor__dot, .cursor__ring { position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform; }
+.cursor__dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--pom); transition: opacity 0.25s, background 0.25s; }
+.cursor__ring::after { content: ""; position: absolute; left: -15px; top: -15px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(74, 26, 51, 0.55);
+  transition: transform 0.35s var(--ease), background 0.35s, border-color 0.35s; }
+.cursor.is-hover .cursor__ring::after { transform: scale(1.75); background: rgba(244, 218, 218, 0.45); border-color: rgba(140, 29, 59, 0.35); }
+.cursor.is-hover .cursor__dot { opacity: 0; }
+.cursor.is-down .cursor__ring::after { transform: scale(0.8); }
+.cursor.is-hover.is-down .cursor__ring::after { transform: scale(1.5); }
+.cursor.is-light .cursor__dot { background: var(--ivory); }
+.cursor.is-light .cursor__ring::after { border-color: rgba(253, 251, 250, 0.6); }
+.cursor.is-light.is-hover .cursor__ring::after { background: rgba(253, 251, 250, 0.14); border-color: rgba(253, 251, 250, 0.5); }
+@media (hover: none) { .cursor { display: none; } }

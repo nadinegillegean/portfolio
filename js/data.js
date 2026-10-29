@@ -54,7 +54,7 @@ window.SITE = {
     { kind: "text", title: "Creative", text: "Shoots, brand work, content and events.", idx: "C", suit: "\u2663", tone: "pom" },
     { kind: "text", title: "Researcher", text: "The research that makes the work work.", idx: "R", suit: "\u2666", tone: "flax" },
     { kind: "text", title: "Student", text: "Industrial Engineering at De La Salle University.", idx: "S", suit: "\u2660", tone: "esp" },
-    { kind: "text", title: "Model", text: "Cast: UNIQLO PH.", idx: "M", suit: "\u2665", tone: "pink" },
+    { kind: "text", title: "Model", text: "Brand shoots, campaigns and editorials.", idx: "M", suit: "\u2665", tone: "pink" },
   ],
 
   // Experience list + detail pages (org.html?id=...). Facts come from your resume; edit freely.

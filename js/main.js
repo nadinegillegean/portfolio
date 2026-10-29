@@ -49,6 +49,39 @@
   var cred = document.querySelector("[data-credential]");
   if (cred && SITE.profile.credential) cred.textContent = SITE.profile.credential;
 
+  /* ---------- Cursor: a small dot with a ring that eases behind it ---------- */
+  if (finePointer && !reduceMotion) {
+    var cur = document.createElement("div");
+    cur.className = "cursor";
+    cur.setAttribute("aria-hidden", "true");
+    cur.innerHTML = '<span class="cursor__ring"></span><span class="cursor__dot"></span>';
+    document.body.appendChild(cur);
+    html.classList.add("has-cursor");
+    var cRing = cur.firstChild, cDot = cur.lastChild;
+    var cx = -100, cy = -100, rx = -100, ry = -100;
+    var HOVER = "a, button, [role='tab'], .tab, .dc, .card, .portrait, .ticket, label, summary";
+    var DARK = ".wins, .feature--panel, .ticket__stub, .next-proj:hover, .loader, .contact-card";
+    window.addEventListener("pointermove", function (e) {
+      cx = e.clientX; cy = e.clientY;
+      var t = e.target;
+      cur.classList.add("is-on");
+      cur.classList.toggle("is-hover", !!(t.closest && t.closest(HOVER)));
+      cur.classList.toggle("is-light", !!(t.closest && t.closest(DARK)));
+    }, { passive: true });
+    window.addEventListener("pointerdown", function () { cur.classList.add("is-down"); });
+    window.addEventListener("pointerup", function () { cur.classList.remove("is-down"); });
+    // Hide when the pointer leaves the page or moves into an embed (Instagram, TikTok)
+    document.documentElement.addEventListener("pointerleave", function () { cur.classList.remove("is-on"); });
+    window.addEventListener("blur", function () { cur.classList.remove("is-on"); });
+    document.addEventListener("pointerover", function (e) { if (e.target.tagName === "IFRAME") cur.classList.remove("is-on"); });
+    (function cloop() {
+      rx += (cx - rx) * 0.18; ry += (cy - ry) * 0.18;
+      cDot.style.transform = "translate3d(" + cx + "px," + cy + "px,0)";
+      cRing.style.transform = "translate3d(" + rx.toFixed(1) + "px," + ry.toFixed(1) + "px,0)";
+      requestAnimationFrame(cloop);
+    })();
+  }
+
   /* ---------- Hero story elements ---------- */
   var storyEl = document.querySelector("[data-story]");
   var deckEl = document.querySelector("[data-deck]");
@@ -87,23 +120,29 @@
       });
       if (deckLabel) deckLabel.textContent = cards[order[0]].title;
     };
-    var deckBusy = false, deckFlipAt = Date.now(), deckHover = false;
+    var deckBusy = false, deckQueue = 0;
+    // Scroll can cross several steps at once: queue them and play one swipe at a time
+    var drainDeck = function () {
+      if (deckBusy || !deckQueue) return;
+      var d = deckQueue > 0 ? 1 : -1;
+      deckQueue -= d;
+      goDeck(d, -1);
+    };
     var goDeck = function (dir, side) {
       if (deckBusy || dcs.length < 2) return;
       deckBusy = true;
-      deckFlipAt = Date.now();
       var cls = side ? (side < 0 ? "is-out-l" : "is-out") : "is-flip";
       if (dir > 0) {
         var topCard = dcs[order[0]];
         topCard.classList.add(cls);
-        setTimeout(function () { topCard.classList.remove("is-out", "is-out-l", "is-flip"); topCard.style.transform = ""; order.push(order.shift()); paintDeck(); deckBusy = false; }, side ? 460 : 820);
+        setTimeout(function () { topCard.classList.remove("is-out", "is-out-l", "is-flip"); topCard.style.transform = ""; order.push(order.shift()); paintDeck(); deckBusy = false; drainDeck(); }, side ? 460 : 820);
       } else {
         var back = dcs[order[order.length - 1]];
         back.classList.add(cls, "no-tr");
         void back.offsetWidth;
         order.unshift(order.pop());
         paintDeck();
-        requestAnimationFrame(function () { back.classList.remove("no-tr"); back.classList.remove(cls); deckBusy = false; });
+        requestAnimationFrame(function () { back.classList.remove("no-tr"); back.classList.remove(cls); setTimeout(function () { deckBusy = false; drainDeck(); }, 460); });
       }
     };
     paintDeck();
@@ -137,17 +176,6 @@
     deckEl.addEventListener("pointerup", endDrag);
     deckEl.addEventListener("pointercancel", endDrag);
     var deckUi = document.querySelector("[data-deck-ui]");
-    // Auto-play: while the deck is on screen and live, it flips to the next card by itself
-    deckEl.addEventListener("pointerenter", function () { deckHover = true; });
-    deckEl.addEventListener("pointerleave", function () { deckHover = false; });
-    if (!reduceMotion) {
-      setInterval(function () {
-        if (!deckUi || !deckUi.classList.contains("is-live") || deckHover || drag || document.hidden || deckBusy) return;
-        var r = storyEl.getBoundingClientRect();
-        if (r.bottom < window.innerHeight * 0.6 || r.top > 0) return;
-        if (Date.now() - deckFlipAt > 3600) goDeck(1);
-      }, 400);
-    }
     document.addEventListener("keydown", function (e) {
       if (!deckUi || !deckUi.classList.contains("is-live")) return;
       if (e.key === "ArrowRight") goDeck(1);
@@ -543,25 +571,25 @@
   /* ---------- Ending: contact as a boarding pass ---------- */
   Array.prototype.forEach.call(document.querySelectorAll("[data-scrap]"), function (box) {
     var pr = SITE.profile;
-    var flight = "SNG " + String(new Date().getFullYear()).slice(2);
+    var year = new Date().getFullYear();
     box.innerHTML =
       '<div class="ticket" data-reveal>' +
       '<div class="ticket__main">' +
-      '<div class="ticket__top"><span class="ticket__brand">Sofia Nadine Air</span><span class="ticket__kind">Boarding pass</span></div>' +
+      '<div class="ticket__top"><span class="ticket__brand">' + esc(pr.name) + '</span><span class="ticket__kind">Booking pass</span></div>' +
       '<div class="ticket__route">' +
-      "<div><small>From</small><b>Your idea</b></div>" +
+      "<div><small>From</small><b>MNL</b><span>Metro Manila</span></div>" +
       '<div class="ticket__path" aria-hidden="true"><span class="ticket__plane">' + ICONS.plane + "</span></div>" +
-      "<div><small>To</small><b>Done, beautifully</b></div></div>" +
+      "<div><small>To</small><b>ANY</b><span>Wherever the work is</span></div></div>" +
       '<dl class="ticket__grid">' +
-      "<div><dt>Passenger</dt><dd>You</dd></div>" +
-      "<div><dt>Flight</dt><dd>" + flight + "</dd></div>" +
-      "<div><dt>Seat</dt><dd>Front row</dd></div>" +
-      "<div><dt>Gate</dt><dd>Your inbox</dd></div></dl>" +
-      '<p class="ticket__meta">Departing ' + esc(pr.location) + " · Shoots, brand work, events and collaborations.</p></div>" +
+      "<div><dt>Name</dt><dd>Sofia N. Gillegean</dd></div>" +
+      "<div><dt>Services</dt><dd>Modelling · Content · Events</dd></div>" +
+      "<div><dt>Status</dt><dd>Open for bookings " + year + "</dd></div>" +
+      "<div><dt>Reply</dt><dd>Within 48 hours</dd></div></dl>" +
+      '<p class="ticket__meta">Based in ' + esc(pr.location.split(",")[0]) + " · Available for shoots, brand work, events and collaborations.</p></div>" +
       '<div class="ticket__stub">' +
-      "<small>Check in by email</small>" +
+      "<small>Bookings &amp; enquiries</small>" +
       '<a class="contact__mail" data-email href="#"></a>' +
-      '<div class="ticket__actions"><a class="btn" data-email href="#">Board now →</a><button class="ticket__copy" type="button" data-copy-email>Copy email</button></div>' +
+      '<div class="ticket__actions"><a class="btn" data-email href="#">Email me →</a><button class="ticket__copy" type="button" data-copy-email>Copy email</button></div>' +
       '<ul class="socials" data-socials></ul>' +
       '<div class="ticket__bars" aria-hidden="true"></div></div></div>';
   });
@@ -757,12 +785,18 @@
     } catch (err) {}
     if (reduceMotion || !hasGSAP) { html.classList.remove("pt-cover"); return; }
 
-    // Page-transition panels live on every page
-    ptEl = document.createElement("div");
-    ptEl.className = "pt";
-    ptEl.innerHTML = '<div class="pt__pink"></div><div class="pt__blue"><span class="pt__mono">SNG</span></div>';
-    document.body.appendChild(ptEl);
-    if (ptIn) heroBase = 1.0;
+    // Page changes: browsers with cross-document view transitions crossfade natively (see v5.css);
+    // the rest get a soft ivory veil that fades out and back in
+    if (!window.CSSViewTransitionRule) {
+      ptEl = document.createElement("div");
+      ptEl.className = "pt";
+      ptEl.innerHTML = '<div class="pt__veil"></div>';
+      document.body.appendChild(ptEl);
+      if (ptIn) heroBase = 0.4;
+    } else {
+      ptIn = false;
+      html.classList.remove("pt-cover");
+    }
 
     if (seen) return;
     loaderEl = document.createElement("div");
@@ -830,17 +864,14 @@
     setTimeout(finish, 8000);
   }
 
-  // Page transitions: colour wipe covers the page before leaving, and lifts away on the next page
+  // Page transitions (fallback only): the veil fades in before leaving and fades out on the next page
   if (ptEl) {
-    var ptPink = ptEl.querySelector(".pt__pink");
-    var ptBlue = ptEl.querySelector(".pt__blue");
-    gsap.set([ptPink, ptBlue], { yPercent: 100 });
-    var ptReset = function () { gsap.set([ptPink, ptBlue], { yPercent: 100 }); ptEl.style.visibility = "hidden"; html.classList.remove("pt-cover"); };
+    var ptVeil = ptEl.querySelector(".pt__veil");
+    var ptReset = function () { gsap.set(ptVeil, { opacity: 0 }); ptEl.style.visibility = "hidden"; html.classList.remove("pt-cover"); };
     if (ptIn) {
-      gsap.set([ptPink, ptBlue], { yPercent: 0 });
+      gsap.set(ptVeil, { opacity: 1 });
       html.classList.remove("pt-cover");
-      gsap.to(ptBlue, { yPercent: -100, duration: 0.9, ease: "power4.inOut", delay: 0.1 });
-      gsap.to(ptPink, { yPercent: -100, duration: 0.9, ease: "power4.inOut", delay: 0.22, onComplete: ptReset });
+      gsap.to(ptVeil, { opacity: 0, duration: 0.55, ease: "power2.out", delay: 0.05, onComplete: ptReset });
     } else {
       ptEl.style.visibility = "hidden";
     }
@@ -855,12 +886,7 @@
       try { sessionStorage.setItem("sn_pt", "1"); } catch (err) {}
       var href = a.href;
       ptEl.style.visibility = "visible";
-      gsap.set([ptPink, ptBlue], { yPercent: 100 });
-      gsap.timeline({ onComplete: function () { window.location.href = href; } })
-        .to(ptPink, { yPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0)
-        .to(ptBlue, { yPercent: 0, duration: 0.6, ease: "power3.inOut" }, 0.12)
-        .from(ptBlue.querySelector(".pt__mono"), { scale: 0.8, opacity: 0, duration: 0.4, ease: "power3.out" }, 0.45)
-        .to({}, { duration: 0.18 });
+      gsap.fromTo(ptVeil, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power2.inOut", onComplete: function () { window.location.href = href; } });
     });
     window.addEventListener("pageshow", function (e) { if (e.persisted) ptReset(); });
   }
@@ -889,12 +915,13 @@
         onUpdate: function (self) {
           typeOn = self.progress < 0.3;
           storyEl.classList.toggle("is-flooded", self.progress > 0.2);
-          uiEl.classList.toggle("is-live", self.progress > 0.66);
+          uiEl.classList.toggle("is-live", self.progress > 0.55);
           stageEl.classList.toggle("is-live", self.progress > 0.3);
-          if (cards.length > 1 && uiEl.classList.contains("is-live")) {
-            var step = Math.max(0, Math.floor((self.progress - 0.8) / 0.19 * (cards.length - 1)));
+          // One card per stretch of scroll: the window 0.6-0.98 is split evenly across the cards
+          if (cards.length > 1) {
+            var step = Math.min(cards.length - 1, Math.max(0, Math.floor((self.progress - 0.6) / 0.38 * (cards.length - 1))));
             if (deckStep === null) deckStep = step;
-            else if (step !== deckStep) { var dd = step > deckStep ? 1 : -1; deckStep = step; goDeck(dd); }
+            else if (step !== deckStep) { deckQueue += step - deckStep; deckStep = step; drainDeck(); }
           }
         },
       },
@@ -922,7 +949,7 @@
       gsap.timeline().to(el, { rotation: "+=360", scale: 1.3, duration: 0.7, ease: "back.out(2)" }).to(el, { scale: 1, duration: 0.5, ease: "elastic.out(1,0.5)" }, ">-0.2");
     });
     stl.fromTo(uiEl, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" }, 6.3)
-      .to({}, { duration: 2.2 }, 7.3);
+      .to({}, { duration: 4.2 }, 7.3);
   }
 
   // Marquee: runs by itself, speeds up (and reverses) with your scroll
@@ -1030,6 +1057,30 @@
     });
   }
 
+
+  // Reels: the dark panel tilts, grows to fill the screen, then a big headline rises over it
+  var reelStage = document.querySelector("[data-reelstage]");
+  var reelPanel = reelStage && reelStage.querySelector("[data-feature]");
+  if (reelStage && reelPanel && gsap.matchMedia) {
+    gsap.matchMedia().add("(min-width: 900px)", function () {
+      html.classList.add("js-reelpin");
+      var small = reelPanel.querySelector(".feature__text");
+      var big = reelPanel.querySelector(".feature__big");
+      var bigLines = big.querySelectorAll(".ln__in");
+      var bigBtn = big.querySelector(".btn");
+      gsap.set(reelPanel, { scale: 0.8, borderRadius: 44, rotationX: 10, rotationZ: -3, transformPerspective: 1200 });
+      gsap.set(bigLines, { yPercent: 118 });
+      gsap.set(bigBtn, { autoAlpha: 0, y: 20 });
+      gsap.to(reelPanel, { scale: 1, borderRadius: 0, rotationX: 0, rotationZ: 0, ease: "none",
+        scrollTrigger: { trigger: reelStage, start: "top 80%", end: "top top", scrub: 0.6 } });
+      gsap.timeline({ scrollTrigger: { trigger: reelStage, start: "top top", end: "bottom bottom", scrub: 0.6 } })
+        .to(small, { x: 160, rotation: 5, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0.05)
+        .to(bigLines, { yPercent: 0, duration: 0.35, stagger: 0.1, ease: "power3.out" }, 0.3)
+        .to(bigBtn, { autoAlpha: 1, y: 0, duration: 0.2, ease: "power2.out" }, 0.62)
+        .to({}, { duration: 0.25 });
+      return function () { html.classList.remove("js-reelpin"); };
+    });
+  }
 
   // Work cards
   if (grid) {
