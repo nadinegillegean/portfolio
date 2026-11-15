@@ -27,7 +27,12 @@ window.renderPage = function (h) {
   }
 
   var p = projects[index];
-  var next = projects[(index + 1) % projects.length];
+  // Next real project, skipping "More coming soon" placeholder cards
+  var next = p;
+  for (var j = 1; j < projects.length; j++) {
+    var cand = projects[(index + j) % projects.length];
+    if (!cand.empty) { next = cand; break; }
+  }
   var soon = p.status === "coming-soon";
   var esc = h.esc;
   document.title = p.title + " — Sofia Nadine Gillegean";
