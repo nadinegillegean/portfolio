@@ -77,7 +77,7 @@ window.renderPage = function (h) {
   out += section("Overview", "<p>" + esc(p.overview) + "</p>");
 
   if (p.reels && p.reels.length) {
-    out += section("The reels", '<div class="phones phones--duo">' + p.reels.map(h.igPhone).join("") + "</div>");
+    out += section(p.reelsTitle || "The reels",'<div class="phones phones--duo">' + p.reels.map(h.igPhone).join("") + "</div>");
   }
 
   if (soon) {

@@ -323,13 +323,14 @@
   }
 
   /* ---------- Instagram reels: a poster with a play button; the embed loads on tap ---------- */
-  function igId(url) { return (String(url).match(/\/(?:reel|p)\/([\w-]+)/) || [])[1]; }
+  // Returns "reel/<id>" or "p/<id>" so both reels and regular posts embed
+  function igId(url) { var m = String(url).match(/\/(reel|p)\/([\w-]+)/); return m ? m[1] + "/" + m[2] : ""; }
   function igPhone(r, i) {
     var id = igId(r.url);
     return (
       '<div class="phone" data-reveal><div class="phone__screen" data-ig="' + esc(id || "") + '">' +
       (id
-        ? '<div class="phone__embed"><iframe src="https://www.instagram.com/reel/' + esc(id) + '/embed/" title="Instagram reel: ' + esc(r.title) + " " + esc(r.note || "") + '" allowfullscreen loading="lazy"></iframe></div>'
+        ? '<div class="phone__embed"><iframe src="https://www.instagram.com/' + esc(id) + '/embed/" title="Instagram post: ' + esc(r.title) + " " + esc(r.note || "") + '" allowfullscreen loading="lazy"></iframe></div>'
         : media("", [1, 4][i % 2], r.title, "video", r.title) +
           '<a class="phone__play" href="' + esc(r.url) + '" target="_blank" rel="noopener" aria-label="Open on Instagram"><span>▶</span></a>' +
           '<div class="phone__label">' + esc(r.title) + (r.note ? "<small>" + esc(r.note) + "</small>" : "") + "</div>") +
@@ -342,7 +343,7 @@
     if (!screen || !screen.getAttribute("data-ig")) return;
     var box = document.createElement("div");
     box.className = "phone__embed";
-    box.innerHTML = '<iframe src="https://www.instagram.com/reel/' + esc(screen.getAttribute("data-ig")) + '/embed/" title="Instagram reel" allowfullscreen loading="lazy"></iframe>';
+    box.innerHTML = '<iframe src="https://www.instagram.com/' + esc(screen.getAttribute("data-ig")) + '/embed/" title="Instagram post" allowfullscreen loading="lazy"></iframe>';
     screen.appendChild(box);
     btn.remove();
   });

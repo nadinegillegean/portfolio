@@ -209,13 +209,18 @@ window.SITE = {
       title: "McDonald's Desserts",
       subtitle: "Social media campaign",
       year: "2026",
+      role: "Model",
       tone: 3,
       cover: "assets/img/mcdo-bts.jpg",
-      status: "coming-soon",
-      summary: "Cast for McDonald's desserts social media campaign. Behind the scenes for now, campaign photos soon.",
+      summary: "Cast for McDonald's Philippines' desserts social media campaign. The campaign posts are below.",
       overview:
-        "I was cast in a social media campaign for McDonald's desserts. This page will carry the campaign, my part in it and the photos once they are released.",
-      plan: ["The campaign and my role", "Content and highlights", "Results"],
+        "I was cast in a social media campaign for McDonald's desserts. The posts from McDonald's Philippines (@mcdo_ph) are below.",
+      // Instagram posts or reels (paste the plain link; extra ?utm_ parameters are ignored).
+      reelsTitle: "The campaign",
+      reels: [
+        { title: "McDonald's PH", note: "Post 1", url: "https://www.instagram.com/p/DfwhEoZhkNW/" },
+        { title: "McDonald's PH", note: "Post 2", url: "https://www.instagram.com/p/DfoXNg3Dv0f/" },
+      ],
     },
     { id: "empty-modelling", category: "modelling", empty: true, title: "More coming soon" },
 
