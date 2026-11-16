@@ -16,9 +16,9 @@ window.SITE = {
     tagline: ["Creative", "Researcher", "Student"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
-    // Google Drive folder with the setcard and VTR. Keep it restricted: visitors get Google's "Request access" screen.
+    // Google Drive folder with the setcard and VTR (anyone with the link can open it).
     // Left empty, the button emails a request instead.
-    driveUrl: "",
+    driveUrl: "https://drive.google.com/drive/folders/1JMjxaMLy44Qo0zpKS3RETNB2F14YJgfE?usp=sharing",
     portrait: "assets/img/portrait.jpg", // vertical photo; swap the file to change it
     portraitAlt: "assets/img/teatro-main.jpg", // About page: shows on hover (or tap) as the "off camera" side
     // About page: the word after "I'm a" cycles through these
@@ -40,7 +40,7 @@ window.SITE = {
     socials: [
       { label: "LinkedIn", url: "https://www.linkedin.com/in/sofia-nadine-gillegean-484507383/" },
       { label: "Instagram", url: "https://instagram.com/sofiagillegean" },
-      { label: "TikTok", url: "https://www.tiktok.com/@dimbokki" },
+      { label: "TikTok", url: "https://www.tiktok.com/@sofiagillegean" },
       { label: "Facebook", url: "https://www.facebook.com/dimxcxy/" },
     ],
     intro:
@@ -134,7 +134,7 @@ window.SITE = {
     { title: "Brand content", note: "Old Jeans", src: "", poster: "" },
   ],
 
-  // TikTok: paste full video links, e.g. "https://www.tiktok.com/@dimbokki/video/1234567890123456789".
+  // TikTok: paste full video links, e.g. "https://www.tiktok.com/@sofiagillegean/video/1234567890123456789".
   tiktok: ["", "", "", ""],
 
   // Short stories for the About page (not a CV): stat, title, tag, one sentence.
@@ -198,6 +198,7 @@ window.SITE = {
       reels: [
         { title: "UNIQLO PH", note: "Reel 1", url: "https://www.instagram.com/reel/Deqx7hfDuNg/" },
         { title: "UNIQLO PH", note: "Reel 2", url: "https://www.instagram.com/reel/DegXLf7AeSD/" },
+        { title: "UNIQLO PH", note: "Reel 3", url: "https://www.instagram.com/reel/DfyqaGQjgth/" },
       ],
       // TODO for the in-depth write-up: add `process` (the brief, the shoot day, my part) and
       // `outcome` (results), plus `stats`, `credits` and a `gallery` of BTS stills. Each one

@@ -113,12 +113,41 @@
     var dcs = Array.prototype.slice.call(deckEl.children);
     var order = dcs.map(function (_, i) { return i; });
     var deckLabel = document.querySelector("[data-deck-label]");
+    // Resting places in the pile (x/y in % of the card, r in degrees); cards past the last slot share it
+    var SLOTS = [
+      { x: 0, y: 0, r: 0, s: 1 },
+      { x: 2.4, y: -1.8, r: 2.2, s: 0.985 },
+      { x: -2.6, y: -3.4, r: -2.6, s: 0.97 },
+      { x: 1.8, y: -5, r: 1.6, s: 0.955 },
+      { x: -1.4, y: -6.4, r: -1.8, s: 0.94 },
+    ];
+    var slotOf = function (pos) { return SLOTS[Math.min(pos, SLOTS.length - 1)]; };
     var paintDeck = function () {
       order.forEach(function (ci, pos) {
-        dcs[ci].setAttribute("data-pos", String(Math.min(pos, 3)));
-        dcs[ci].setAttribute("aria-hidden", pos === 0 ? "false" : "true");
+        var sl = slotOf(pos), el = dcs[ci];
+        el.style.setProperty("--x", sl.x);
+        el.style.setProperty("--y", sl.y);
+        el.style.setProperty("--r", sl.r);
+        el.style.setProperty("--s", sl.s);
+        el.style.setProperty("--z", dcs.length - pos);
+        el.setAttribute("data-pos", String(Math.min(pos, SLOTS.length - 1)));
+        el.setAttribute("aria-hidden", pos === 0 ? "false" : "true");
       });
       if (deckLabel) deckLabel.textContent = cards[order[0]].title;
+    };
+    // The moving card loops round the pile: out to the right in front, behind the pile across the top,
+    // out on the left, then into its new slot. p runs 0 -> 1 (1 -> 0 plays it backwards); off is a drag release offset.
+    var orbitAt = function (card, p, end, off) {
+      var S0 = SLOTS[0], e = p * p * (3 - 2 * p), th = 2 * Math.PI * p;
+      var ax = window.innerWidth < 760 ? 92 : 105, ay = 14;
+      var k = off ? Math.pow(1 - Math.min(1, p / 0.3), 2) : 0;
+      var x = S0.x + (end.x - S0.x) * e + ax * Math.sin(th) + (off ? off.x * k : 0);
+      var y = S0.y + (end.y - S0.y) * e - ay * (1 - Math.cos(th)) + (off ? off.y * k : 0);
+      var r = S0.r + (end.r - S0.r) * e + 16 * Math.sin(th) + (off ? off.r * k : 0);
+      var s = S0.s + (end.s - S0.s) * e + 0.05 * Math.sin(Math.PI * p);
+      card.style.transform = "translate(" + x.toFixed(2) + "%," + y.toFixed(2) + "%) rotate(" + r.toFixed(2) + "deg) scale(" + s.toFixed(3) + ")";
+      // In front while it is out on the right; behind the pile for the rest of the lap (no overlap at the swap, so no pop)
+      card.style.zIndex = p < 0.25 ? 20 : 0;
     };
     var deckBusy = false, deckQueue = 0;
     // Scroll can cross several steps at once: queue them and play one swipe at a time
@@ -126,24 +155,29 @@
       if (deckBusy || !deckQueue) return;
       var d = deckQueue > 0 ? 1 : -1;
       deckQueue -= d;
-      goDeck(d, -1);
+      goDeck(d);
     };
-    var goDeck = function (dir, side) {
+    // dir 1: the top card orbits to the back of the pile; dir -1: the back card orbits to the front
+    var goDeck = function (dir, off) {
       if (deckBusy || dcs.length < 2) return;
       deckBusy = true;
-      var cls = side ? (side < 0 ? "is-out-l" : "is-out") : "is-flip";
-      if (dir > 0) {
-        var topCard = dcs[order[0]];
-        topCard.classList.add(cls);
-        setTimeout(function () { topCard.classList.remove("is-out", "is-out-l", "is-flip"); topCard.style.transform = ""; order.push(order.shift()); paintDeck(); deckBusy = false; drainDeck(); }, side ? 460 : 820);
-      } else {
-        var back = dcs[order[order.length - 1]];
-        back.classList.add(cls, "no-tr");
-        void back.offsetWidth;
-        order.unshift(order.pop());
-        paintDeck();
-        requestAnimationFrame(function () { back.classList.remove("no-tr"); back.classList.remove(cls); setTimeout(function () { deckBusy = false; drainDeck(); }, 460); });
-      }
+      var mover = dir > 0 ? dcs[order[0]] : dcs[order[order.length - 1]];
+      if (dir > 0) order.push(order.shift()); else order.unshift(order.pop());
+      paintDeck();
+      if (!hasGSAP || reduceMotion) { deckBusy = false; drainDeck(); return; }
+      var end = slotOf(dcs.length - 1), prog = { p: dir > 0 ? 0 : 1 }, fling = dir > 0 ? off : null;
+      mover.classList.add("no-tr");
+      orbitAt(mover, prog.p, end, fling);
+      window.gsap.to(prog, {
+        p: dir > 0 ? 1 : 0, duration: deckQueue ? 0.8 : 1.15, ease: "power1.inOut",
+        onUpdate: function () { orbitAt(mover, prog.p, end, fling); },
+        onComplete: function () {
+          mover.style.transform = ""; mover.style.zIndex = "";
+          void mover.offsetWidth;
+          mover.classList.remove("no-tr");
+          deckBusy = false; drainDeck();
+        },
+      });
     };
     paintDeck();
     var nextB = document.querySelector("[data-next]"), prevB = document.querySelector("[data-prev]");
@@ -170,7 +204,8 @@
       if (!drag) return;
       var d = drag; drag = null;
       d.el.classList.remove("no-tr");
-      if (Math.abs(d.dx) > 90) goDeck(1, d.dx < 0 ? -1 : 1); else d.el.style.transform = "";
+      if (Math.abs(d.dx) > 90) goDeck(1, { x: d.dx / d.el.offsetWidth * 100, y: d.dy * 0.4 / d.el.offsetHeight * 100, r: d.dx * 0.06 });
+      else d.el.style.transform = "";
       if (d.moved) { suppressClick = true; setTimeout(function () { suppressClick = false; }, 60); }
     };
     deckEl.addEventListener("pointerup", endDrag);
@@ -283,8 +318,11 @@
     });
     if (folderTitle && cat) folderTitle.innerHTML = esc(cat.label) + "<span>.</span>";
     if (folderDesc && cat) folderDesc.textContent = cat.desc || "";
+    // Rows hold 3 cards: skip the "More coming soon" card when the real ones already fill every row
+    var realCount = SITE.projects.filter(function (p) { return p.category === id && !p.empty; }).length;
+    var skipSoon = realCount > 0 && realCount % 3 === 0;
     Array.prototype.forEach.call(grid.querySelectorAll(".card"), function (c) {
-      var show = c.getAttribute("data-category") === id;
+      var show = c.getAttribute("data-category") === id && !(skipSoon && c.classList.contains("card--empty"));
       c.classList.toggle("is-hidden", !show);
       if (c._reveal) {
         if (c._reveal.scrollTrigger) c._reveal.scrollTrigger.kill();
@@ -362,6 +400,13 @@
     }
   }
 
+  // Other campaign rows (e.g. McDonald's): render a project's Instagram posts into [data-gig="<project id>"]
+  Array.prototype.forEach.call(document.querySelectorAll("[data-gig]"), function (box) {
+    var gp = SITE.projects.filter(function (p) { return p.id === box.getAttribute("data-gig"); })[0];
+    if (gp && gp.reels && gp.reels.length) box.innerHTML = gp.reels.map(igPhone).join("");
+    else if (box.closest("[data-gig-block]")) box.closest("[data-gig-block]").remove();
+  });
+
   /* ---------- Reel: phone-frame videos + TikTok ---------- */
   var videosEl = document.querySelector("[data-videos]");
   var readyVideos = SITE.videos.filter(function (v) { return v.src; });
@@ -435,30 +480,35 @@
 
   var tiktokEl = document.querySelector("[data-tiktok]");
   var ttProfile = (SITE.profile.socials.filter(function (s) { return s.label === "TikTok"; })[0] || {}).url || "#";
-  Array.prototype.forEach.call(document.querySelectorAll("[data-tiktok-link]"), function (a) { a.href = ttProfile; });
+  // The handle comes from the profile link, so a username change only needs data.js updated
+  var ttHandle = (ttProfile.match(/@([\w.]+)/) || [])[1];
+  Array.prototype.forEach.call(document.querySelectorAll("[data-tiktok-link]"), function (a) {
+    a.href = ttProfile;
+    if (ttHandle) a.textContent = "Follow @" + ttHandle;
+  });
   if (tiktokEl) {
     var ttScript = false;
     var ttReady = SITE.tiktok.filter(function (u) { return /video\/(\d+)/.test(u); });
-    var ttSolo =
-      '<a class="ttcard" data-reveal href="' + esc(ttProfile) + '" target="_blank" rel="noopener">' +
-      '<span class="ttcard__star" aria-hidden="true">' + STAR + "</span>" +
-      "<span><b>Follow @dimbokki</b><small>New videos land here first.</small></span>" +
-      '<span class="btn">Open TikTok &rarr;</span></a>';
-    tiktokEl.classList.toggle("is-solo", !ttReady.length);
-    tiktokEl.innerHTML = !ttReady.length ? ttSolo : ttReady
-      .map(function (url, i) {
-        var id = (String(url).match(/video\/(\d+)/) || [])[1];
-        var ready = !!id;
-        return (
-          '<div class="phone" data-reveal><div class="phone__screen" data-tt="' + (ready ? esc(url) : "") + '" data-ttid="' + (id || "") + '">' +
-          media("", [2, 6, 1, 4][i % 4], "TikTok video", "video", "TikTok video") +
-          (ready
-            ? '<button class="phone__play" type="button" aria-label="Load TikTok video"><span>▶</span></button>'
-            : '<a class="phone__play" href="' + esc(ttProfile) + '" target="_blank" rel="noopener" aria-label="Open TikTok"><span>▶</span></a>') +
-          '<div class="phone__label">TikTok<small>' + (ready ? "Tap to play" : "Add a video link in data.js") + "</small></div></div></div>"
-        );
-      })
-      .join("");
+    // Always show at least 4 frames: real videos first, "Coming soon" placeholders for the rest
+    var ttHTML = "";
+    for (var ti = 0; ti < Math.max(4, ttReady.length); ti++) {
+      var ttUrl = ttReady[ti];
+      if (ttUrl) {
+        var ttId = String(ttUrl).match(/video\/(\d+)/)[1];
+        ttHTML +=
+          '<div class="phone" data-reveal><div class="phone__screen" data-tt="' + esc(ttUrl) + '" data-ttid="' + ttId + '">' +
+          media("", [2, 6, 1, 4][ti % 4], "TikTok video", "video", "TikTok video") +
+          '<button class="phone__play" type="button" aria-label="Load TikTok video"><span>▶</span></button>' +
+          '<div class="phone__label">TikTok<small>Tap to play</small></div></div></div>';
+      } else {
+        ttHTML +=
+          '<div class="phone phone--soon" data-reveal><div class="phone__screen">' +
+          '<a class="soon" href="' + esc(ttProfile) + '" target="_blank" rel="noopener" aria-label="Open TikTok profile">' +
+          '<span class="soon__play" aria-hidden="true">▶</span><b>Coming soon</b></a>' +
+          '<div class="phone__label">TikTok<small>Coming soon</small></div></div></div>';
+      }
+    }
+    tiktokEl.innerHTML = ttHTML;
     tiktokEl.addEventListener("click", function (e) {
       var btn = e.target.closest("button.phone__play");
       if (!btn) return;
@@ -594,7 +644,7 @@
       "<small>Bookings &amp; enquiries</small>" +
       '<a class="contact__mail" data-email href="#"></a>' +
       '<div class="ticket__actions"><a class="btn" data-email href="#">Email me →</a><button class="ticket__copy" type="button" data-copy-email>Copy email</button></div>' +
-      '<a class="ticket__drive" ' + driveAttrs + '><span>Request setcard &amp; VTR</span><small>Google Drive · access on request</small></a>' +
+      '<a class="ticket__drive" ' + driveAttrs + '><span>View setcard &amp; VTR</span><small>Open on Google Drive</small></a>' +
       '<ul class="socials" data-socials></ul>' +
       '<div class="ticket__bars" aria-hidden="true"></div></div></div>';
   });
@@ -975,7 +1025,7 @@
     // Short per-word fades over a long scroll, so the words light up one by one as you read
     gsap.fromTo(introWords, { opacity: 0.1 }, {
       opacity: 1, duration: 0.4, stagger: 0.12, ease: "none",
-      scrollTrigger: { trigger: ".intro__text", start: "top 85%", end: "bottom 30%", scrub: 0.6 },
+      scrollTrigger: { trigger: ".intro__text", start: "top 80%", end: "center 55%", scrub: 0.6 },
     });
   }
 
