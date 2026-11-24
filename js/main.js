@@ -111,105 +111,96 @@
       );
     }).join("");
     var dcs = Array.prototype.slice.call(deckEl.children);
-    var order = dcs.map(function (_, i) { return i; });
+    var N = dcs.length, active = 0, cur = 0;
     var deckLabel = document.querySelector("[data-deck-label]");
-    // Resting places in the pile (x/y in % of the card, r in degrees); cards past the last slot share it
-    var SLOTS = [
-      { x: 0, y: 0, r: 0, s: 1 },
-      { x: 2.4, y: -1.8, r: 2.2, s: 0.985 },
-      { x: -2.6, y: -3.4, r: -2.6, s: 0.97 },
-      { x: 1.8, y: -5, r: 1.6, s: 0.955 },
-      { x: -1.4, y: -6.4, r: -1.8, s: 0.94 },
-    ];
-    var slotOf = function (pos) { return SLOTS[Math.min(pos, SLOTS.length - 1)]; };
-    var paintDeck = function () {
-      order.forEach(function (ci, pos) {
-        var sl = slotOf(pos), el = dcs[ci];
-        el.style.setProperty("--x", sl.x);
-        el.style.setProperty("--y", sl.y);
-        el.style.setProperty("--r", sl.r);
-        el.style.setProperty("--s", sl.s);
-        el.style.setProperty("--z", dcs.length - pos);
-        el.setAttribute("data-pos", String(Math.min(pos, SLOTS.length - 1)));
-        el.setAttribute("aria-hidden", pos === 0 ? "false" : "true");
+    // A row of cards laid out side by side: the active card sits in the middle, its neighbours fan out to either side.
+    // cur is a float (the card currently in the middle), so one tween slides the whole row.
+    var stepPct = function () { return window.innerWidth < 760 ? 82 : 70; };
+    var wrapOff = function (o) { return ((o + N / 2) % N + N) % N - N / 2; };
+    var paintRow = function (pos, extra) {
+      var sp = stepPct();
+      dcs.forEach(function (el, i) {
+        var o = wrapOff(i - pos), a = Math.abs(o);
+        var vis = a < 1.6 ? 1 - 0.1 * a : Math.max(0, 1 - 0.1 * 1.6 - (a - 1.6) * 2.2);
+        el.style.transform = "translate(" + (o * sp).toFixed(2) + "%," + (a * a * 1.2).toFixed(2) + "%) rotate(" + (o * 3).toFixed(2) + "deg) scale(" + (1 - 0.1 * Math.min(a, 2.2)).toFixed(3) + ")";
+        el.style.opacity = vis.toFixed(3);
+        el.style.zIndex = String(Math.round(20 - a * 4));
+        el.style.visibility = vis <= 0.01 ? "hidden" : "visible";
+        var on = a < 0.5;
+        if ((el.getAttribute("data-pos") === "0") !== on) el.setAttribute("data-pos", on ? "0" : "1");
+        el.setAttribute("aria-hidden", on ? "false" : "true");
       });
-      if (deckLabel) deckLabel.textContent = cards[order[0]].title;
+      cur = pos;
     };
-    // The moving card loops round the pile: out to the right in front, behind the pile across the top,
-    // out on the left, then into its new slot. p runs 0 -> 1 (1 -> 0 plays it backwards); off is a drag release offset.
-    var orbitAt = function (card, p, end, off) {
-      var S0 = SLOTS[0], e = p * p * (3 - 2 * p), th = 2 * Math.PI * p;
-      var ax = window.innerWidth < 760 ? 92 : 105, ay = 14;
-      var k = off ? Math.pow(1 - Math.min(1, p / 0.3), 2) : 0;
-      var x = S0.x + (end.x - S0.x) * e + ax * Math.sin(th) + (off ? off.x * k : 0);
-      var y = S0.y + (end.y - S0.y) * e - ay * (1 - Math.cos(th)) + (off ? off.y * k : 0);
-      var r = S0.r + (end.r - S0.r) * e + 16 * Math.sin(th) + (off ? off.r * k : 0);
-      var s = S0.s + (end.s - S0.s) * e + 0.05 * Math.sin(Math.PI * p);
-      card.style.transform = "translate(" + x.toFixed(2) + "%," + y.toFixed(2) + "%) rotate(" + r.toFixed(2) + "deg) scale(" + s.toFixed(3) + ")";
-      // In front while it is out on the right; behind the pile for the rest of the lap (no overlap at the swap, so no pop)
-      card.style.zIndex = p < 0.25 ? 20 : 0;
+    var settle = function () {
+      active = ((Math.round(cur) % N) + N) % N;
+      cur = active;
+      paintRow(cur);
+      if (deckLabel) deckLabel.textContent = cards[active].title;
     };
-    var deckBusy = false, deckQueue = 0;
-    // Scroll can cross several steps at once: queue them and play one swipe at a time
+    var deckBusy = false, deckQueue = 0, rowTween = null;
+    // Scroll can cross several steps at once: queue them and slide one card at a time
     var drainDeck = function () {
       if (deckBusy || !deckQueue) return;
       var d = deckQueue > 0 ? 1 : -1;
       deckQueue -= d;
       goDeck(d);
     };
-    // dir 1: the top card orbits to the back of the pile; dir -1: the back card orbits to the front
-    var goDeck = function (dir, off) {
-      if (deckBusy || dcs.length < 2) return;
+    // Slide the row to the next (dir 1) or previous (dir -1) card
+    var goDeck = function (dir) {
+      if (deckBusy || N < 2) return;
       deckBusy = true;
-      var mover = dir > 0 ? dcs[order[0]] : dcs[order[order.length - 1]];
-      if (dir > 0) order.push(order.shift()); else order.unshift(order.pop());
-      paintDeck();
-      if (!hasGSAP || reduceMotion) { deckBusy = false; drainDeck(); return; }
-      var end = slotOf(dcs.length - 1), prog = { p: dir > 0 ? 0 : 1 }, fling = dir > 0 ? off : null;
-      mover.classList.add("no-tr");
-      orbitAt(mover, prog.p, end, fling);
-      window.gsap.to(prog, {
-        p: dir > 0 ? 1 : 0, duration: deckQueue ? 0.8 : 1.15, ease: "power1.inOut",
-        onUpdate: function () { orbitAt(mover, prog.p, end, fling); },
-        onComplete: function () {
-          mover.style.transform = ""; mover.style.zIndex = "";
-          void mover.offsetWidth;
-          mover.classList.remove("no-tr");
-          deckBusy = false; drainDeck();
-        },
+      var target = Math.round(cur) + dir;
+      if (!hasGSAP || reduceMotion) { cur = target; settle(); deckBusy = false; drainDeck(); return; }
+      if (deckLabel) deckLabel.textContent = cards[((target % N) + N) % N].title;
+      var prog = { v: cur };
+      rowTween = window.gsap.to(prog, {
+        v: target, duration: deckQueue ? 0.6 : 0.95, ease: "power2.inOut",
+        onUpdate: function () { paintRow(prog.v); },
+        onComplete: function () { settle(); deckBusy = false; drainDeck(); },
       });
     };
-    paintDeck();
+    settle();
     var nextB = document.querySelector("[data-next]"), prevB = document.querySelector("[data-prev]");
     if (nextB) nextB.addEventListener("click", function () { goDeck(1); });
     if (prevB) prevB.addEventListener("click", function () { goDeck(-1); });
     var suppressClick = false, drag = null;
     deckEl.addEventListener("dragstart", function (e) { e.preventDefault(); });
-    deckEl.addEventListener("click", function (e) { if (!suppressClick && e.target.closest(".dc") === dcs[order[0]]) goDeck(1); });
-    // Drag the top card: fling it away, or let go to snap back
-    deckEl.addEventListener("pointerdown", function (e) {
+    // Click a card beside the middle one to bring it forward; click the middle one for the next
+    deckEl.addEventListener("click", function (e) {
+      if (suppressClick) return;
       var t = e.target.closest(".dc");
-      if (!t || t !== dcs[order[0]] || deckBusy) return;
-      drag = { x: e.clientX, y: e.clientY, dx: 0, dy: 0, el: t, moved: false };
-      t.classList.add("no-tr");
+      if (!t) return;
+      var o = wrapOff(dcs.indexOf(t) - active);
+      goDeck(o < -0.5 ? -1 : 1);
+    });
+    // Drag the row sideways; let go past a short distance to move on, or it springs back
+    deckEl.addEventListener("pointerdown", function (e) {
+      if (deckBusy || !e.target.closest(".dc")) return;
+      drag = { x: e.clientX, y: e.clientY, dx: 0, moved: false };
       try { deckEl.setPointerCapture(e.pointerId); } catch (err) {}
     });
     deckEl.addEventListener("pointermove", function (e) {
       if (!drag) return;
-      drag.dx = e.clientX - drag.x; drag.dy = e.clientY - drag.y;
-      if (Math.abs(drag.dx) > 6 || Math.abs(drag.dy) > 6) drag.moved = true;
-      drag.el.style.transform = "translate(" + drag.dx + "px," + (drag.dy * 0.4) + "px) rotate(" + (drag.dx * 0.06) + "deg)";
+      drag.dx = e.clientX - drag.x;
+      if (Math.abs(drag.dx) > 6) drag.moved = true;
+      if (drag.moved) paintRow(active - drag.dx / (dcs[active].offsetWidth * stepPct() / 100));
     });
     var endDrag = function () {
       if (!drag) return;
       var d = drag; drag = null;
-      d.el.classList.remove("no-tr");
-      if (Math.abs(d.dx) > 90) goDeck(1, { x: d.dx / d.el.offsetWidth * 100, y: d.dy * 0.4 / d.el.offsetHeight * 100, r: d.dx * 0.06 });
-      else d.el.style.transform = "";
       if (d.moved) { suppressClick = true; setTimeout(function () { suppressClick = false; }, 60); }
+      if (Math.abs(d.dx) > 60) { deckBusy = false; goDeck(d.dx < 0 ? 1 : -1); }
+      else if (d.moved) {
+        deckBusy = true;
+        if (!hasGSAP || reduceMotion) { settle(); deckBusy = false; return; }
+        var back = { v: cur };
+        window.gsap.to(back, { v: active, duration: 0.45, ease: "power2.out", onUpdate: function () { paintRow(back.v); }, onComplete: function () { settle(); deckBusy = false; drainDeck(); } });
+      }
     };
     deckEl.addEventListener("pointerup", endDrag);
     deckEl.addEventListener("pointercancel", endDrag);
+    window.addEventListener("resize", function () { if (!deckBusy) paintRow(cur); });
     var deckUi = document.querySelector("[data-deck-ui]");
     document.addEventListener("keydown", function (e) {
       if (!deckUi || !deckUi.classList.contains("is-live")) return;
@@ -799,7 +790,7 @@
   /* ---------- Marquee content ---------- */
   var mqEl = document.querySelector("[data-marquee]");
   if (mqEl) {
-    var phrase = ["Creative", "Researcher", "Student", "Model"].map(function (w) { return "<span>" + w + "</span><i aria-hidden=\"true\"></i>"; }).join("");
+    var phrase = ["UNIQLO PH", "McDonald's PH", "Old Jeans", "DLSU Chorale", "Teatro Lasalyano", "IMES AI Expo", "Hopefest"].map(function (w) { return "<span>" + esc(w) + "</span><i aria-hidden=\"true\"></i>"; }).join("");
     var half = phrase + phrase + phrase;
     mqEl.innerHTML = half + half;
   }
@@ -1010,13 +1001,8 @@
   // Marquee: runs by itself, speeds up (and reverses) with your scroll
   var mq = document.querySelector("[data-marquee]");
   if (mq) {
-    var mqt = gsap.to(mq, { xPercent: -50, ease: "none", duration: 28, repeat: -1 });
-    ScrollTrigger.create({
-      onUpdate: function (self) {
-        var v = Math.abs(self.getVelocity()) / 350;
-        gsap.to(mqt, { timeScale: (1 + v) * (self.direction < 0 ? -1 : 1), duration: 0.5, overwrite: true });
-      },
-    });
+    // A slow, steady drift (no speed-ups): it reads as a list of names, not an effect
+    gsap.to(mq, { xPercent: -50, ease: "none", duration: 80, repeat: -1 });
   }
 
   // Intro: words light up as you scroll

@@ -718,3 +718,44 @@ em { color: var(--pom); }
 .proj .phones--duo:has(.phone:nth-child(3)) { max-width: none; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 560px) { .proj .phones--duo:has(.phone:nth-child(3)) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .phones--tt .soon { text-decoration: none; }
+
+/* ==========================================================================
+   Round 7: more ads per campaign (4-5 phones)
+   ========================================================================== */
+.js-reelpin .feature--panel { grid-template-columns: 3fr 9fr; }
+.js-reelpin .feature--panel .phones--duo:has(.phone:nth-child(4)) { display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); gap: clamp(8px, 1.1vw, 18px); align-items: start; }
+.js-reelpin .feature--panel .phones--duo:has(.phone:nth-child(4)) .phone { width: 100%; height: auto; aspect-ratio: 9 / 16; transform: none; }
+.js-reelpin .feature--panel .phones--duo:has(.phone:nth-child(4)) .phone:nth-child(even) { transform: translateY(16px); }
+.js-reelpin .feature--panel .phones--duo:has(.phone:nth-child(4)) .phone:nth-child(odd) { transform: none; }
+.js-reelpin .feature--panel .phones--duo:has(.phone:nth-child(4)):not(:has(.phone:nth-child(5))) { --n: 4; }
+@media (min-width: 900px) {
+  .feature--panel .phones--duo:has(.phone:nth-child(4)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .gig .phones--duo:has(.phone:nth-child(4)) { max-width: none; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .proj .phones--duo:has(.phone:nth-child(4)):not(:has(.phone:nth-child(5))) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.gig .phones--duo { max-width: none; }
+.gig .phones--duo:has(.phone:nth-child(4)) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 900px) { .gig .phones--duo:has(.phone:nth-child(4)) { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* ---------- Round 7: cards as a side-by-side row; JS sets transform / opacity / z-index ---------- */
+.dc { transition: none !important; transform: none; opacity: 1; }
+.deck { perspective: none; }
+
+/* ---------- Round 7: quieter strip of real names ---------- */
+.marquee { padding: clamp(18px, 2.2vw, 28px) 0; }
+.marquee__track { font-family: var(--font-sans); font-weight: 500; font-size: clamp(0.72rem, 0.95vw, 0.86rem); letter-spacing: 0.22em; text-transform: uppercase; color: var(--esp); }
+.marquee__track span { padding: 0; }
+.marquee__track i { width: auto; height: auto; margin: 0 clamp(22px, 3vw, 44px); border-radius: 0; background: none; color: var(--pom); opacity: 0.55; font-style: normal; }
+.marquee__track i::before { content: "/"; letter-spacing: 0; }
+
+/* ---------- Round 7: roomier hero controls ---------- */
+.scene__stage { padding-bottom: 20vh; }
+.deck { height: min(52vh, 500px); }
+.deck__ui { bottom: 7vh; gap: clamp(28px, 9vw, 170px); }
+@media (max-width: 760px) { .scene__stage { padding-bottom: 22vh; } .deck { height: min(44vh, 380px); } .deck__ui { bottom: 6vh; } }
+
+/* ---------- Round 7: a soft glow under the cursor ---------- */
+.cursor__ring::before { content: ""; position: absolute; left: -56px; top: -56px; width: 112px; height: 112px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, rgba(254, 155, 184, 0.34) 0%, rgba(232, 165, 174, 0.14) 45%, transparent 70%); transition: transform 0.4s var(--ease), opacity 0.3s; }
+.cursor.is-hover .cursor__ring::before { transform: scale(1.25); }
+.cursor.is-light .cursor__ring::before { background: radial-gradient(circle, rgba(254, 155, 184, 0.28) 0%, rgba(253, 251, 250, 0.08) 45%, transparent 70%); }

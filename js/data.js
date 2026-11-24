@@ -135,7 +135,12 @@ window.SITE = {
   ],
 
   // TikTok: paste full video links, e.g. "https://www.tiktok.com/@sofiagillegean/video/1234567890123456789".
-  tiktok: ["", "", "", ""],
+  tiktok: [
+    "https://www.tiktok.com/@sofiagillegean/video/7618145948186709269",
+    "https://www.tiktok.com/@sofiagillegean/video/7631835590568332564",
+    "https://www.tiktok.com/@sofiagillegean/video/7648824706279181589",
+    "",
+  ],
 
   // Short stories for the About page (not a CV): stat, title, tag, one sentence.
   stories: [
@@ -199,6 +204,8 @@ window.SITE = {
         { title: "UNIQLO PH", note: "Reel 1", url: "https://www.instagram.com/reel/Deqx7hfDuNg/" },
         { title: "UNIQLO PH", note: "Reel 2", url: "https://www.instagram.com/reel/DegXLf7AeSD/" },
         { title: "UNIQLO PH", note: "Reel 3", url: "https://www.instagram.com/reel/DfyqaGQjgth/" },
+        { title: "UNIQLO PH", note: "Reel 4", url: "https://www.instagram.com/reel/DgCHMSfBbIE/" },
+        { title: "UNIQLO PH", note: "Post 5", url: "https://www.instagram.com/p/Df_G5v8hqdk/" },
       ],
       // TODO for the in-depth write-up: add `process` (the brief, the shoot day, my part) and
       // `outcome` (results), plus `stats`, `credits` and a `gallery` of BTS stills. Each one
@@ -221,6 +228,8 @@ window.SITE = {
       reels: [
         { title: "McDonald's PH", note: "Post 1", url: "https://www.instagram.com/p/DfwhEoZhkNW/" },
         { title: "McDonald's PH", note: "Post 2", url: "https://www.instagram.com/p/DfoXNg3Dv0f/" },
+        { title: "McDonald's PH", note: "Post 3", url: "https://www.instagram.com/p/Df849L3lZEE/" },
+        { title: "McDonald's PH", note: "Post 4", url: "https://www.instagram.com/p/Df3z9TAo_yX/" },
       ],
     },
     { id: "empty-modelling", category: "modelling", empty: true, title: "More coming soon" },
