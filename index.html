@@ -7,13 +7,12 @@
   <meta name="description" content="Portfolio of Sofia Nadine Gillegean: modelling, brand and event work, and future case studies. Based in Metro Manila.">
   <meta property="og:title" content="Sofia Nadine Gillegean — Portfolio">
   <meta property="og:description" content="Modelling, past works and case studies.">
-  <meta name="theme-color" content="#FDFBFA">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%238C1D3B'/%3E%3Ctext x='20' y='25' font-family='Arial,sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='white'%3ESNG%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#F4F2EB">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23718BBC'/%3E%3Ctext x='20' y='25' font-family='Arial,sans-serif' font-size='13' font-weight='700' text-anchor='middle' fill='white'%3ESNG%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Imperial+Script&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Pinyon+Script&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/v5.css">
   <script>
     (function (h) {
       if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -34,9 +33,9 @@
       </a>
       <nav aria-label="Main">
         <ul class="nav__links">
-          <li><a href="#work">Projects</a></li>
-          <li><a href="#campaigns">Campaigns</a></li>
-          <li><a href="#wins">Achievements</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#reels">Reels</a></li>
           <li><a href="about.html">About</a></li>
           <li><a href="#contact" class="nav__cta">Let's talk</a></li>
         </ul>
@@ -45,32 +44,31 @@
   </header>
 
   <main>
-    <section class="scene" data-story>
-      <div class="scene__sticky">
-       <div class="scene__frame">
-        <div class="scene__flood" data-flood></div>
-        <div class="scene__type" data-type>
-          <span class="type__side type__side--r">Metro Manila</span>
-          <h1 class="type" aria-label="Sofia Gillegean, creative portfolio">
-            <span class="type__line"><span>Sofia Gillegean</span></span>
-            <span class="type__line"><span>Creative</span></span>
-            <span class="type__line"><span>Portfolio</span></span>
-            <span class="type__pron" aria-hidden="true">(gil-ye-gan)</span>
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div class="hero__text">
+          <p class="eyebrow" data-credential>Creative · Researcher · Student</p>
+          <h1 class="hero__title">
+            <span class="line"><span>Sofia Nadine</span></span>
+            <span class="line line--script"><span><span class="script">Gillegean</span><span class="pron">(gil-ye-gan)</span></span></span>
           </h1>
-          <p class="type__cue">Scroll</p>
-        </div>
-        <div class="scene__stage" data-stage>
-          <div class="illos" data-illos aria-hidden="true"></div>
-          <div class="deck" data-deck role="group" aria-roledescription="carousel" aria-label="About Sofia"></div>
-          <div class="deck__ui" data-deck-ui>
-            <button class="circ" type="button" data-prev aria-label="Previous card">&larr;</button>
-            <span class="pillbtn" data-deck-label aria-live="polite">Sofia Nadine</span>
-            <button class="circ" type="button" data-next aria-label="Next card">&rarr;</button>
+          <p class="hero__sub">Creative, researcher and industrial engineering student in Metro Manila. I bring people together and turn ideas into work that gets seen.</p>
+          <div class="hero__cta">
+            <a class="btn" href="#work">View work</a>
+            <a class="btn btn--ghost" href="#contact" data-contact>Get in touch</a>
           </div>
         </div>
-       </div>
-      </div>
-    </section>
+        <div class="hero__art">
+          <span class="blob blob--pink"></span>
+          <span class="blob blob--blue"></span>
+          <div class="hero__media" data-portrait></div>
+          <div class="badge" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><defs><path id="ring" d="M60,60 m-42,0 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0"/></defs><text><textPath href="#ring">Creative · Researcher · Student · </textPath></text></svg>
+            <span class="badge__mono">SNG</span>
+          </div>
+        </div>
+
+      </div>    </section>
 
     <section class="intro" data-section>
       <div class="wrap">
@@ -78,61 +76,63 @@
       </div>
     </section>
 
-    <section class="marquee" aria-hidden="true"><div class="marquee__track" data-marquee></div></section>
-
     <section class="work" id="work" data-section>
       <div class="wrap">
         <div class="folder" data-folder>
           <div class="folder__tabs" data-tabs role="tablist" aria-label="Choose a collection"></div>
           <div class="folder__panel">
             <div class="folder__head">
-              <h2 class="bigdot" data-folder-title>Projects<span>.</span></h2>
+              <h2 class="bigdot" data-folder-title>Modelling<span>.</span></h2>
               <p class="folder__desc" data-folder-desc></p>
             </div>
-            <div class="hand" data-grid></div>
+            <div class="grid" data-grid></div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="reel" id="campaigns" data-section>
+    <section class="exp" id="experience" data-section>
       <div class="wrap">
         <div class="section-head">
-          <h2 class="bigdot" data-lines>Campaigns<span>.</span></h2>
-          <p class="section-head__note" data-lines>Brand campaigns I've been cast in.</p>
+          <h2 class="bigdot" data-reveal>Experience<span>.</span></h2>
+          <p class="section-head__note" data-reveal>Teams, brands and stages I have worked with. Open any row for the story.</p>
         </div>
+        <ul class="exp__list" data-exp></ul>
       </div>
-      <div class="reelstage" data-reelstage>
-        <div class="reelstage__pin wrap">
-          <div class="feature feature--panel" data-feature>
-            <div class="feature__text">
-              <p class="eyebrow">Sneak peek</p>
-              <h3 data-feature-title>UNIQLO PH</h3>
-              <p data-feature-note></p>
-              <a class="btn" data-feature-link href="project.html?id=uniqlo-ph">Read the full story →</a>
-            </div>
-            <div class="feature__big">
-              <p class="feature__big-title"><span class="ln"><span class="ln__in">Selected work,</span></span><span class="ln"><span class="ln__in"><em>in motion.</em></span></span></p>
-              <a class="btn" href="project.html?id=uniqlo-ph" tabindex="-1">Read the full story →</a>
-            </div>
-            <div class="phones phones--duo" data-feature-reels></div>
-          </div>
-        </div>
-      </div>
+      <div class="exp__preview" data-exp-preview aria-hidden="true"></div>
+    </section>
+
+    <section class="reel" id="reels" data-section>
       <div class="wrap">
-        <div class="gig" data-gig-block>
-          <div class="subhead" data-reveal><h3>McDonald's Desserts</h3><a class="link" href="project.html?id=mcdo-desserts">Read the full story →</a></div>
-          <div class="phones phones--duo" data-gig="mcdo-desserts"></div>
+        <div class="section-head">
+          <h2 class="bigdot" data-reveal>Reels<span>.</span></h2>
+          <p class="section-head__note" data-reveal>Selected modelling and brand work in motion.</p>
         </div>
+        <div class="phones" data-videos></div>
         <div class="subhead" data-reveal><h3>On TikTok</h3><a class="link" data-tiktok-link href="#" target="_blank" rel="noopener">Follow @dimbokki</a></div>
         <div class="phones phones--tt" data-tiktok></div>
       </div>
     </section>
 
-    <section class="wins" id="wins" aria-label="Achievements">
+    <section class="cam" data-cam aria-label="Through my lens">
+      <div class="cam__sticky">
+        <div class="wrap cam__grid">
+          <div class="cam__text">
+            <p class="eyebrow">Through my lens</p>
+            <div class="cam__texts" data-cam-texts></div>
+          </div>
+          <div class="cam__device">
+            <img class="cam__img" src="assets/img/digicam.png" alt="" width="736" height="859">
+            <div class="cam__screen"><div class="cam__reel" data-cam-reel></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wins" aria-label="Achievements">
       <div class="wrap">
-        <h2 class="bigdot bigdot--light" data-lines>Achievements<span>.</span></h2>
-        <div class="wall" data-wall data-reveal>
+        <h2 class="bigdot bigdot--light" data-reveal>Achievements<span>.</span></h2>
+        <div class="wall" data-wall>
           <p class="wall__text">I bring people together and <em>turn ideas into action.</em></p>
           <p class="wall__hint">Brush your cursor across the messages</p>
         </div>
@@ -142,8 +142,8 @@
     <section class="contact" id="contact" data-section>
       <div class="wrap">
         <p class="eyebrow">Contact</p>
-        <h2 class="contact__title" data-lines>Let's work <em>together.</em></h2>
-        <div class="scrap" data-scrap data-reveal></div>
+        <h2 class="contact__title" data-reveal>Let's work <em>together.</em></h2>
+        <div class="scrap" data-scrap></div>
         <footer class="footer">
           <span>© <span data-year></span> Sofia Nadine Gillegean</span>
           <a href="about.html">About me</a>

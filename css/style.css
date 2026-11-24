@@ -199,11 +199,6 @@ em { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
 .subhead { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin: clamp(48px, 7vw, 88px) 0 22px; padding-top: 22px; border-top: 1px solid var(--line); }
 .subhead h3 { margin: 0; font-size: clamp(1.4rem, 2.4vw, 2rem); font-weight: 600; letter-spacing: -0.03em; }
 .phones--tt { grid-template-columns: repeat(4, 1fr); }
-.phones--duo { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 560px; }
-.phone__embed iframe { display: block; width: 100%; height: 100%; border: 0; }
-.feature { display: grid; grid-template-columns: 4fr 8fr; gap: clamp(24px, 4vw, 64px); align-items: center; }
-.feature__text h3 { margin: 6px 0 12px; font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
-.feature__text p:not(.eyebrow) { margin: 0 0 24px; max-width: 34ch; color: var(--muted); }
 
 /* ---------- Digital camera scroll ---------- */
 .cam { position: relative; height: calc(var(--n, 4) * 85vh + 100vh); }
@@ -341,7 +336,6 @@ html:not(.js-motion) .cam__slide { position: static; opacity: 1 !important; tran
 @media (max-width: 1024px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
   .phones, .phones--tt { grid-template-columns: repeat(2, 1fr); }
-  .phones--duo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .scrap { grid-template-columns: 1fr 1fr; }
   .scrap .contact-card { grid-column: 1 / -1; }
   .story-grid { grid-template-columns: repeat(2, 1fr); }
@@ -369,7 +363,7 @@ html:not(.js-motion) .cam__slide { position: static; opacity: 1 !important; tran
   .wall { height: 600px; }
   .scrap { grid-template-columns: 1fr; justify-items: center; }
   .scrap__postcard, .scrap .contact-card { width: 100%; }
-  .about-grid, .proj-body, .toolkit__grid, .feature { grid-template-columns: 1fr; }
+  .about-grid, .proj-body, .toolkit__grid { grid-template-columns: 1fr; }
   .portrait { position: relative; top: 0; max-width: 380px; }
   .story-grid { grid-template-columns: 1fr; }
   .proj-meta { grid-template-columns: repeat(2, auto); }
