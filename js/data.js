@@ -16,8 +16,23 @@ window.SITE = {
     tagline: ["Creative", "Researcher", "Student"],
     location: "Metro Manila, Philippines",
     email: "nadinegillegean@gmail.com",
+    // Google Drive folder with the setcard and VTR (anyone with the link can open it).
+    // Left empty, the button emails a request instead.
+    driveUrl: "https://drive.google.com/drive/folders/1JMjxaMLy44Qo0zpKS3RETNB2F14YJgfE?usp=sharing",
     portrait: "assets/img/portrait.jpg", // vertical photo; swap the file to change it
-    credential: "", // Short line under the hero, e.g. "Cast: UNIQLO PH". Leave empty until you are cleared to show it.
+    portraitAlt: "assets/img/teatro-main.jpg", // About page: shows on hover (or tap) as the "off camera" side
+    // About page: the word after "I'm a" cycles through these
+    roles: ["model", "stage manager", "soprano", "brand co-owner", "researcher", "engineering student"],
+    // About page: quick facts beside the bio
+    facts: [
+      ["Based in", "Metro Manila"],
+      ["Studying", "Industrial Engineering, DLSU"],
+      ["On camera", "UNIQLO PH, McDonald's"],
+      ["Behind it", "Stage manager, brand co-owner"],
+      ["Off duty", "Soprano 2, DLSU Chorale"],
+      ["Say it", "gil-ye-gan"],
+    ],
+    credential: "Cast: UNIQLO PH", // Short line above the hero name. Leave empty to hide it.
     // Scrapbook ending: add your own images in assets/img/ and set the paths.
     postcard: "", // e.g. "assets/img/postcard.jpg"
     photobooth: ["", "", "", ""], // up to 4 photobooth frames, e.g. ["assets/img/booth1.jpg", ...]
@@ -25,7 +40,7 @@ window.SITE = {
     socials: [
       { label: "LinkedIn", url: "https://www.linkedin.com/in/sofia-nadine-gillegean-484507383/" },
       { label: "Instagram", url: "https://instagram.com/sofiagillegean" },
-      { label: "TikTok", url: "https://www.tiktok.com/@dimbokki" },
+      { label: "TikTok", url: "https://www.tiktok.com/@sofiagillegean" },
       { label: "Facebook", url: "https://www.facebook.com/dimxcxy/" },
     ],
     intro:
@@ -35,6 +50,15 @@ window.SITE = {
       "I keep ending up where people and ideas meet: shoots and brand work in front of the camera, and behind it, running a thrifted-denim brand, student government, theatre and events. I like clear plans, warm teams and work that looks good.",
     ],
   },
+
+  // Hero deck: one card per line. kind "photo" uses profile.portrait; tone is one of pom / flax / esp / pink.
+  deck: [
+    { kind: "photo", title: "Sofia Nadine", idx: "S", suit: "\u2665" },
+    { kind: "text", title: "Creative", text: "Shoots, brand work, content and events.", idx: "C", suit: "\u2663", tone: "pom" },
+    { kind: "text", title: "Researcher", text: "The research that makes the work work.", idx: "R", suit: "\u2666", tone: "flax" },
+    { kind: "text", title: "Student", text: "Industrial Engineering at De La Salle University.", idx: "S", suit: "\u2660", tone: "esp" },
+    { kind: "text", title: "Model", text: "Brand shoots, campaigns and editorials.", idx: "M", suit: "\u2665", tone: "pink" },
+  ],
 
   // Experience list + detail pages (org.html?id=...). Facts come from your resume; edit freely.
   // Add `cover: "assets/img/xyz.jpg"` and `gallery: [{ src, caption }]` to show real photos.
@@ -61,6 +85,7 @@ window.SITE = {
       results: [{ value: "32k+", label: "views on the promo video" }],
       tone: 2, icon: "camera", cover: "assets/img/teatro-main.jpg", gallery: [
         { src: "assets/img/teatro-stage.jpg", caption: "The set before the show" },
+        { src: "assets/img/teatro-group.jpg", caption: "Cast and crew after the show" },
       ],
     },
     {
@@ -68,7 +93,7 @@ window.SITE = {
       summary: "A thrifted-denim brand with a denim-pouch line, built from first bazaar to a growing online following.",
       did: ["Led product development with external manufacturers", "Ran day-to-day operations and sales", "Grew the brand's social presence", "Sold at the DLSU SHS ABM bazaar"],
       results: [{ value: "1,000+", label: "followers in 2 months" }, { value: "₱44,000", label: "combined bazaar sales" }],
-      tone: 4, icon: "brand", cover: "", gallery: [],
+      tone: 4, icon: "brand", cover: "assets/img/old-jeans-bazaar.jpg", gallery: [],
     },
     {
       id: "gcoe", name: "Engineering Student Government", role: "Student Services Executive", years: "2025 – present", place: "79th Engineering Batch, GCOE",
@@ -104,13 +129,12 @@ window.SITE = {
 
   // Reel: vertical (9:16) MP4 files in assets/video/. Leave `src` empty for a placeholder.
   videos: [
-    { title: "UNIQLO PH", note: "Brand shoot", src: "", poster: "" },
     { title: "Modelling reel", note: "Selected looks", src: "", poster: "" },
     { title: "Behind the scenes", note: "On set", src: "", poster: "" },
     { title: "Brand content", note: "Old Jeans", src: "", poster: "" },
   ],
 
-  // TikTok: paste full video links, e.g. "https://www.tiktok.com/@dimbokki/video/1234567890123456789".
+  // TikTok: paste full video links, e.g. "https://www.tiktok.com/@sofiagillegean/video/1234567890123456789".
   tiktok: ["", "", "", ""],
 
   // Short stories for the About page (not a CV): stat, title, tag, one sentence.
@@ -165,13 +189,39 @@ window.SITE = {
       subtitle: "Brand shoot",
       year: "2026",
       role: "Model",
-      status: "coming-soon",
       tone: 1,
-      cover: "",
-      summary: "Cast for a UNIQLO PH shoot. Behind-the-scenes and final work to follow.",
+      cover: "assets/img/uniqlo-cover.jpg",
+      summary: "Cast for a UNIQLO PH shoot. Watch the first reels from it below.",
       overview:
-        "I was cast for a UNIQLO PH shoot. This page will carry the final work, behind-the-scenes moments and credits once they are released.",
-      plan: ["Behind-the-scenes stills", "Final campaign work", "Credits and team"],
+        "I was cast for a UNIQLO PH shoot. The first reels from it are below, with behind-the-scenes moments and the full story to follow.",
+      // Instagram reels (paste the plain reel link; extra ?utm_ parameters are ignored).
+      reels: [
+        { title: "UNIQLO PH", note: "Reel 1", url: "https://www.instagram.com/reel/Deqx7hfDuNg/" },
+        { title: "UNIQLO PH", note: "Reel 2", url: "https://www.instagram.com/reel/DegXLf7AeSD/" },
+        { title: "UNIQLO PH", note: "Reel 3", url: "https://www.instagram.com/reel/DfyqaGQjgth/" },
+      ],
+      // TODO for the in-depth write-up: add `process` (the brief, the shoot day, my part) and
+      // `outcome` (results), plus `stats`, `credits` and a `gallery` of BTS stills. Each one
+      // appears on the page as soon as it is filled in.
+    },
+    {
+      id: "mcdo-desserts",
+      category: "modelling",
+      title: "McDonald's Desserts",
+      subtitle: "Social media campaign",
+      year: "2026",
+      role: "Model",
+      tone: 3,
+      cover: "assets/img/mcdo-bts.jpg",
+      summary: "Cast for McDonald's Philippines' desserts social media campaign. The campaign posts are below.",
+      overview:
+        "I was cast in a social media campaign for McDonald's desserts. The posts from McDonald's Philippines (@mcdo_ph) are below.",
+      // Instagram posts or reels (paste the plain link; extra ?utm_ parameters are ignored).
+      reelsTitle: "The campaign",
+      reels: [
+        { title: "McDonald's PH", note: "Post 1", url: "https://www.instagram.com/p/DfwhEoZhkNW/" },
+        { title: "McDonald's PH", note: "Post 2", url: "https://www.instagram.com/p/DfoXNg3Dv0f/" },
+      ],
     },
     { id: "empty-modelling", category: "modelling", empty: true, title: "More coming soon" },
 
@@ -184,6 +234,7 @@ window.SITE = {
       year: "2023 – Present",
       role: "General Manager · Co-Owner",
       tone: 4,
+      cover: "assets/img/old-jeans-bazaar.jpg",
       summary: "A thrifted-clothing and denim-pouch brand — from identity and content to product and sales.",
       overview:
         "Old Jeans started as an ABM business project at DLSU Senior High School and grew into a brand spanning thrifted clothing and an original denim pouch line. I led end-to-end operations across marketing, sales, finance, and product development with my co-owners.",
@@ -226,6 +277,28 @@ window.SITE = {
         { src: "assets/img/hk-perf-2.jpg", caption: "On stage" },
         { src: "assets/img/hk-group.jpg", caption: "With participants at the symposium" },
         { src: "assets/img/hk-perf-3.jpg", caption: "The final bow" },
+      ],
+    },
+    {
+      id: "teatro-lasalyano",
+      category: "brand",
+      title: "Teatro Lasalyano",
+      subtitle: "Stage management",
+      year: "2024",
+      role: "Stage Manager",
+      tone: 2,
+      cover: "assets/img/teatro-group.jpg",
+      summary: "Stage manager for the production \"Animulat: Ang Huling Takipsilim\", from cue sheets to the technical booth.",
+      overview:
+        "I was the stage manager for Teatro Lasalyano's production \"Animulat: Ang Huling Takipsilim\" at De La Salle University, keeping cast, crew and the technical side moving together.",
+      process:
+        "I built and maintained the production's cue sheets in Excel, ran the technical booth during the show and supported the production's promo video.",
+      outcome: "The production's promo video passed 32k views.",
+      stats: [{ value: "32k+", label: "views on the promo video" }],
+      credits: ["Teatro Lasalyano"],
+      gallery: [
+        { src: "assets/img/teatro-stage.jpg", caption: "The set before the show" },
+        { src: "assets/img/teatro-main.jpg", caption: "On headset, backstage" },
       ],
     },
     { id: "empty-brand", category: "brand", empty: true, title: "More coming soon" },

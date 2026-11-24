@@ -15,8 +15,41 @@ window.renderPage = function (h) {
 
   fill("[data-bio]", profile.bio.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join(""));
 
-  // Portrait: set profile.portrait = "assets/img/portrait.jpg" in data.js to use a real photo
-  fill("[data-portrait]", h.media(profile.portrait, 3, "Your portrait here", "modelling", profile.name));
+  fill("[data-facts]", (profile.facts || []).map(function (f) { return "<div><dt>" + esc(f[0]) + "</dt><dd>" + esc(f[1]) + "</dd></div>"; }).join(""));
+
+  // Portrait: set profile.portrait = "assets/img/portrait.jpg" in data.js to use a real photo.
+  // profile.portraitAlt fades in on hover (tap on phones): the off-camera side.
+  var portraitEl = document.querySelector("[data-portrait]");
+  if (portraitEl) {
+    portraitEl.innerHTML = h.media(profile.portrait, 3, "Your portrait here", "modelling", profile.name) +
+      (profile.portraitAlt
+        ? '<img class="portrait__alt" src="' + esc(profile.portraitAlt) + '" alt="' + esc(profile.short) + ' backstage on headset" loading="lazy">' +
+          '<span class="portrait__tag" data-portrait-tag>On camera <i>/</i> hover for off camera</span>'
+        : "");
+    if (profile.portraitAlt) {
+      var tag = portraitEl.querySelector("[data-portrait-tag]");
+      var setTag = function (alt) { tag.innerHTML = alt ? "Off camera <i>/</i> stage manager" : "On camera <i>/</i> " + (matchMedia("(hover: hover)").matches ? "hover" : "tap") + " for off camera"; };
+      setTag(false);
+      portraitEl.addEventListener("mouseenter", function () { setTag(true); });
+      portraitEl.addEventListener("mouseleave", function () { portraitEl.classList.remove("is-alt"); setTag(false); });
+      portraitEl.addEventListener("click", function () { setTag(portraitEl.classList.toggle("is-alt")); });
+    }
+  }
+
+  // "I'm a ___": cycle through profile.roles
+  var roleEl = document.querySelector("[data-roles]");
+  var roles = profile.roles || [];
+  if (roleEl && roles.length > 1 && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var ri = 0;
+    setInterval(function () {
+      roleEl.classList.add("is-out");
+      setTimeout(function () {
+        ri = (ri + 1) % roles.length;
+        roleEl.textContent = roles[ri];
+        roleEl.classList.remove("is-out");
+      }, 450);
+    }, 2400);
+  }
 
   fill(
     "[data-stories]",
