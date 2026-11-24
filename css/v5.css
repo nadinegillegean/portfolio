@@ -759,3 +759,37 @@ em { color: var(--pom); }
   background: radial-gradient(circle, rgba(254, 155, 184, 0.34) 0%, rgba(232, 165, 174, 0.14) 45%, transparent 70%); transition: transform 0.4s var(--ease), opacity 0.3s; }
 .cursor.is-hover .cursor__ring::before { transform: scale(1.25); }
 .cursor.is-light .cursor__ring::before { background: radial-gradient(circle, rgba(254, 155, 184, 0.28) 0%, rgba(253, 251, 250, 0.08) 45%, transparent 70%); }
+
+/* ==========================================================================
+   Round 8: About "H", thinner hero border, visible cursor, photo strip, sticker toolkit
+   ========================================================================== */
+/* The swash capital hangs past the title's reveal mask: give the mask room */
+.page-title .line { padding: 0.14em 0.25em 0.1em; margin: -0.14em -0.25em -0.1em; }
+
+/* Thinner hero border */
+.scene { --frame: clamp(4px, 0.55vw, 8px); --frame-r: clamp(20px, 2.6vw, 34px); }
+
+/* Cursor: clearly visible */
+.cursor__dot { width: 12px; height: 12px; margin: -6px 0 0 -6px; background: var(--pom); box-shadow: 0 0 0 2px rgba(253, 251, 250, 0.95), 0 2px 8px rgba(74, 26, 51, 0.25); }
+.cursor__ring::after { left: -20px; top: -20px; width: 40px; height: 40px; border: 1.5px solid rgba(140, 29, 59, 0.55); }
+.cursor.is-light .cursor__dot { box-shadow: 0 0 0 2px rgba(74, 26, 51, 0.9); }
+
+/* Photo film strip */
+.marquee { padding: clamp(26px, 3.4vw, 46px) 0; background: var(--ivory); }
+.marquee__track { gap: clamp(20px, 2.6vw, 40px); padding-right: clamp(20px, 2.6vw, 40px); align-items: flex-start; letter-spacing: 0; text-transform: none; }
+.film__item { margin: 0; flex: none; width: clamp(120px, 11vw, 176px); padding: 7px 7px 0; background: #fff; border-radius: 6px; box-shadow: 0 10px 22px -12px rgba(74, 26, 51, 0.45); transform: rotate(-1.6deg); }
+.film__item--1 { transform: rotate(1.4deg) translateY(8px); }
+.film__item--2 { transform: rotate(-0.6deg) translateY(-4px); }
+.film__item img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 3px; }
+.film__item figcaption { padding: 8px 2px 9px; font-family: var(--font-sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--esp); text-align: center; white-space: nowrap; }
+
+/* Toolkit: sticker sheet */
+.stk__sheet { display: grid; gap: clamp(22px, 3vw, 36px); }
+.stk__name { margin: 0 0 12px; font-family: var(--font-display); font-weight: 400; font-style: italic; font-size: clamp(1.5rem, 2.4vw, 2.1rem); color: var(--pom); letter-spacing: -0.02em; }
+.stk__list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 12px 10px; }
+.stk { padding: 11px 20px; border-radius: 999px; font-family: var(--font-sans); font-weight: 600; font-size: clamp(0.92rem, 1.2vw, 1.05rem); letter-spacing: -0.01em; box-shadow: 0 4px 0 rgba(74, 26, 51, 0.22); transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease); }
+.stk--0 { background: var(--pom); color: var(--ivory); transform: rotate(-2deg); }
+.stk--1 { background: var(--pink); color: var(--esp); transform: rotate(1.6deg); }
+.stk--2 { background: #fff; color: var(--esp); border: 1.5px solid rgba(74, 26, 51, 0.18); transform: rotate(-0.8deg); }
+.stk:hover { transform: rotate(0deg) translateY(-4px) scale(1.05); box-shadow: 0 8px 0 rgba(74, 26, 51, 0.2); }
+@media (prefers-reduced-motion: reduce) { .stk { transition: none; } }

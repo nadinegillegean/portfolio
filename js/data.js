@@ -199,13 +199,13 @@ window.SITE = {
       summary: "Cast for a UNIQLO PH shoot. Watch the first reels from it below.",
       overview:
         "I was cast for a UNIQLO PH shoot. The first reels from it are below, with behind-the-scenes moments and the full story to follow.",
-      // Instagram reels (paste the plain reel link; extra ?utm_ parameters are ignored).
+      // Instagram reels (paste the plain reel link; extra ?utm_ parameters are ignored). projectOnly: true keeps a reel off the home page Campaigns panel.
       reels: [
         { title: "UNIQLO PH", note: "Reel 1", url: "https://www.instagram.com/reel/Deqx7hfDuNg/" },
         { title: "UNIQLO PH", note: "Reel 2", url: "https://www.instagram.com/reel/DegXLf7AeSD/" },
         { title: "UNIQLO PH", note: "Reel 3", url: "https://www.instagram.com/reel/DfyqaGQjgth/" },
-        { title: "UNIQLO PH", note: "Reel 4", url: "https://www.instagram.com/reel/DgCHMSfBbIE/" },
-        { title: "UNIQLO PH", note: "Post 5", url: "https://www.instagram.com/p/Df_G5v8hqdk/" },
+        { title: "UNIQLO PH", note: "Reel 4", url: "https://www.instagram.com/reel/DgCHMSfBbIE/", projectOnly: true },
+        { title: "UNIQLO PH", note: "Post 5", url: "https://www.instagram.com/p/Df_G5v8hqdk/", projectOnly: true },
       ],
       // TODO for the in-depth write-up: add `process` (the brief, the shoot day, my part) and
       // `outcome` (results), plus `stats`, `credits` and a `gallery` of BTS stills. Each one

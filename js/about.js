@@ -66,29 +66,16 @@ window.renderPage = function (h) {
       .join("")
   );
 
-  // Skills as a till receipt
-  var total = 0;
-  var rows = window.SITE.toolkit
+  // Skills as a sheet of stickers, grouped
+  var n = 0;
+  var sheet = window.SITE.toolkit
     .map(function (g) {
-      total += g.items.length;
       return (
-        '<p class="receipt__group">' + esc(g.group) + "</p>" +
-        g.items.map(function (t) { return '<div class="receipt__row"><span>1x ' + esc(t) + "</span><span>✓</span></div>"; }).join("")
+        '<div class="stk__group" data-reveal><h3 class="stk__name">' + esc(g.group) + "</h3><ul class=\"stk__list\">" +
+        g.items.map(function (t) { n += 1; return '<li class="stk stk--' + (n % 3) + '">' + esc(t) + "</li>"; }).join("") +
+        "</ul></div>"
       );
     })
     .join("");
-  var d = new Date();
-  var stamp = d.toLocaleDateString("en", { month: "short", day: "2-digit", year: "numeric" }).toUpperCase();
-  fill(
-    "[data-receipt]",
-    '<div class="receipt"><div class="receipt__paper">' +
-      '<p class="receipt__title">SOFIA NADINE G.</p>' +
-      '<p class="receipt__sub">SKILL RECEIPT</p>' +
-      '<p class="receipt__meta"><span>ORDER #0001</span><span>' + stamp + "</span></p>" +
-      '<hr class="receipt__rule">' + rows + '<hr class="receipt__rule">' +
-      '<div class="receipt__row receipt__total"><span>TOTAL ITEMS</span><span>' + total + "</span></div>" +
-      '<p class="receipt__thanks">THANK YOU, COME AGAIN</p>' +
-      '<div class="receipt__bars" aria-hidden="true"></div>' +
-    "</div></div>"
-  );
+  fill("[data-receipt]", '<div class="stk__sheet">' + sheet + "</div>");
 };

@@ -56,7 +56,6 @@
     cur.setAttribute("aria-hidden", "true");
     cur.innerHTML = '<span class="cursor__ring"></span><span class="cursor__dot"></span>';
     document.body.appendChild(cur);
-    html.classList.add("has-cursor");
     var cRing = cur.firstChild, cDot = cur.lastChild;
     var cx = -100, cy = -100, rx = -100, ry = -100;
     var HOVER = "a, button, [role='tab'], .tab, .dc, .card, .portrait, .ticket, label, summary";
@@ -64,6 +63,7 @@
     window.addEventListener("pointermove", function (e) {
       cx = e.clientX; cy = e.clientY;
       var t = e.target;
+      html.classList.add("has-cursor");
       cur.classList.add("is-on");
       cur.classList.toggle("is-hover", !!(t.closest && t.closest(HOVER)));
       cur.classList.toggle("is-light", !!(t.closest && t.closest(DARK)));
@@ -111,10 +111,10 @@
       );
     }).join("");
     var dcs = Array.prototype.slice.call(deckEl.children);
-    var N = dcs.length, active = 0, cur = 0;
+    var N = dcs.length, active = 0, rowPos = 0;
     var deckLabel = document.querySelector("[data-deck-label]");
     // A row of cards laid out side by side: the active card sits in the middle, its neighbours fan out to either side.
-    // cur is a float (the card currently in the middle), so one tween slides the whole row.
+    // rowPos is a float (the card currently in the middle), so one tween slides the whole row.
     var stepPct = function () { return window.innerWidth < 760 ? 82 : 70; };
     var wrapOff = function (o) { return ((o + N / 2) % N + N) % N - N / 2; };
     var paintRow = function (pos, extra) {
@@ -130,12 +130,12 @@
         if ((el.getAttribute("data-pos") === "0") !== on) el.setAttribute("data-pos", on ? "0" : "1");
         el.setAttribute("aria-hidden", on ? "false" : "true");
       });
-      cur = pos;
+      rowPos = pos;
     };
     var settle = function () {
-      active = ((Math.round(cur) % N) + N) % N;
-      cur = active;
-      paintRow(cur);
+      active = ((Math.round(rowPos) % N) + N) % N;
+      rowPos = active;
+      paintRow(rowPos);
       if (deckLabel) deckLabel.textContent = cards[active].title;
     };
     var deckBusy = false, deckQueue = 0, rowTween = null;
@@ -150,10 +150,10 @@
     var goDeck = function (dir) {
       if (deckBusy || N < 2) return;
       deckBusy = true;
-      var target = Math.round(cur) + dir;
-      if (!hasGSAP || reduceMotion) { cur = target; settle(); deckBusy = false; drainDeck(); return; }
+      var target = Math.round(rowPos) + dir;
+      if (!hasGSAP || reduceMotion) { rowPos = target; settle(); deckBusy = false; drainDeck(); return; }
       if (deckLabel) deckLabel.textContent = cards[((target % N) + N) % N].title;
-      var prog = { v: cur };
+      var prog = { v: rowPos };
       rowTween = window.gsap.to(prog, {
         v: target, duration: deckQueue ? 0.6 : 0.95, ease: "power2.inOut",
         onUpdate: function () { paintRow(prog.v); },
@@ -194,13 +194,13 @@
       else if (d.moved) {
         deckBusy = true;
         if (!hasGSAP || reduceMotion) { settle(); deckBusy = false; return; }
-        var back = { v: cur };
+        var back = { v: rowPos };
         window.gsap.to(back, { v: active, duration: 0.45, ease: "power2.out", onUpdate: function () { paintRow(back.v); }, onComplete: function () { settle(); deckBusy = false; drainDeck(); } });
       }
     };
     deckEl.addEventListener("pointerup", endDrag);
     deckEl.addEventListener("pointercancel", endDrag);
-    window.addEventListener("resize", function () { if (!deckBusy) paintRow(cur); });
+    window.addEventListener("resize", function () { if (!deckBusy) paintRow(rowPos); });
     var deckUi = document.querySelector("[data-deck-ui]");
     document.addEventListener("keydown", function (e) {
       if (!deckUi || !deckUi.classList.contains("is-live")) return;
@@ -383,7 +383,7 @@
     if (uq && uq.reels && uq.reels.length) {
       featureEl.querySelector("[data-feature-title]").textContent = uq.title;
       featureEl.querySelector("[data-feature-note]").textContent = uq.summary;
-      featureEl.querySelector("[data-feature-reels]").innerHTML = uq.reels.map(igPhone).join("");
+      featureEl.querySelector("[data-feature-reels]").innerHTML = uq.reels.filter(function (r) { return !r.projectOnly; }).map(igPhone).join("");
     } else {
       (featureEl.closest(".reelstage") || featureEl).remove();
       var moreHead = document.querySelector(".reel .subhead");
@@ -478,7 +478,6 @@
     if (ttHandle) a.textContent = "Follow @" + ttHandle;
   });
   if (tiktokEl) {
-    var ttScript = false;
     var ttReady = SITE.tiktok.filter(function (u) { return /video\/(\d+)/.test(u); });
     // Always show at least 4 frames: real videos first, "Coming soon" placeholders for the rest
     var ttHTML = "";
@@ -487,10 +486,8 @@
       if (ttUrl) {
         var ttId = String(ttUrl).match(/video\/(\d+)/)[1];
         ttHTML +=
-          '<div class="phone" data-reveal><div class="phone__screen" data-tt="' + esc(ttUrl) + '" data-ttid="' + ttId + '">' +
-          media("", [2, 6, 1, 4][ti % 4], "TikTok video", "video", "TikTok video") +
-          '<button class="phone__play" type="button" aria-label="Load TikTok video"><span>▶</span></button>' +
-          '<div class="phone__label">TikTok<small>Tap to play</small></div></div></div>';
+          '<div class="phone" data-reveal><div class="phone__screen" data-ttid="' + ttId + '">' +
+          '<div class="phone__embed"><iframe src="https://www.tiktok.com/embed/v2/' + ttId + '" title="TikTok video ' + (ti + 1) + '" allowfullscreen loading="lazy" allow="encrypted-media; fullscreen"></iframe></div></div></div>';
       } else {
         ttHTML +=
           '<div class="phone phone--soon" data-reveal><div class="phone__screen">' +
@@ -500,24 +497,6 @@
       }
     }
     tiktokEl.innerHTML = ttHTML;
-    tiktokEl.addEventListener("click", function (e) {
-      var btn = e.target.closest("button.phone__play");
-      if (!btn) return;
-      var screen = btn.closest(".phone__screen");
-      var url = screen.getAttribute("data-tt"), id = screen.getAttribute("data-ttid");
-      var box = document.createElement("div");
-      box.className = "phone__embed";
-      box.innerHTML = '<blockquote class="tiktok-embed" cite="' + esc(url) + '" data-video-id="' + esc(id) + '" style="max-width:605px;min-width:325px;"><section></section></blockquote>';
-      screen.appendChild(box);
-      if (!ttScript) {
-        ttScript = true;
-        var s = document.createElement("script");
-        s.async = true; s.src = "https://www.tiktok.com/embed.js";
-        document.body.appendChild(s);
-      } else if (window.tiktokEmbed && window.tiktokEmbed.lib) {
-        window.tiktokEmbed.lib.render(box);
-      }
-    });
   }
 
   /* ---------- Achievements: brush the cursor across a message and it fades away, then fades back in ---------- */
@@ -790,8 +769,15 @@
   /* ---------- Marquee content ---------- */
   var mqEl = document.querySelector("[data-marquee]");
   if (mqEl) {
-    var phrase = ["UNIQLO PH", "McDonald's PH", "Old Jeans", "DLSU Chorale", "Teatro Lasalyano", "IMES AI Expo", "Hopefest"].map(function (w) { return "<span>" + esc(w) + "</span><i aria-hidden=\"true\"></i>"; }).join("");
-    var half = phrase + phrase + phrase;
+    var shots = [
+      ["assets/img/uniqlo-cover.jpg", "UNIQLO PH"], ["assets/img/hk-perf-1.jpg", "DLSU Chorale"], ["assets/img/mcdo-bts.jpg", "McDonald's PH"],
+      ["assets/img/gateway-sg.jpg", "Singapore"], ["assets/img/old-jeans-bazaar.jpg", "Old Jeans"], ["assets/img/teatro-stage.jpg", "Teatro Lasalyano"],
+      ["assets/img/hk-delegation.jpg", "Hong Kong"],
+    ];
+    var phrase = shots.map(function (x, i) {
+      return '<figure class="film__item film__item--' + (i % 3) + '"><img src="' + x[0] + '" alt="" loading="lazy" draggable="false"><figcaption>' + esc(x[1]) + "</figcaption></figure>";
+    }).join("");
+    var half = phrase + phrase;
     mqEl.innerHTML = half + half;
   }
 
